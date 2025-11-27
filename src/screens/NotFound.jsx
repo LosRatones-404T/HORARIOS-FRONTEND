@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { FiAlertTriangle } from "react-icons/fi";
 
-export default function NotFound() {
+function NotFound() {
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-blue-900 via-blue-600 to-blue-300 flex items-center justify-center p-6">
 
@@ -33,3 +33,5 @@ export default function NotFound() {
     </div>
   );
 }
+
+export default NotFound;
