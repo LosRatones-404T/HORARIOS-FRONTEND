@@ -17,8 +17,8 @@ Configuración en `src/theme/theme.jsx`. Soporta modo claro y oscuro.
 | **tertiary** | `#7B318F` | `#AF89B7` | `#5A2366` |
 | **error** | `#9F0208` | `#D9010F` | `#7A0106` |
 
-| background | | text | |
-|------------|---|------|---|
+| Fondo | Color | Texto | Color |
+|-------|-------|-------|-------|
 | default | `#F0F0F7` | primary | `#2A3344` |
 | paper | `#FFFFFF` | secondary | `#3E4E6C` |
 | secondary | `#D3D4DB` | disabled | `#B8B8BF` |
@@ -32,8 +32,8 @@ Configuración en `src/theme/theme.jsx`. Soporta modo claro y oscuro.
 | **tertiary** | `#AF89B7` | `#C9A8CF` | `#7B318F` |
 | **error** | `#D9010F` | `#FF4D55` | `#9F0208` |
 
-| background | | text | |
-|------------|---|------|---|
+| Fondo | Color | Texto | Color |
+|-------|-------|-------|-------|
 | default | `#0A0E1A` | primary | `#FFFFFF` |
 | paper | `#1A1E2E` | secondary | `#D3D4DB` |
 | secondary | `#2A3344` | disabled | `#B8B8BF` |
@@ -45,53 +45,55 @@ Configuración en `src/theme/theme.jsx`. Soporta modo claro y oscuro.
 ### `Box`
 Contenedor genérico (como un `div`). Úsalo para layout y aplicar estilos con `sx`.
 
-\`\`\`jsx
+```jsx
 <Box sx={{ display: 'flex', gap: 2, p: 2, bgcolor: 'background.default' }}>
   {children}
 </Box>
-\`\`\`
+```
 
 ### `Paper`
 Superficie elevada con sombra. Úsalo para tarjetas, modales o secciones destacadas.
 
-\`\`\`jsx
+```jsx
 <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
   Contenido con sombra
 </Paper>
-\`\`\`
+```
 
 ### `Typography`
 Texto con estilos tipográficos del tema. Úsalo para títulos, párrafos, labels.
 
-\`\`\`jsx
+```jsx
 <Typography variant="h4" color="text.primary">Título</Typography>
 <Typography variant="body1" color="text.secondary">Párrafo</Typography>
-\`\`\`
-Variantes: `h1`-`h6`, `subtitle1`, `subtitle2`, `body1`, `body2`, `caption`
+```
+
+**Variantes disponibles:** `h1`-`h6`, `subtitle1`, `subtitle2`, `body1`, `body2`, `caption`
 
 ### `Button`
 Botón con variantes predefinidas.
 
-\`\`\`jsx
+```jsx
 <Button variant="contained" color="primary">Primario</Button>
 <Button variant="outlined" color="secondary">Secundario</Button>
 <Button variant="text">Texto</Button>
-\`\`\`
+```
 
 ### `TextField`
 Campo de entrada con estilos del tema.
 
-\`\`\`jsx
+```jsx
 <TextField label="Email" variant="outlined" fullWidth />
-\`\`\`
+```
 
 ### `Container`
 Centra contenido con ancho máximo responsivo.
 
-\`\`\`jsx
+```jsx
 <Container maxWidth="sm">{children}</Container>
-\`\`\`
-Valores: `xs`, `sm`, `md`, `lg`, `xl`
+```
+
+**Valores disponibles:** `xs`, `sm`, `md`, `lg`, `xl`
 
 ---
 
@@ -99,7 +101,7 @@ Valores: `xs`, `sm`, `md`, `lg`, `xl`
 
 Usa tokens del tema para consistencia:
 
-\`\`\`jsx
+```jsx
 sx={{
   // Colores
   bgcolor: 'background.paper',
@@ -117,19 +119,19 @@ sx={{
   // Tipografía
   typography: 'body1',
 }}
-\`\`\`
+```
 
 ---
 
 ## Alternar Tema
 
-\`\`\`jsx
+```jsx
 import { useTheme } from '../hooks/useTheme';
 
 const { mode, toggleTheme } = useTheme();
 // mode: 'light' | 'dark'
 // toggleTheme(): alterna entre modos
-\`\`\`
+```
 
 ---
 
@@ -137,9 +139,11 @@ const { mode, toggleTheme } = useTheme();
 
 Usa `react-icons`:
 
-\`\`\`jsx
+```jsx
 import { FaUser } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 
 <FaUser />
-\`\`\`
+```
+
+---
