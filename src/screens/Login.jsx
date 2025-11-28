@@ -1,84 +1,230 @@
-import { useState } from "react";
-import { FiUser, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
+import { useState } from 'react';
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  InputAdornment,
+  IconButton,
+  Container,
+  Paper,
+  Link,
+} from '@mui/material';
+import { FaUser, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
+import logoUnsis from '../assets/logo-unsis.png';
+import loginIlustration from '../assets/login-ilustration.png';
 
-// IMPORTACIÓN DE IMÁGENES DESDE ASSETS
-import logo from "../assets/escudo_unsis_720.png";
-
-export default function Login() {
+function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    usuario: '',
+    contrasena: '',
+  });
+
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Login:', formData);
+  };
 
   return (
-    <div className="min-h-screen w-full bg-blue-500 flex items-center justify-center p-6">
-      <div className="bg-white rounded-2xl shadow-lg flex w-full max-w-4xl overflow-hidden">
-
-        {/* COLUMNA IZQUIERDA */}
-        <div className="w-1/2 p-8 flex flex-col items-center">
-          
-          {/* LOGO */}
-          <img
-            src={logo}
-            alt="Logo UNSIS"
-            className="w-36 mb-4"
-          />
-
-          <h1 className="text-xl font-bold text-center">UNSIS</h1>
-          <p className="text-center text-sm mb-6">
-            Universidad de la Sierra Sur <br />
-            Miahuatlán de Porfirio Díaz, Oaxaca
-          </p>
-
-          {/* USUARIO */}
-          <label className="text-sm font-medium mb-1 w-full">Usuario</label>
-          <div className="w-full bg-blue-100 p-3 rounded-lg flex items-center gap-2 mb-4">
-            <FiUser className="text-blue-600" />
-            <input
-              type="text"
-              className="bg-transparent w-full outline-none"
-              placeholder="Ingresa tu usuario"
-            />
-          </div>
-
-          {/* CONTRASEÑA */}
-          <label className="text-sm font-medium mb-1 w-full">Contraseña</label>
-          <div className="w-full bg-blue-100 p-3 rounded-lg flex items-center gap-2 mb-1">
-            <FiLock className="text-blue-600" />
-            <input
-              type={showPassword ? "text" : "password"}
-              className="bg-transparent w-full outline-none"
-              placeholder="Ingresa tu contraseña"
-            />
-            {showPassword ? (
-              <FiEyeOff
-                className="cursor-pointer"
-                onClick={() => setShowPassword(false)}
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        bgcolor: 'primary.main',
+      }}
+    >
+      <Container maxWidth="md">
+        <Paper
+          elevation={8}
+          sx={{
+            display: 'flex',
+            borderRadius: 2,
+            overflow: 'hidden',
+            maxWidth: 1000,
+            margin: '0 auto',
+          }}
+        >
+          {/* Lado izquierdo - Formulario */}
+          <Box
+            sx={{
+              flex: 1.2,
+              p: 4,
+              px: 6,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              bgcolor: '#F5F7FA',
+            }}
+          >
+            {/* Logo y título */}
+            <Box sx={{ textAlign: 'center', mb: 3 }}>
+              <Box
+                component="img"
+                src={logoUnsis}
+                alt="Logo UNSIS"
+                sx={{
+                  height: 120,
+                  mb: 1.5,
+                }}
               />
-            ) : (
-              <FiEye
-                className="cursor-pointer"
-                onClick={() => setShowPassword(true)}
+              <Typography variant="h5" fontWeight="bold" gutterBottom>
+                UNSIS
+              </Typography>
+              <Typography variant="caption" color="text.secondary" display="block" fontWeight="bold">
+                Universidad de la Sierra Sur
+              </Typography>
+              <Typography variant="caption" color="text.secondary" display="block" fontWeight="Bold">
+                Miahuatlán de Porfirio Díaz, Oaxaca
+              </Typography>
+            </Box>
+
+            {/* Formulario */}
+            <Box
+              component="form"
+              onSubmit={handleSubmit}
+              noValidate
+              sx={{
+                maxWidth: 400,
+                mx: 'auto',
+                width: '100%',
+              }}
+            >
+              <Typography variant="body2" sx={{ mb: 0.5, fontWeight: 500 }}>
+                Usuario
+              </Typography>
+              <TextField
+                fullWidth
+                name="usuario"
+                placeholder="Ingresa tu usuario"
+                value={formData.usuario}
+                onChange={handleChange}
+                size="small"
+                sx={{
+                  mb: 2,
+                  '& .MuiOutlinedInput-root': {
+                    bgcolor: '#E8F0FE',
+                    borderRadius: '25px',
+                  },
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <FaUser color="#666" />
+                    </InputAdornment>
+                  ),
+                }}
               />
-            )}
-          </div>
 
-          <p className="text-xs self-end cursor-pointer mt-1 text-blue-600 hover:underline">
-            ¿Olvidaste la contraseña?
-          </p>
+              <Typography variant="body2" sx={{ mb: 0.5, fontWeight: 500 }}>
+                Contraseña
+              </Typography>
+              <TextField
+                fullWidth
+                name="contrasena"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Ingresa tu contraseña"
+                value={formData.contrasena}
+                onChange={handleChange}
+                size="small"
+                sx={{
+                  mb: 1.5,
+                  '& .MuiOutlinedInput-root': {
+                    bgcolor: '#E8F0FE',
+                    borderRadius: '25px',
+                  },
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <FaLock color="#666" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClickShowPassword} edge="end" size="small">
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
 
-          <button className="bg-purple-900 text-white py-3 rounded-full w-full mt-6 hover:bg-purple-700">
-            INICIAR SESIÓN
-          </button>
-        </div>
+              <Box sx={{ textAlign: 'right', mb: 2 }}>
+                <Link
+                  href="#"
+                  variant="caption"
+                  sx={{
+                    color: 'text.secondary',
+                    textDecoration: 'none',
+                    '&:hover': {
+                      color: 'primary.main',
+                      textDecoration: 'underline',
+                    },
+                  }}
+                >
+                  ¿Olvidaste la contraseña?
+                </Link>
+              </Box>
 
-        {/* COLUMNA DERECHA */}
-        <div className="w-1/2 bg-blue-100 flex items-center justify-center">
-          <img
-            src={logo}
-            alt="Imagen de login"
-            className="w-72 rounded-lg shadow-md"
-          />
-        </div>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{
+                  py: 1.2,
+                  bgcolor: '#7B318F',
+                  '&:hover': {
+                    bgcolor: '#6A2B7D',
+                  },
+                  borderRadius: 25,
+                  textTransform: 'uppercase',
+                  fontWeight: 600,
+                }}
+              >
+                Iniciar Sesión
+              </Button>
+            </Box>
+          </Box>
 
-      </div>
-    </div>
+          {/* Lado derecho - Imagen/Ilustración */}
+          <Box
+            sx={{
+              flex: 1.3,
+              bgcolor: 'primary.light',
+              display: { xs: 'none', md: 'flex' },
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              p: 3,
+            }}
+          >
+            <Box
+              component="img"
+              src={loginIlustration}
+              alt="Ilustración de login"
+              sx={{
+                maxWidth: '100%',
+                height: 'auto',
+                borderRadius: 2,
+              }}
+            />
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
   );
 }
+
+export default Login;
