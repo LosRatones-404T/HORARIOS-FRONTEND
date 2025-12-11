@@ -1,6 +1,6 @@
 import { Button, Stack, Typography } from "@mui/material";
 
-export default function SidebarOptionButton({ icon, label, collapsed, onClick }) {
+export default function OptionButton({ icon, label, collapsed, onClick }) {
   return (
     <Button
       onClick={onClick}

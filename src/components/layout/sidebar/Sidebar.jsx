@@ -1,9 +1,7 @@
 import { Box, IconButton } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import { HiMenu } from "react-icons/hi";
 import { useState } from "react";
-import SidebarHeader from "./SidebarHeader";
-import SidebarOptions from "./SidebarOptions";
-import SidebarFooter from "./SidebarFooter";
+import { Header, Body, Footer } from "./components";
 
 export default function Sidebar({ menu }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -25,14 +23,14 @@ export default function Sidebar({ menu }) {
         onClick={() => setCollapsed(!collapsed)}
         sx={{ alignSelf: collapsed ? "center" : "flex-end", m: 1 }}
       >
-        <MenuIcon />
+        <HiMenu />
       </IconButton>
 
-      <SidebarHeader collapsed={collapsed} />
+      <Header collapsed={collapsed} />
 
-      <SidebarOptions collapsed={collapsed} options={menu} />
+      <Body collapsed={collapsed} options={menu} />
 
-      <SidebarFooter collapsed={collapsed} />
+      <Footer collapsed={collapsed} />
     </Box>
   );
 }

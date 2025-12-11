@@ -1,11 +1,11 @@
 import { Stack } from "@mui/material";
-import SidebarOptionButton from "../../common/buttons/SidebarOptionButton";
+import OptionButton from "./OptionButton.jsx";
 
-export default function SidebarOptions({ collapsed, options }) {
+export default function Body({ collapsed, options }) {
   return (
     <Stack spacing={1} px={2}>
       {options.map((item, index) => (
-        <SidebarOptionButton
+        <OptionButton
           key={index}
           icon={item.icon}
           label={item.label}

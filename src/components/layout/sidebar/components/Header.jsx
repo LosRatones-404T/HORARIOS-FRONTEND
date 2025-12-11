@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material";
-import logo from "../../assets/logo-unsis.png";
-export default function SidebarHeader({ collapsed }) {
+import logo from "../../../../assets/logo-unsis.png";
+
+export default function Header({ collapsed }) {
   return (
     <Box sx={{ p: 2, textAlign: collapsed ? "center" : "left" }}>
       {!collapsed ? (
@@ -14,15 +15,17 @@ export default function SidebarHeader({ collapsed }) {
               marginBottom: "8px",
             }}
           />
-
           <Typography variant="h6" fontWeight="bold">SIPLEX</Typography>
           <Typography variant="caption">Sistema de Planificación</Typography>
         </>
       ) : (
         <img 
           src={logo} 
-          alt="SIPLEX Logo"
-          style={{ width: "35px" }}
+          alt="SIPLEX Logo" 
+          style={{
+            width: "40px",
+            height: "auto",
+          }}
         />
       )}
     </Box>
