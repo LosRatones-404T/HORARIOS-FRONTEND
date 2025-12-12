@@ -1,193 +1,111 @@
-import React from 'react';
-import {AppBar, Toolbar, Typography, Box, IconButton, Badge, Avatar,
-  Menu, MenuItem, Divider, ListItemIcon, Button} from '@mui/material';
-import { 
-  MdNotifications, 
-  MdPerson, 
-  MdSettings, 
-  MdLogout, 
-  MdDashboard, 
-  MdCalendarToday, 
-  MdBuild 
-} from 'react-icons/md';
-import ThemeToggle from '../ThemeToggle';
+import React from "react";
+import { Box, IconButton, Typography, InputBase, Paper } from "@mui/material";
+import { FaBars, FaBell, FaUser, FaSearch } from "react-icons/fa";
+import ThemeToggle from "../ThemeToggle";
 
 const Header = () => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   return (
-    <AppBar 
-      position="static"
-      elevation={0}
-      sx={{ 
-        bgcolor: 'background.paper',
-        color: 'text.primary',
-        borderBottom: 1,
-        borderColor: 'divider'
+    <Box
+      component="header"
+      sx={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "70px",
+        bgcolor: "primary.main",
+        display: "flex",
+        alignItems: "center",
+        px: 3,
+        boxShadow: 1,
+        zIndex: 1000,
+        overflow: "hidden",
       }}
     >
-      <Toolbar sx={{ justifyContent: 'space-between' }}>
-        
-        {/* Logo y Título */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Box
-            sx={{
-              width: 40,
-              height: 40,
-              borderRadius: 2,
-              bgcolor: 'primary.main',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              fontWeight: 'bold'
-            }}
+      {/* ---- IZQUIERDA: Logo + Nombre ---- */}
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <img src="/logo.png" alt="logo" style={{ width: 55, height: 55 }} />
+
+        {/* Textos centrados */}
+        <Box sx={{ textAlign: "center" }}>
+          <Typography
+            variant="h6"
+            sx={{ color: "white", fontWeight: "bold", lineHeight: 1 }}
           >
-            <Typography variant="h6" fontWeight="bold">
-              S
-            </Typography>
-          </Box>
-          
-          <Box>
-            <Typography 
-              variant="h6" 
-              sx={{ 
-                fontWeight: 700,
-                color: 'text.primary'
-              }}
-            >
-              STPLEX
-            </Typography>
-            <Typography 
-              variant="caption" 
-              sx={{ 
-                color: 'text.secondary',
-                display: { xs: 'none', sm: 'block' }
-              }}
-            >
-              Sistema de Planificación de Exámenes
-            </Typography>
-          </Box>
+            SIPLEX
+          </Typography>
+
+          <Typography
+            variant="body2"
+            sx={{ color: "white", opacity: 0.9, fontSize: "0.75rem" }}
+          >
+            Sistema de Planificación de Exámenes
+          </Typography>
         </Box>
 
-        {/* Navegación */}
-        <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
-          <Button 
-            startIcon={<MdDashboard />}
-            sx={{ 
-              color: 'text.secondary',
-              '&:hover': { color: 'primary.main' }
-            }}
-          >
-            Dashboard
-          </Button>
-          <Button 
-            startIcon={<MdCalendarToday />}
-            sx={{ 
-              color: 'text.secondary',
-              '&:hover': { color: 'primary.main' }
-            }}
-          >
-            Horarios
-          </Button>
-          <Button 
-            startIcon={<MdBuild />}
-            sx={{ 
-              color: 'text.secondary',
-              '&:hover': { color: 'primary.main' }
-            }}
-          >
-            Ajustes
-          </Button>
-        </Box>
+        <IconButton sx={{ color: "white", ml: 2 }}>
+          <FaBars size={22} />
+        </IconButton>
+      </Box>
 
-        {/* Acciones */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          {/* Theme Toggle */}
-          <ThemeToggle />
-          
-          {/* Notificaciones */}
-          <IconButton sx={{ color: 'text.secondary' }}>
-            <Badge badgeContent={3} color="error">
-              <MdNotifications />
-            </Badge>
-          </IconButton>
-          
-          {/* Perfil */}
-          <IconButton
-            onClick={handleClick}
-            sx={{ color: 'text.secondary' }}
-          >
-            <Avatar 
-              sx={{ 
-                width: 36, 
-                height: 36,
-                bgcolor: 'primary.light',
-                color: 'primary.main'
-              }}
-            >
-              <MdPerson />
-            </Avatar>
-          </IconButton>
-        </Box>
-
-        {/* Menú del perfil */}
-        <Menu
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          PaperProps={{
-            sx: {
-              mt: 1,
-              minWidth: 200,
-              bgcolor: 'background.paper',
-              boxShadow: 3
-            }
+      {/* ---- CENTRO: BUSCADOR ---- */}
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          justifyContent: "flex-start",
+          ml: 5,
+        }}
+      >
+        <Paper
+          elevation={0}
+          sx={{
+            width: 230,
+            height: 45,
+            bgcolor: "#DFBCE2",
+            borderRadius: "10px",
+            px: 2,
+            display: "flex",
+            alignItems: "center",
           }}
         >
-          <Box sx={{ p: 2 }}>
-            <Typography variant="subtitle1" fontWeight="bold">
-              Alicia Martínez
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              alicia@example.com
-            </Typography>
-            <Typography variant="caption" color="primary.main">
-              Servicios Escolares
-            </Typography>
-          </Box>
-          <Divider />
-          <MenuItem onClick={handleClose}>
-            <ListItemIcon>
-              <MdPerson fontSize="small" />
-            </ListItemIcon>
-            Mi Perfil
-          </MenuItem>
-          <MenuItem onClick={handleClose}>
-            <ListItemIcon>
-              <MdSettings fontSize="small" />
-            </ListItemIcon>
-            Configuración
-          </MenuItem>
-          <Divider />
-          <MenuItem onClick={handleClose}>
-            <ListItemIcon>
-              <MdLogout fontSize="small" />
-            </ListItemIcon>
-            Cerrar Sesión
-          </MenuItem>
-        </Menu>
-      </Toolbar>
-    </AppBar>
+          <FaSearch size={16} color="white" />
+          <InputBase
+            placeholder="Buscar…"
+            sx={{
+              ml: 1,
+              flex: 1,
+              color: "white",
+              "::placeholder": { color: "white", opacity: 0.8 },
+            }}
+          />
+        </Paper>
+      </Box>
+
+      {/* ---- DERECHA ---- */}
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <ThemeToggle />
+
+        <IconButton sx={{ color: "white" }}>
+          <FaBell size={20} />
+        </IconButton>
+
+        <Box
+          sx={{
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            bgcolor: "#DFBCE2",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            cursor: "pointer",
+          }}
+        >
+          <FaUser color="white" />
+        </Box>
+      </Box>
+    </Box>
   );
 };
 
