@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, IconButton, Typography, InputBase, Paper } from "@mui/material";
+import { Box, IconButton, InputBase, Paper } from "@mui/material";
 import { FaBars, FaBell, FaUser, FaSearch } from "react-icons/fa";
 import ThemeToggle from "../ThemeToggle";
 
@@ -13,55 +13,34 @@ const Header = () => {
         left: 0,
         width: "100%",
         height: "70px",
-        bgcolor: "primary.main",
+        background: "linear-gradient(to right, white 0%, white 20%, #4A83DD 20%, #4A83DD 100%)",
         display: "flex",
         alignItems: "center",
-        px: 3,
+        justifyContent: "space-between",
+        px: { xs: 2, sm: 3 },
         boxShadow: 1,
         zIndex: 1000,
-        overflow: "hidden",
       }}
     >
-      {/* ---- IZQUIERDA: Logo + Nombre ---- */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-        <img src="/logo.png" alt="logo" style={{ width: 55, height: 55 }} />
-
-        {/* Textos centrados */}
-        <Box sx={{ textAlign: "center" }}>
-          <Typography
-            variant="h6"
-            sx={{ color: "white", fontWeight: "bold", lineHeight: 1 }}
-          >
-            SIPLEX
-          </Typography>
-
-          <Typography
-            variant="body2"
-            sx={{ color: "white", opacity: 0.9, fontSize: "0.75rem" }}
-          >
-            Sistema de Planificación de Exámenes
-          </Typography>
-        </Box>
-
-        <IconButton sx={{ color: "white", ml: 2 }}>
-          <FaBars size={22} />
+      {/* ---- IZQUIERDA: Ícono Menú + Buscador ---- */}
+      <Box sx={{ 
+        display: "flex", 
+        alignItems: "center", 
+        gap: { xs: 1, sm: 2, md: 3 },
+        marginLeft: { xs: 0, sm: "50px", md: "200px", lg: "400px" },
+        flex: 1,
+      }}>
+        {/* Ícono del menú */}
+        <IconButton sx={{ color: "white" }}>
+          <FaBars size={24} />
         </IconButton>
-      </Box>
-
-      {/* ---- CENTRO: BUSCADOR ---- */}
-      <Box
-        sx={{
-          flex: 1,
-          display: "flex",
-          justifyContent: "flex-start",
-          ml: 5,
-        }}
-      >
+        
+        {/* Buscador */}
         <Paper
           elevation={0}
           sx={{
-            width: 230,
-            height: 45,
+            width: { xs: "150px", sm: "250px", md: "350px", lg: "400px" },
+            height: 40,
             bgcolor: "#DFBCE2",
             borderRadius: "10px",
             px: 2,
@@ -76,20 +55,33 @@ const Header = () => {
               ml: 1,
               flex: 1,
               color: "white",
-              "::placeholder": { color: "white", opacity: 0.8 },
+              fontSize: { xs: "0.875rem", sm: "1rem" },
+              "&::placeholder": {
+                color: "white",
+                opacity: 0.8,
+              },
             }}
           />
         </Paper>
       </Box>
 
-      {/* ---- DERECHA ---- */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-        <ThemeToggle />
-
+      {/* ---- DERECHA: Toggle + Notificación + Usuario ---- */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: { xs: 1, sm: 2 },
+          mr: { xs: 1, sm: 3, md: 6 },
+        }}
+      >
+        <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <ThemeToggle />
+        </Box>
+        
         <IconButton sx={{ color: "white" }}>
           <FaBell size={20} />
         </IconButton>
-
+        
         <Box
           sx={{
             width: 40,
