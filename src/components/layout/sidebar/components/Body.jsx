@@ -3,7 +3,7 @@ import OptionButton from "./OptionButton.jsx";
 
 export default function Body({ collapsed, options }) {
   return (
-    <Stack spacing={1} px={2}>
+    <Stack spacing={2} px={2} mt={3}>
       {options.map((item, index) => (
         <OptionButton
           key={index}

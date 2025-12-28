@@ -1,23 +1,33 @@
-import { MdDashboard } from "react-icons/md";
-import { FaUsers, FaCalendarAlt } from "react-icons/fa";
-import { IoBook } from "react-icons/io5";
-import { IoMdAddCircle } from "react-icons/io";
+import {FiHome} from "react-icons/fi"; //Icono de Home
+import {LuUser} from "react-icons/lu"; //Icono de Usuario
+import { GiBookshelf } from "react-icons/gi"; //Icono de Materias
+import { LuSchool } from "react-icons/lu";  //Icono de Aulas
+import { TbCalendarCheck } from "react-icons/tb"; //Icono de Horarios
+import { LuSettings } from "react-icons/lu"; //Icono de Configuración
+import { LuCalendarCog } from "react-icons/lu"; //Icono de Generar Exámenes
+
 
 export const menuOptions = {
   admin: [
-    { label: "Dashboard", icon: <MdDashboard />, path: "/dashboard" },
-    { label: "Profesores", icon: <FaUsers />, path: "/profesores" },
-    { label: "Materias", icon: <IoBook />, path: "/materias" },
+    { label: "Dashboard", icon: <FiHome/>, path: "/dashboard" },
+    { label: "Profesores", icon: <LuUser/>, path: "/profesores" },
+    { label: "Materias", icon: <GiBookshelf/>, path: "/materias" },
+    { label: "Aulas", icon: <LuSchool/>, path: "/aulas" },
+    { label: "Horarios", icon: <TbCalendarCheck/>, path: "/horarios" },
+    { label: "Ajustes", icon: <LuSettings/>, path: "/configuracion" },
   ],
   
   jefe: [
-    { label: "Dashboard", icon: <MdDashboard />, path: "/dashboard" },
-    { label: "Generar", icon: <IoMdAddCircle />, path: "/generar" },
-    { label: "Horarios", icon: <FaCalendarAlt />, path: "/horarios" },
+    { label: "Dashboard", icon: <FiHome/>, path: "/dashboard" },
+    { label: "Generar", icon: <LuCalendarCog/>, path: "/generar" },
+    { label: "Horarios", icon: <TbCalendarCheck/>, path: "/horarios" },
+    { label: "Ajustes", icon: <LuSettings/>, path: "/configuracion" },
   ],
   
   secretaria: [
-    { label: "Dashboard", icon: <MdDashboard />, path: "/dashboard" },
-    { label: "Horarios", icon: <FaCalendarAlt />, path: "/horarios" },
+    { label: "Dashboard", icon: <FiHome/>, path: "/dashboard" },
+    { label: "Generar", icon: <LuCalendarCog/>, path: "/generar" },
+    { label: "Horarios", icon: <TbCalendarCheck/>, path: "/horarios" }, 
+    { label: "Ajustes", icon: <LuSettings/>, path: "/configuracion" },
   ],
 };

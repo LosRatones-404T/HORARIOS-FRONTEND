@@ -5,10 +5,17 @@ export default function OptionButton({ icon, label, collapsed, onClick }) {
     <Button
       onClick={onClick}
       sx={{
+        width: '100%',
         justifyContent: collapsed ? "center" : "flex-start",
         textTransform: "none",
-        padding: "10px 14px",
-        borderRadius: "10px",
+        padding: collapsed ? "8px" : "14px 38px",
+        borderRadius: "14px",
+        minHeight: collapsed ? 'auto' : '40px',
+        backgroundColor: '#4A83DD',
+        color: 'white',
+        '&:hover': {
+          backgroundColor: '#3a73c7',
+        },
       }}
       startIcon={!collapsed ? icon : null}
     >

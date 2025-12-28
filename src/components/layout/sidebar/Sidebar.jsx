@@ -1,4 +1,3 @@
-import { Box, IconButton } from "@mui/material";
 import { HiMenu } from "react-icons/hi";
 import { useState } from "react";
 import { Header, Body, Footer } from "./components";
@@ -7,30 +6,50 @@ export default function Sidebar({ menu }) {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <Box
-      sx={{
-        height: "100vh",
-        width: collapsed ? "80px" : "240px",
+    <div
+      style={{
+        height: "98vh",
+        width: collapsed ? "120px" : "385px",
         transition: "0.3s",
-        bgcolor: "#F5F5F5",
+        backgroundColor: "#F5F5F5",
         display: "flex",
         flexDirection: "column",
-        borderRight: "1px solid #ddd",
+        position: "relative",
       }}
     >
-     
-      <IconButton
-        onClick={() => setCollapsed(!collapsed)}
-        sx={{ alignSelf: collapsed ? "center" : "flex-end", m: 1 }}
-      >
-        <HiMenu />
-      </IconButton>
 
+      <div
+        style={{
+          backgroundColor: "#4A83DD", 
+          padding: "6px",
+          display: "flex",
+          justifyContent: collapsed ? "center" : "flex-end",
+        }}
+      >
+        <div
+          onClick={() => setCollapsed(!collapsed)}
+          style={{
+            cursor: "pointer",
+            padding: "6px",
+            borderRadius: "6px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            transition: "0.2s",
+          }}
+        >
+          <HiMenu style={{ color: "white", fontSize: "22px" }} />
+        </div>
+      </div>
+
+      {/* 🔹 HEADER */}
       <Header collapsed={collapsed} />
 
+      {/* 🔹 MENÚ */}
       <Body collapsed={collapsed} options={menu} />
 
+      {/* 🔹 FOOTER */}
       <Footer collapsed={collapsed} />
-    </Box>
+    </div>
   );
 }
