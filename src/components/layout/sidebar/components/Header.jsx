@@ -1,36 +1,30 @@
 import React from "react";
+import { Box, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import logo from "../../../../assets/logo-unsis.png";
 
 export default function Header({ collapsed }) {
-  const logoContainerStyles = collapsed
-    ? {
-        backgroundColor: "#A6C3FC",
-        padding: "6px",
-        borderRadius: "10px",
-      }
-    : {
-        backgroundColor: "#A6C3FC",
-        padding: "12px",
-        borderRadius: "16px",
-      };
+  const theme = useTheme();
 
   return (
-    <div
-      style={{
-        padding: collapsed ? "10px 6px" : "14px",
-        backgroundColor: "#4A83DD",
+    <Box
+      sx={{
+        p: collapsed ? "10px 6px" : "14px",
+        bgcolor: "primary.main",
         display: "flex",
         flexDirection: collapsed ? "column" : "row",
         alignItems: "center",
         justifyContent: collapsed ? "center" : "flex-start",
-        gap: collapsed ? "6px" : "12px",
-        boxShadow: "0 2px 5px rgba(0,0,0,0.15)",
+        gap: collapsed ? 0.75 : 1.5,
+        boxShadow: 1,
       }}
     >
       {/* LOGO */}
-      <div
-        style={{
-          ...logoContainerStyles,
+      <Box
+        sx={{
+          bgcolor: "primary.light",
+          p: collapsed ? 0.75 : 1.5,
+          borderRadius: collapsed ? theme.shape.borderRadius / 1.2 : theme.shape.borderRadius / 0.75,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -40,54 +34,55 @@ export default function Header({ collapsed }) {
           src={logo}
           alt="SIPLEX Logo"
           style={{
-            width: collapsed ? "36px" : "64px", 
+            width: collapsed ? "36px" : "64px",
             display: "block",
           }}
         />
-      </div>
+      </Box>
 
       {/* TEXTO */}
       {!collapsed && (
-        <div
-          style={{
+        <Box
+          sx={{
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            color: "white",
-            lineHeight: 1.1, 
+            color: "primary.contrastText",
+            lineHeight: 1.1,
           }}
         >
           {/* SIPLEX */}
-          <span
-            style={{
-              fontSize: "24px",       
-              fontWeight: "700",
-              fontFamily: "'Roboto Mono', monospace",
-              padding: "2px 8px",     
+          <Typography
+            sx={{
+              fontSize: "24px",
+              fontWeight: 700,
+              fontFamily: theme.typography.fontFamily,
+              px: 1,
               letterSpacing: "1px",
-              marginBottom: "2px",
-              justifyContent: "center",
+              mb: 0.25,
               display: "flex",
+              justifyContent: "center",
             }}
           >
             SIPLEX
-          </span>
+          </Typography>
 
           {/* SUBTÍTULO */}
-          <span
-            style={{
+          <Typography
+            variant="caption"
+            sx={{
               fontSize: "11.5px",
-              fontFamily: "'Roboto Mono', monospace",
+              fontFamily: theme.typography.fontFamily,
               whiteSpace: "nowrap",
               overflow: "hidden",
-              fontWeight: "350",      
+              fontWeight: 350,
               opacity: 0.94,
             }}
           >
             Sistema de Planificación de Exámenes
-          </span>
-        </div>
+          </Typography>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 }

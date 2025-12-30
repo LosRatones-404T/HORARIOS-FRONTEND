@@ -1,47 +1,26 @@
-import { HiMenu } from "react-icons/hi";
+import { Box } from "@mui/material";
 import { useState } from "react";
+import { useTheme } from "@mui/material/styles";
 import { Header, Body, Footer } from "./components";
 
 export default function Sidebar({ menu }) {
   const [collapsed, setCollapsed] = useState(false);
+  const theme = useTheme();
 
   return (
-    <div
-      style={{
-        height: "98vh",
+    <Box
+      sx={{
+        height: "100vh",
         width: collapsed ? "120px" : "385px",
-        transition: "0.3s",
-        backgroundColor: "#F5F5F5",
+        transition: theme.transitions.create("width", {
+          duration: theme.transitions.duration.standard,
+        }),
+        bgcolor: "background.default",
         display: "flex",
         flexDirection: "column",
         position: "relative",
       }}
     >
-
-      <div
-        style={{
-          backgroundColor: "#4A83DD", 
-          padding: "6px",
-          display: "flex",
-          justifyContent: collapsed ? "center" : "flex-end",
-        }}
-      >
-        <div
-          onClick={() => setCollapsed(!collapsed)}
-          style={{
-            cursor: "pointer",
-            padding: "6px",
-            borderRadius: "6px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            transition: "0.2s",
-          }}
-        >
-          <HiMenu style={{ color: "white", fontSize: "22px" }} />
-        </div>
-      </div>
-
       {/* 🔹 HEADER */}
       <Header collapsed={collapsed} />
 
@@ -50,6 +29,6 @@ export default function Sidebar({ menu }) {
 
       {/* 🔹 FOOTER */}
       <Footer collapsed={collapsed} />
-    </div>
+    </Box>
   );
 }

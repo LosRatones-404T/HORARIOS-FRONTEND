@@ -1,42 +1,44 @@
+import { Box, Button, Typography } from "@mui/material";
 import { LuLogOut } from "react-icons/lu";
 
 export default function Footer({ collapsed }) {
   return (
-    <div style={styles.footer}>
-      <button
-        style={{
-          ...styles.button,
-          justifyContent: collapsed ? "center" : "center",
+    <Box
+      sx={{
+        mt: "auto",
+        bgcolor: "primary.main",
+        height: "90px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderTop: 1,
+        borderColor: "rgba(255,255,255,0.35)",
+        p: 0,
+      }}
+    >
+      <Button
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1.5,
+          color: "primary.contrastText",
+          textTransform: "none",
+          fontSize: "14px",
+          justifyContent: "center",
         }}
       >
-        {!collapsed && <span style={styles.text}>Cerrar sesión</span>}
+        {!collapsed && (
+          <Typography
+            sx={{
+              whiteSpace: "nowrap",
+              fontSize: "14px",
+            }}
+          >
+            Cerrar sesión
+          </Typography>
+        )}
         <LuLogOut size={18} />
-      </button>
-    </div>
+      </Button>
+    </Box>
   );
 }
-
-const styles = {
-  footer: {
-    marginTop: "auto",
-    backgroundColor: "#4A83DD",
-    height: "90px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    borderTop: "1px solid rgba(255,255,255,0.35)",
-  },
-  button: {
-    display: "flex",
-    alignItems: "center",
-    gap: "12px",
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    fontSize: "14px",
-    color: "white",
-  },
-  text: {
-    whiteSpace: "nowrap",
-  },
-};
