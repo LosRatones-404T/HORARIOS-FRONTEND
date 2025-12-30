@@ -22,6 +22,10 @@ export const lightTheme = createTheme({
       dark: '#5A2366',
       contrastText: '#FFFFFF',
     },
+    accent: {
+      main: '#DFBCE2',
+      contrastText: '#FFFFFF',
+    },
     error: {
       main: '#9F0208',
       light: '#D9010F',
@@ -127,6 +131,10 @@ export const darkTheme = createTheme({
       main: '#AF89B7',
       light: '#C9A8CF',
       dark: '#7B318F',
+      contrastText: '#FFFFFF',
+    },
+    accent: {
+      main: '#DFBCE2',
       contrastText: '#FFFFFF',
     },
     error: {
