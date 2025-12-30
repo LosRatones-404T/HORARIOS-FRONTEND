@@ -1,9 +1,11 @@
 import React from "react";
-import { Box, IconButton, InputBase, Paper } from "@mui/material";
+import { Box, IconButton, InputBase, Paper, useTheme } from "@mui/material";
 import { FaBars, FaBell, FaUser, FaSearch } from "react-icons/fa";
 import ThemeToggle from "../ThemeToggle";
 
 const Header = () => {
+  const theme = useTheme();
+  
   return (
     <Box
       component="header"
@@ -11,56 +13,70 @@ const Header = () => {
         position: "fixed",
         top: 0,
         left: 0,
+        right: 0,
         width: "100%",
         height: "70px",
-        background: "linear-gradient(to right, white 0%, white 20%, #4A83DD 20%, #4A83DD 100%)",
+        bgcolor: "primary.main",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        px: { xs: 2, sm: 3 },
-        boxShadow: 1,
+        pl: { xs: 1, sm: 1.5, md: 2 },
+        pr: "2%",
+        boxShadow: 2,
         zIndex: 1000,
+        overflow: "visible",
       }}
     >
       {/* ---- IZQUIERDA: Ícono Menú + Buscador ---- */}
       <Box sx={{ 
         display: "flex", 
         alignItems: "center", 
-        gap: { xs: 1, sm: 2, md: 3 },
-        marginLeft: { xs: 0, sm: "50px", md: "200px", lg: "400px" },
-        flex: 1,
+        gap: { xs: 1, sm: 1.5, md: 2 },
+        flex: "0 1 auto",
+        minWidth: 0,
       }}>
         {/* Ícono del menú */}
-        <IconButton sx={{ color: "white" }}>
-          <FaBars size={24} />
+        <IconButton 
+          sx={{ 
+            color: "white",
+            flexShrink: 0,
+            p: 1.5,
+          }}
+          aria-label="Menú"
+        >
+          <FaBars size={20} />
         </IconButton>
         
         {/* Buscador */}
         <Paper
           elevation={0}
           sx={{
-            width: { xs: "150px", sm: "250px", md: "350px", lg: "400px" },
-            height: 40,
-            bgcolor: "#DFBCE2",
-            borderRadius: "10px",
+            width: { xs: "150px", sm: "250px", md: "350px", lg: "450px" },
+            maxWidth: "100%",
+            height: 42,
+            bgcolor: theme.palette.accent?.main || "#DFBCE2",
+            borderRadius: 2,
             px: 2,
+            py: 0.5,
             display: "flex",
             alignItems: "center",
+            flexShrink: 1,
           }}
         >
           <FaSearch size={16} color="white" />
           <InputBase
             placeholder="Buscar…"
             sx={{
-              ml: 1,
+              ml: 1.5,
               flex: 1,
               color: "white",
               fontSize: { xs: "0.875rem", sm: "1rem" },
               "&::placeholder": {
                 color: "white",
-                opacity: 0.8,
+                opacity: 0.9,
               },
             }}
+            inputProps={{ 'aria-label': 'Buscar' }}
           />
         </Paper>
       </Box>
@@ -70,31 +86,43 @@ const Header = () => {
         sx={{
           display: "flex",
           alignItems: "center",
-          gap: { xs: 1, sm: 2 },
-          mr: { xs: 1, sm: 3, md: 6 },
+          gap: { xs: 1, sm: 1.5, md: 2 },
+          flex: "0 0 auto",
+          ml: "auto",
+          pr: { xs: 3, sm: 5, md: 6 },
         }}
       >
         <Box sx={{ display: { xs: "none", sm: "block" } }}>
           <ThemeToggle />
         </Box>
         
-        <IconButton sx={{ color: "white" }}>
+        <IconButton 
+          sx={{ 
+            color: "white",
+            p: 1.5,
+          }}
+          aria-label="Notificaciones"
+        >
           <FaBell size={20} />
         </IconButton>
         
         <Box
           sx={{
-            width: 40,
-            height: 40,
+            width: 42,
+            height: 42,
             borderRadius: "50%",
-            bgcolor: "#DFBCE2",
+            bgcolor: theme.palette.accent?.main || "#DFBCE2",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             cursor: "pointer",
+            flexShrink: 0,
           }}
+          role="button"
+          aria-label="Perfil de usuario"
+          tabIndex={0}
         >
-          <FaUser color="white" />
+          <FaUser color="white" size={18} />
         </Box>
       </Box>
     </Box>

@@ -7,7 +7,7 @@ const ThemeToggle = () => {
   const { toggleTheme, mode } = useTheme();
 
   return (
-    <IconButton onClick={toggleTheme} color="inherit">
+    <IconButton onClick={toggleTheme} sx={{ color: 'white' }}>
       {mode === 'dark' ? <MdLightMode /> : <MdDarkMode />}
     </IconButton>
   );

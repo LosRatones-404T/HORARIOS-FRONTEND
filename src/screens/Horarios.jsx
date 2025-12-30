@@ -6,7 +6,7 @@ const Horarios = () => {
   return (
     <Box>
       <Header />
-      <Box sx={{ p: 3 }}>
+      <Box sx={{ pt: '90px', p: 3 }}>
         {/* Aquí irá el contenido de horarios */}
       </Box>
     </Box>
