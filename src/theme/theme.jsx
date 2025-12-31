@@ -22,6 +22,10 @@ export const lightTheme = createTheme({
       dark: '#5A2366',
       contrastText: '#FFFFFF',
     },
+    accent: {
+      main: '#DFBCE2',
+      contrastText: '#FFFFFF',
+    },
     error: {
       main: '#9F0208',
       light: '#D9010F',
@@ -42,7 +46,7 @@ export const lightTheme = createTheme({
     divider: '#D3D4DB',
   },
   typography: {
-    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
     h1: {
       fontSize: '2.5rem',
       fontWeight: 600,
@@ -129,6 +133,10 @@ export const darkTheme = createTheme({
       dark: '#7B318F',
       contrastText: '#FFFFFF',
     },
+    accent: {
+      main: '#DFBCE2',
+      contrastText: '#FFFFFF',
+    },
     error: {
       main: '#D9010F',
       light: '#FF4D55',
@@ -149,7 +157,7 @@ export const darkTheme = createTheme({
     divider: '#3E4E6C',
   },
   typography: {
-    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
     h1: {
       fontSize: '2.5rem',
       fontWeight: 600,
