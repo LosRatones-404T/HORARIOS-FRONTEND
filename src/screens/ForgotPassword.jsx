@@ -6,39 +6,29 @@ import {
   Button,
   Typography,
   InputAdornment,
-  IconButton,
   Container,
   Paper,
   Link,
+  Alert,
 } from '@mui/material';
-import { FaUser, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { MdEmail, MdArrowBack } from 'react-icons/md';
 import logoUnsis from '../assets/logo-unsis.png';
 import loginIlustration from '../assets/login-ilustration.png';
 
-function Login() {
+function ForgotPassword() {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    usuario: '',
-    contrasena: '',
-  });
-
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Login:', formData);
+    console.log('Recuperar contraseña para:', email);
+    setSubmitted(true);
+    // Aquí iría la lógica para enviar el correo de recuperación
   };
 
-  const handleForgotPassword = () => {
-    navigate('/forgot-password');
+  const handleBackToLogin = () => {
+    navigate('/login');
   };
 
   return (
@@ -74,6 +64,23 @@ function Login() {
               bgcolor: 'background.default',
             }}
           >
+            {/* Botón de regresar */}
+            <Box sx={{ mb: 2 }}>
+              <Button
+                startIcon={<MdArrowBack />}
+                onClick={handleBackToLogin}
+                sx={{
+                  color: 'text.secondary',
+                  textTransform: 'none',
+                  '&:hover': {
+                    bgcolor: 'action.hover',
+                  },
+                }}
+              >
+                Volver al inicio de sesión
+              </Button>
+            </Box>
+
             {/* Logo y título */}
             <Box sx={{ textAlign: 'center', mb: 3 }}>
               <Box
@@ -81,18 +88,23 @@ function Login() {
                 src={logoUnsis}
                 alt="Logo UNSIS"
                 sx={{
-                  height: 120,
+                  height: 100,
                   mb: 1.5,
                 }}
               />
               <Typography variant="h5" fontWeight="bold" gutterBottom>
-                UNSIS
+                ¿Olvidaste algo?
               </Typography>
-              <Typography variant="caption" color="text.secondary" display="block" fontWeight="bold">
-                Universidad de la Sierra Sur
-              </Typography>
-              <Typography variant="caption" color="text.secondary" display="block" fontWeight="Bold">
-                Miahuatlán de Porfirio Díaz, Oaxaca
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  maxWidth: 350,
+                  mx: 'auto',
+                  mb: 2,
+                }}
+              >
+                Ingresa tu correo para recibir instrucciones para restablecer tu contraseña
               </Typography>
             </Box>
 
@@ -107,89 +119,51 @@ function Login() {
                 width: '100%',
               }}
             >
-              <Typography variant="body2" sx={{ mb: 0.5, fontWeight: 500 }}>
-                Usuario
-              </Typography>
-              <TextField
-                fullWidth
-                name="usuario"
-                placeholder="Ingresa tu usuario"
-                value={formData.usuario}
-                onChange={handleChange}
-                size="small"
-                sx={{
-                  mb: 2,
-                  '& .MuiOutlinedInput-root': {
-                    bgcolor: 'primary.light',
-                    borderRadius: theme => theme.shape.borderRadius * 3,
-                  },
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <FaUser color="#666" />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-
-              <Typography variant="body2" sx={{ mb: 0.5, fontWeight: 500 }}>
-                Contraseña
-              </Typography>
-              <TextField
-                fullWidth
-                name="contrasena"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Ingresa tu contraseña"
-                value={formData.contrasena}
-                onChange={handleChange}
-                size="small"
-                sx={{
-                  mb: 1.5,
-                  '& .MuiOutlinedInput-root': {
-                    bgcolor: 'primary.light',
-                    borderRadius: theme => theme.shape.borderRadius * 3,
-                  },
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <FaLock color="#666" />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={handleClickShowPassword} edge="end" size="small">
-                        {showPassword ? <FaEyeSlash /> : <FaEye />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-
-              <Box sx={{ textAlign: 'right', mb: 2 }}>
-                <Link
-                  component="button"
-                  type="button"
-                  onClick={handleForgotPassword}
-                  variant="caption"
+              {submitted && (
+                <Alert
+                  severity="success"
                   sx={{
-                    color: 'text.secondary',
-                    textDecoration: 'none',
-                    '&:hover': {
-                      color: 'primary.main',
-                      textDecoration: 'underline',
-                    },
+                    mb: 2,
+                    borderRadius: 2,
                   }}
                 >
-                  ¿Olvidaste la contraseña?
-                </Link>
-              </Box>
+                  Se han enviado las instrucciones a tu correo electrónico
+                </Alert>
+              )}
+
+              <Typography variant="body2" sx={{ mb: 0.5, fontWeight: 500 }}>
+                Correo
+              </Typography>
+              <TextField
+                fullWidth
+                name="email"
+                type="email"
+                placeholder="ejemplo@correo.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                size="small"
+                required
+                sx={{
+                  mb: 3,
+                  '& .MuiOutlinedInput-root': {
+                    bgcolor: 'primary.light',
+                    borderRadius: theme => theme.shape.borderRadius * 3,
+                  },
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <MdEmail color="#666" size={20} />
+                    </InputAdornment>
+                  ),
+                }}
+              />
 
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
+                disabled={!email || submitted}
                 sx={{
                   py: 1.2,
                   bgcolor: 'tertiary.main',
@@ -201,8 +175,30 @@ function Login() {
                   fontWeight: 600,
                 }}
               >
-                Iniciar Sesión
+                Confirmar
               </Button>
+
+              <Box sx={{ textAlign: 'center', mt: 3 }}>
+                <Typography variant="caption" color="text.secondary">
+                  ¿Recordaste tu contraseña?{' '}
+                  <Link
+                    component="button"
+                    type="button"
+                    onClick={handleBackToLogin}
+                    variant="caption"
+                    sx={{
+                      color: 'primary.main',
+                      textDecoration: 'none',
+                      fontWeight: 600,
+                      '&:hover': {
+                        textDecoration: 'underline',
+                      },
+                    }}
+                  >
+                    Iniciar sesión
+                  </Link>
+                </Typography>
+              </Box>
             </Box>
           </Box>
 
@@ -235,4 +231,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default ForgotPassword;
