@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
 import {
   Box,
   TextField,
@@ -17,6 +18,7 @@ import loginIlustration from '../assets/login-ilustration.png';
 
 function Login() {
   const navigate = useNavigate();
+  const theme = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     usuario: '',
@@ -49,6 +51,7 @@ function Login() {
         alignItems: 'center',
         justifyContent: 'center',
         bgcolor: 'primary.main',
+        py: { xs: 3, sm: 4 },
       }}
     >
       <Container maxWidth="md">
@@ -56,7 +59,7 @@ function Login() {
           elevation={8}
           sx={{
             display: 'flex',
-            borderRadius: 2,
+            borderRadius: { xs: 1, sm: 2 },
             overflow: 'hidden',
             maxWidth: 1000,
             margin: '0 auto',
@@ -66,8 +69,8 @@ function Login() {
           <Box
             sx={{
               flex: 1.2,
-              p: 4,
-              px: 6,
+              p: { xs: 3, sm: 4, md: 4 },
+              px: { xs: 3, sm: 4, md: 6 },
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
@@ -75,23 +78,23 @@ function Login() {
             }}
           >
             {/* Logo y título */}
-            <Box sx={{ textAlign: 'center', mb: 3 }}>
+            <Box sx={{ textAlign: 'center', mb: { xs: 2, sm: 3 } }}>
               <Box
                 component="img"
                 src={logoUnsis}
                 alt="Logo UNSIS"
                 sx={{
-                  height: 120,
+                  height: { xs: 80, sm: 100, md: 120 },
                   mb: 1.5,
                 }}
               />
-              <Typography variant="h5" fontWeight="bold" gutterBottom>
+              <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
                 UNSIS
               </Typography>
-              <Typography variant="caption" color="text.secondary" display="block" fontWeight="bold">
+              <Typography variant="caption" color="text.secondary" display="block" fontWeight="bold" sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
                 Universidad de la Sierra Sur
               </Typography>
-              <Typography variant="caption" color="text.secondary" display="block" fontWeight="Bold">
+              <Typography variant="caption" color="text.secondary" display="block" fontWeight="Bold" sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
                 Miahuatlán de Porfirio Díaz, Oaxaca
               </Typography>
             </Box>
@@ -107,7 +110,7 @@ function Login() {
                 width: '100%',
               }}
             >
-              <Typography variant="body2" sx={{ mb: 0.5, fontWeight: 500 }}>
+              <Typography variant="body2" sx={{ mb: 0.5, fontWeight: 500, fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                 Usuario
               </Typography>
               <TextField
@@ -118,22 +121,23 @@ function Login() {
                 onChange={handleChange}
                 size="small"
                 sx={{
-                  mb: 2,
+                  mb: { xs: 1.5, sm: 2 },
                   '& .MuiOutlinedInput-root': {
-                    bgcolor: 'primary.light',
+                    bgcolor: 'background.paper',
                     borderRadius: theme => theme.shape.borderRadius * 3,
+                    fontSize: { xs: '0.875rem', sm: '1rem' },
                   },
                 }}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <FaUser color="#666" />
+                      <FaUser color="#666" size={14} />
                     </InputAdornment>
                   ),
                 }}
               />
 
-              <Typography variant="body2" sx={{ mb: 0.5, fontWeight: 500 }}>
+              <Typography variant="body2" sx={{ mb: 0.5, fontWeight: 500, fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                 Contraseña
               </Typography>
               <TextField
@@ -145,29 +149,30 @@ function Login() {
                 onChange={handleChange}
                 size="small"
                 sx={{
-                  mb: 1.5,
+                  mb: { xs: 1, sm: 1.5 },
                   '& .MuiOutlinedInput-root': {
-                    bgcolor: 'primary.light',
+                    bgcolor: 'background.paper',
                     borderRadius: theme => theme.shape.borderRadius * 3,
+                    fontSize: { xs: '0.875rem', sm: '1rem' },
                   },
                 }}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <FaLock color="#666" />
+                      <FaLock color="#666" size={14} />
                     </InputAdornment>
                   ),
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton onClick={handleClickShowPassword} edge="end" size="small">
-                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
                       </IconButton>
                     </InputAdornment>
                   ),
                 }}
               />
 
-              <Box sx={{ textAlign: 'right', mb: 2 }}>
+              <Box sx={{ textAlign: 'right', mb: { xs: 1.5, sm: 2 } }}>
                 <Link
                   component="button"
                   type="button"
@@ -176,6 +181,7 @@ function Login() {
                   sx={{
                     color: 'text.secondary',
                     textDecoration: 'none',
+                    fontSize: { xs: '0.7rem', sm: '0.75rem' },
                     '&:hover': {
                       color: 'primary.main',
                       textDecoration: 'underline',
@@ -191,14 +197,15 @@ function Login() {
                 fullWidth
                 variant="contained"
                 sx={{
-                  py: 1.2,
-                  bgcolor: 'tertiary.main',
+                  py: { xs: 1, sm: 1.2 },
+                  bgcolor: theme.palette.tertiary.main,
                   '&:hover': {
-                    bgcolor: 'tertiary.dark',
+                    bgcolor: theme.palette.tertiary.dark,
                   },
-                  borderRadius: theme => theme.shape.borderRadius * 2,
+                  borderRadius: theme.shape.borderRadius * 2,
                   textTransform: 'uppercase',
                   fontWeight: 600,
+                  fontSize: { xs: '0.8rem', sm: '0.875rem' },
                 }}
               >
                 Iniciar Sesión

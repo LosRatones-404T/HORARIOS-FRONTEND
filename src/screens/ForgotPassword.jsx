@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
 import {
   Box,
   TextField,
@@ -17,6 +18,7 @@ import loginIlustration from '../assets/login-ilustration.png';
 
 function ForgotPassword() {
   const navigate = useNavigate();
+  const theme = useTheme();
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
@@ -39,6 +41,7 @@ function ForgotPassword() {
         alignItems: 'center',
         justifyContent: 'center',
         bgcolor: 'primary.main',
+        py: { xs: 3, sm: 4 },
       }}
     >
       <Container maxWidth="md">
@@ -46,7 +49,7 @@ function ForgotPassword() {
           elevation={8}
           sx={{
             display: 'flex',
-            borderRadius: 2,
+            borderRadius: { xs: 1, sm: 2 },
             overflow: 'hidden',
             maxWidth: 1000,
             margin: '0 auto',
@@ -56,8 +59,8 @@ function ForgotPassword() {
           <Box
             sx={{
               flex: 1.2,
-              p: 4,
-              px: 6,
+              p: { xs: 3, sm: 4, md: 4 },
+              px: { xs: 3, sm: 4, md: 6 },
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
@@ -65,13 +68,15 @@ function ForgotPassword() {
             }}
           >
             {/* Botón de regresar */}
-            <Box sx={{ mb: 2 }}>
+            <Box sx={{ mb: { xs: 3, sm: 4 }, mt: { xs: -1, sm: -2 } }}>
               <Button
-                startIcon={<MdArrowBack />}
+                startIcon={<MdArrowBack size={16} />}
                 onClick={handleBackToLogin}
                 sx={{
                   color: 'text.secondary',
                   textTransform: 'none',
+                  fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                  p: { xs: 0.5, sm: 1 },
                   '&:hover': {
                     bgcolor: 'action.hover',
                   },
@@ -82,17 +87,17 @@ function ForgotPassword() {
             </Box>
 
             {/* Logo y título */}
-            <Box sx={{ textAlign: 'center', mb: 3 }}>
+            <Box sx={{ textAlign: 'center', mb: { xs: 2, sm: 3 } }}>
               <Box
                 component="img"
                 src={logoUnsis}
                 alt="Logo UNSIS"
                 sx={{
-                  height: 100,
+                  height: { xs: 70, sm: 90, md: 100 },
                   mb: 1.5,
                 }}
               />
-              <Typography variant="h5" fontWeight="bold" gutterBottom>
+              <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
                 ¿Olvidaste algo?
               </Typography>
               <Typography
@@ -102,6 +107,8 @@ function ForgotPassword() {
                   maxWidth: 350,
                   mx: 'auto',
                   mb: 2,
+                  fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                  px: { xs: 1, sm: 0 },
                 }}
               >
                 Ingresa tu correo para recibir instrucciones para restablecer tu contraseña
@@ -124,14 +131,15 @@ function ForgotPassword() {
                   severity="success"
                   sx={{
                     mb: 2,
-                    borderRadius: 2,
+                    borderRadius: { xs: 1, sm: 2 },
+                    fontSize: { xs: '0.8rem', sm: '0.875rem' },
                   }}
                 >
                   Se han enviado las instrucciones a tu correo electrónico
                 </Alert>
               )}
 
-              <Typography variant="body2" sx={{ mb: 0.5, fontWeight: 500 }}>
+              <Typography variant="body2" sx={{ mb: 0.5, fontWeight: 500, fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                 Correo
               </Typography>
               <TextField
@@ -144,16 +152,17 @@ function ForgotPassword() {
                 size="small"
                 required
                 sx={{
-                  mb: 3,
+                  mb: { xs: 2, sm: 3 },
                   '& .MuiOutlinedInput-root': {
-                    bgcolor: 'primary.light',
+                    bgcolor: 'background.paper',
                     borderRadius: theme => theme.shape.borderRadius * 3,
+                    fontSize: { xs: '0.875rem', sm: '1rem' },
                   },
                 }}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <MdEmail color="#666" size={20} />
+                      <MdEmail color="#666" size={18} />
                     </InputAdornment>
                   ),
                 }}
@@ -165,21 +174,22 @@ function ForgotPassword() {
                 variant="contained"
                 disabled={!email || submitted}
                 sx={{
-                  py: 1.2,
-                  bgcolor: 'tertiary.main',
+                  py: { xs: 1, sm: 1.2 },
+                  bgcolor: theme.palette.tertiary.main,
                   '&:hover': {
-                    bgcolor: 'tertiary.dark',
+                    bgcolor: theme.palette.tertiary.dark,
                   },
-                  borderRadius: theme => theme.shape.borderRadius * 2,
+                  borderRadius: theme.shape.borderRadius * 2,
                   textTransform: 'uppercase',
                   fontWeight: 600,
+                  fontSize: { xs: '0.8rem', sm: '0.875rem' },
                 }}
               >
                 Confirmar
               </Button>
 
-              <Box sx={{ textAlign: 'center', mt: 3 }}>
-                <Typography variant="caption" color="text.secondary">
+              <Box sx={{ textAlign: 'center', mt: { xs: 2, sm: 3 } }}>
+                <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
                   ¿Recordaste tu contraseña?{' '}
                   <Link
                     component="button"
@@ -190,6 +200,7 @@ function ForgotPassword() {
                       color: 'primary.main',
                       textDecoration: 'none',
                       fontWeight: 600,
+                      fontSize: { xs: '0.7rem', sm: '0.75rem' },
                       '&:hover': {
                         textDecoration: 'underline',
                       },

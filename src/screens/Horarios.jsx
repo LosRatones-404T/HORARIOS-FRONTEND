@@ -1,15 +1,18 @@
-import React from 'react';
-import { Box } from '@mui/material';
-import Header from '../components/layout/Header';
+import { Box, Typography } from '@mui/material';
+import MainLayout from '../components/layout/MainLayout';
 
 const Horarios = () => {
   return (
-    <Box>
-      <Header />
-      <Box sx={{ pt: '90px', p: 3 }}>
-        {/* Aquí irá el contenido de horarios */}
+    <MainLayout showSidebar={true} menuType="admin">
+      <Box>
+        <Typography variant="h4" gutterBottom>
+          Gestión de Horarios
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Aquí irá el contenido de horarios
+        </Typography>
       </Box>
-    </Box>
+    </MainLayout>
   );
 };
 

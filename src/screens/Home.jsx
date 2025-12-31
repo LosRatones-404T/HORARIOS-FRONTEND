@@ -1,15 +1,19 @@
-import { Sidebar, menuOptions } from "../components/layout/sidebar";
-import { Box } from "@mui/material";
+import { Box, Typography } from '@mui/material';
+import MainLayout from '../components/layout/MainLayout';
 
 function Home() {
-    return (
-        <Box sx={{ display: "flex" }}>
-            <Sidebar menu={menuOptions.admin} />
-            <Box sx={{ flexGrow: 1, p: 3 }}>
-                <h1>Home Page</h1>
-            </Box>
-        </Box>
-    );
+  return (
+    <MainLayout showSidebar={true} menuType="admin">
+      <Box>
+        <Typography variant="h4" gutterBottom>
+          Página Principal
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Bienvenido al sistema de planificación de exámenes
+        </Typography>
+      </Box>
+    </MainLayout>
+  );
 }
 
 export default Home;

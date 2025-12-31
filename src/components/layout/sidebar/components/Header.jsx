@@ -9,13 +9,13 @@ export default function Header({ collapsed }) {
   return (
     <Box
       sx={{
-        p: collapsed ? "10px 6px" : "14px",
+        p: collapsed ? { xs: '8px 4px', sm: '10px 6px' } : { xs: '12px', sm: '14px' },
         bgcolor: "primary.main",
         display: "flex",
         flexDirection: collapsed ? "column" : "row",
         alignItems: "center",
         justifyContent: collapsed ? "center" : "flex-start",
-        gap: collapsed ? 0.75 : 1.5,
+        gap: collapsed ? 0.75 : { xs: 1, sm: 1.5 },
         boxShadow: 1,
       }}
     >
@@ -23,7 +23,7 @@ export default function Header({ collapsed }) {
       <Box
         sx={{
           bgcolor: "primary.light",
-          p: collapsed ? 0.75 : 1.5,
+          p: collapsed ? { xs: 0.5, sm: 0.75 } : { xs: 1, sm: 1.5 },
           borderRadius: collapsed ? theme.shape.borderRadius / 1.2 : theme.shape.borderRadius / 0.75,
           display: "flex",
           justifyContent: "center",
@@ -47,7 +47,7 @@ export default function Header({ collapsed }) {
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            color: "primary.contrastText",
+            color: theme.palette.mode === 'light' ? '#FFFFFF' : '#2A3344',
             lineHeight: 1.1,
           }}
         >
@@ -62,6 +62,7 @@ export default function Header({ collapsed }) {
               mb: 0.25,
               display: "flex",
               justifyContent: "center",
+              color: 'inherit',
             }}
           >
             SIPLEX
@@ -77,6 +78,7 @@ export default function Header({ collapsed }) {
               overflow: "hidden",
               fontWeight: 350,
               opacity: 0.94,
+              color: 'inherit',
             }}
           >
             Sistema de Planificación de Exámenes

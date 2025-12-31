@@ -3,7 +3,7 @@ import { Box, IconButton, InputBase, Paper, useTheme } from "@mui/material";
 import { FaBars, FaBell, FaUser, FaSearch } from "react-icons/fa";
 import ThemeToggle from "../ThemeToggle";
 
-const Header = () => {
+const Header = ({ sidebarWidth = '0px', onToggleSidebar, showSidebar = false }) => {
   const theme = useTheme();
   
   return (
@@ -12,9 +12,12 @@ const Header = () => {
       sx={{
         position: "fixed",
         top: 0,
-        left: 0,
+        left: sidebarWidth,
         right: 0,
-        width: "100%",
+        width: `calc(100% - ${sidebarWidth})`,
+        transition: theme.transitions.create(['left', 'width'], {
+          duration: theme.transitions.duration.standard,
+        }),
         height: "70px",
         bgcolor: "primary.main",
         display: "flex",
@@ -38,42 +41,44 @@ const Header = () => {
         {/* Ícono del menú */}
         <IconButton 
           sx={{ 
-            color: "white",
+            color: theme.palette.mode === 'light' ? '#FFFFFF' : '#2A3344',
             flexShrink: 0,
-            p: 1.5,
+            p: { xs: 1, sm: 1.5 },
+            display: showSidebar ? 'flex' : 'none',
           }}
           aria-label="Menú"
+          onClick={onToggleSidebar}
         >
-          <FaBars size={20} />
+          <FaBars size={18} />
         </IconButton>
         
         {/* Buscador */}
         <Paper
           elevation={0}
           sx={{
-            width: { xs: "150px", sm: "250px", md: "350px", lg: "450px" },
-            maxWidth: "100%",
-            height: 42,
-            bgcolor: theme.palette.accent?.main || "#DFBCE2",
-            borderRadius: 2,
-            px: 2,
+            width: '100%',
+            maxWidth: { xs: '120px', sm: '200px', md: '300px', lg: '400px' },
+            height: { xs: 38, sm: 42 },
+            bgcolor: theme.palette.accent?.main || '#DFBCE2',
+            borderRadius: theme.shape.borderRadius / 6,
+            px: { xs: 1.5, sm: 2 },
             py: 0.5,
             display: "flex",
             alignItems: "center",
             flexShrink: 1,
           }}
         >
-          <FaSearch size={16} color="white" />
+          <FaSearch size={14} style={{ color: theme.palette.mode === 'light' ? '#FFFFFF' : '#2A3344' }} />
           <InputBase
             placeholder="Buscar…"
             sx={{
-              ml: 1.5,
+              ml: { xs: 1, sm: 1.5 },
               flex: 1,
-              color: "white",
-              fontSize: { xs: "0.875rem", sm: "1rem" },
+              color: theme.palette.mode === 'light' ? '#FFFFFF' : '#2A3344',
+              fontSize: { xs: "0.8rem", sm: "0.875rem", md: "1rem" },
               "&::placeholder": {
-                color: "white",
-                opacity: 0.9,
+                color: theme.palette.mode === 'light' ? 'rgba(255,255,255,0.7)' : 'rgba(42,51,68,0.7)',
+                opacity: 1,
               },
             }}
             inputProps={{ 'aria-label': 'Buscar' }}
@@ -98,20 +103,20 @@ const Header = () => {
         
         <IconButton 
           sx={{ 
-            color: "white",
-            p: 1.5,
+            color: theme.palette.mode === 'light' ? '#FFFFFF' : '#2A3344',
+            p: { xs: 1, sm: 1.5 },
           }}
           aria-label="Notificaciones"
         >
-          <FaBell size={20} />
+          <FaBell size={18} />
         </IconButton>
         
         <Box
           sx={{
-            width: 42,
-            height: 42,
+            width: { xs: 36, sm: 42 },
+            height: { xs: 36, sm: 42 },
             borderRadius: "50%",
-            bgcolor: theme.palette.accent?.main || "#DFBCE2",
+            bgcolor: theme.palette.accent?.main || '#DFBCE2',
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -122,7 +127,7 @@ const Header = () => {
           aria-label="Perfil de usuario"
           tabIndex={0}
         >
-          <FaUser color="white" size={18} />
+          <FaUser color={theme.palette.mode === 'light' ? '#FFFFFF' : '#2A3344'} size={16} />
         </Box>
       </Box>
     </Box>

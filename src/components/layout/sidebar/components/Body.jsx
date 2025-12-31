@@ -12,7 +12,12 @@ export default function Body({ collapsed, options }) {
         overflow: "auto",
       }}
     >
-      <Stack spacing={2} px={2} mt={3} pb={3}>
+      <Stack 
+        spacing={{ xs: 1.5, sm: 2 }} 
+        px={{ xs: 1.5, sm: 2 }} 
+        mt={{ xs: 2, sm: 3 }} 
+        pb={{ xs: 2, sm: 3 }}
+      >
         {options.map((item, index) => (
           <OptionButton
             key={index}
