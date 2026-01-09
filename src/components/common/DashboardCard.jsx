@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { Card, CardActionArea, CardContent, Typography, useTheme } from '@mui/material';
 
 /**
  * Componente de tarjeta para el dashboard
@@ -8,37 +9,72 @@ const DashboardCard = ({
   title, 
   value, 
   onClick,
-  className = '' 
+  sx = {} 
 }) => {
-  const CardWrapper = onClick ? 'button' : 'div';
+  const theme = useTheme();
   
-  return (
-    <CardWrapper
-      onClick={onClick}
-      className={`
-        bg-blue-500 
-        rounded-2xl 
-        p-6 
-        shadow-md 
-        text-white 
-        text-center
-        min-h-[140px]
-        flex 
-        flex-col 
-        items-center 
-        justify-center
-        gap-3
-        ${onClick ? 'hover:bg-blue-600 cursor-pointer transition-colors' : ''}
-        ${className}
-      `}
+  const cardContent = (
+    <CardContent
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 1.5,
+        minHeight: 140,
+        textAlign: 'center',
+      }}
     >
-      <h3 className="text-base font-medium leading-tight">
+      <Typography 
+        variant="body1" 
+        sx={{ 
+          fontWeight: 500,
+          lineHeight: 1.3,
+          color: theme.palette.primary.contrastText,
+        }}
+      >
         {title}
-      </h3>
-      <p className="text-4xl font-bold">
+      </Typography>
+      <Typography 
+        variant="h3" 
+        sx={{ 
+          fontWeight: 700,
+          color: theme.palette.primary.contrastText,
+        }}
+      >
         {value}
-      </p>
-    </CardWrapper>
+      </Typography>
+    </CardContent>
+  );
+
+  if (onClick) {
+    return (
+      <Card
+        sx={{
+          bgcolor: theme.palette.primary.main,
+          borderRadius: 3,
+          boxShadow: 2,
+          ...sx,
+        }}
+      >
+        <CardActionArea onClick={onClick}>
+          {cardContent}
+        </CardActionArea>
+      </Card>
+    );
+  }
+
+  return (
+    <Card
+      sx={{
+        bgcolor: theme.palette.primary.main,
+        borderRadius: 3,
+        boxShadow: 2,
+        ...sx,
+      }}
+    >
+      {cardContent}
+    </Card>
   );
 };
 
@@ -46,7 +82,7 @@ DashboardCard.propTypes = {
   title: PropTypes.string.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   onClick: PropTypes.func,
-  className: PropTypes.string,
+  sx: PropTypes.object,
 };
 
 export default DashboardCard;

@@ -1,3 +1,4 @@
+import { Box, Grid } from '@mui/material';
 import MainLayout from '../components/layout/MainLayout';
 import { 
   DashboardCard, 
@@ -51,17 +52,18 @@ function Home() {
 
   return (
     <MainLayout showSidebar={true} menuType="admin">
-      <div className="space-y-6">
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         {/* Grid de tarjetas de estadísticas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Grid container spacing={2}>
           {dashboardStats.map((stat, index) => (
-            <DashboardCard
-              key={index}
-              title={stat.title}
-              value={stat.value}
-            />
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <DashboardCard
+                title={stat.title}
+                value={stat.value}
+              />
+            </Grid>
           ))}
-        </div>
+        </Grid>
 
         {/* Tarjeta principal de gestión de usuarios */}
         <DashboardMainCard
@@ -72,7 +74,7 @@ function Home() {
           onActionClick={handleAddUser}
           data={users}
         />
-      </div>
+      </Box>
     </MainLayout>
   );
 }

@@ -1,7 +1,18 @@
 import PropTypes from 'prop-types';
+import { 
+  Box, 
+  Typography, 
+  Button, 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableContainer, 
+  TableHead, 
+  TableRow,
+  useTheme 
+} from '@mui/material';
 import { IoAdd } from 'react-icons/io5';
 import UserListItem from './UserListItem';
-import Button from './Button';
 
 /**
  * Componente principal de tarjeta del dashboard
@@ -14,11 +25,13 @@ const DashboardMainCard = ({
   actionButton,
   data = [],
   onActionClick,
-  className = ''
+  sx = {}
 }) => {
+  const theme = useTheme();
+
   // Renderiza la tarjeta de Gestión de Usuarios (Administrador)
   const renderUserManagement = () => (
-    <div className="space-y-3">
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
       {data.map((user, index) => (
         <UserListItem
           key={index}
@@ -29,44 +42,90 @@ const DashboardMainCard = ({
           onMenuClick={() => user.onMenuClick?.(user)}
         />
       ))}
-    </div>
+    </Box>
   );
 
   // Renderiza tabla de horarios (Secretaria y Jefe de Carrera)
   const renderScheduleTable = () => (
-    <div className="overflow-x-auto">
-      <table className="w-full text-white">
-        <thead>
-          <tr className="text-left text-sm font-medium border-b border-blue-400">
-            <th className="pb-3 px-2">Departamento</th>
-            <th className="pb-3 px-2">Autor</th>
-            <th className="pb-3 px-2">Periodo</th>
-            <th className="pb-3 px-2">Fecha</th>
-            <th className="pb-3 px-2">Estado</th>
-            <th className="pb-3 px-2">Acción</th>
-          </tr>
-        </thead>
-        <tbody>
+    <TableContainer>
+      <Table>
+        <TableHead>
+          <TableRow
+            sx={{
+              borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'rgba(255,255,255,0.3)' : theme.palette.divider}`,
+            }}
+          >
+            <TableCell sx={{ color: theme.palette.primary.contrastText, fontWeight: 500, pb: 2 }}>
+              Departamento
+            </TableCell>
+            <TableCell sx={{ color: theme.palette.primary.contrastText, fontWeight: 500, pb: 2 }}>
+              Autor
+            </TableCell>
+            <TableCell sx={{ color: theme.palette.primary.contrastText, fontWeight: 500, pb: 2 }}>
+              Periodo
+            </TableCell>
+            <TableCell sx={{ color: theme.palette.primary.contrastText, fontWeight: 500, pb: 2 }}>
+              Fecha
+            </TableCell>
+            <TableCell sx={{ color: theme.palette.primary.contrastText, fontWeight: 500, pb: 2 }}>
+              Estado
+            </TableCell>
+            <TableCell sx={{ color: theme.palette.primary.contrastText, fontWeight: 500, pb: 2 }}>
+              Acción
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {data.map((item, index) => (
-            <tr key={index} className="border-b border-blue-400/50 hover:bg-blue-600/30 transition-colors">
-              <td className="py-3 px-2 text-sm">{item.departamento}</td>
-              <td className="py-3 px-2 text-sm">{item.autor}</td>
-              <td className="py-3 px-2 text-sm">{item.periodo}</td>
-              <td className="py-3 px-2 text-sm">{item.fecha}</td>
-              <td className="py-3 px-2 text-sm">{item.estado}</td>
-              <td className="py-3 px-2">
-                <button
+            <TableRow
+              key={index}
+              sx={{
+                borderBottom: `1px solid ${theme.palette.mode === 'light' ? 'rgba(255,255,255,0.2)' : 'rgba(62,78,108,0.5)'}`,
+                '&:hover': {
+                  bgcolor: theme.palette.mode === 'light' ? 'rgba(255,255,255,0.1)' : 'rgba(166,195,252,0.1)',
+                },
+              }}
+            >
+              <TableCell sx={{ color: theme.palette.primary.contrastText, fontSize: '0.875rem' }}>
+                {item.departamento}
+              </TableCell>
+              <TableCell sx={{ color: theme.palette.primary.contrastText, fontSize: '0.875rem' }}>
+                {item.autor}
+              </TableCell>
+              <TableCell sx={{ color: theme.palette.primary.contrastText, fontSize: '0.875rem' }}>
+                {item.periodo}
+              </TableCell>
+              <TableCell sx={{ color: theme.palette.primary.contrastText, fontSize: '0.875rem' }}>
+                {item.fecha}
+              </TableCell>
+              <TableCell sx={{ color: theme.palette.primary.contrastText, fontSize: '0.875rem' }}>
+                {item.estado}
+              </TableCell>
+              <TableCell>
+                <Button
                   onClick={() => item.onAction?.(item)}
-                  className="bg-blue-200 text-blue-900 px-4 py-1.5 rounded-lg hover:bg-blue-300 transition-colors text-sm font-medium"
+                  sx={{
+                    bgcolor: theme.palette.mode === 'light' ? theme.palette.primary.light : theme.palette.background.paper,
+                    color: theme.palette.mode === 'light' ? theme.palette.primary.dark : theme.palette.text.primary,
+                    px: 2,
+                    py: 0.75,
+                    borderRadius: 2,
+                    fontSize: '0.875rem',
+                    fontWeight: 500,
+                    textTransform: 'none',
+                    '&:hover': {
+                      bgcolor: theme.palette.mode === 'light' ? '#8FA9E8' : theme.palette.background.secondary,
+                    },
+                  }}
                 >
                   Revisar
-                </button>
-              </td>
-            </tr>
+                </Button>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 
   // Determina qué contenido mostrar según el tipo de usuario
@@ -83,30 +142,67 @@ const DashboardMainCard = ({
   };
 
   return (
-    <div className={`bg-blue-500 rounded-2xl p-6 shadow-lg ${className}`}>
+    <Box
+      sx={{
+        bgcolor: theme.palette.primary.main,
+        borderRadius: 3,
+        p: 3,
+        boxShadow: 3,
+        ...sx,
+      }}
+    >
       {/* Header */}
-      <div className="flex items-start justify-between mb-6">
-        <div className="text-white">
-          <h2 className="text-xl font-bold mb-1">{title}</h2>
-          <p className="text-blue-100 text-sm">{subtitle}</p>
-        </div>
+      <Box sx={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', mb: 3 }}>
+        <Box>
+          <Typography 
+            variant="h5" 
+            sx={{ 
+              fontWeight: 700,
+              color: theme.palette.primary.contrastText,
+              mb: 0.5,
+            }}
+          >
+            {title}
+          </Typography>
+          {subtitle && (
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                color: theme.palette.mode === 'light' ? 'rgba(255,255,255,0.8)' : theme.palette.text.secondary,
+              }}
+            >
+              {subtitle}
+            </Typography>
+          )}
+        </Box>
         
         {actionButton && (
-          <button
+          <Button
             onClick={onActionClick}
-            className="flex items-center gap-2 bg-pink-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-pink-400 transition-colors font-medium"
+            startIcon={<IoAdd size={18} />}
+            sx={{
+              bgcolor: theme.palette.accent.main,
+              color: theme.palette.mode === 'light' ? theme.palette.text.primary : theme.palette.text.primary,
+              px: 2,
+              py: 1,
+              borderRadius: 2,
+              fontWeight: 500,
+              textTransform: 'none',
+              '&:hover': {
+                bgcolor: theme.palette.mode === 'light' ? '#E8C5EB' : theme.palette.tertiary.light,
+              },
+            }}
           >
-            <IoAdd size={18} />
             {actionButton}
-          </button>
+          </Button>
         )}
-      </div>
+      </Box>
 
       {/* Content */}
-      <div className="mt-4">
+      <Box sx={{ mt: 2 }}>
         {renderContent()}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
@@ -117,7 +213,7 @@ DashboardMainCard.propTypes = {
   actionButton: PropTypes.string,
   data: PropTypes.array,
   onActionClick: PropTypes.func,
-  className: PropTypes.string,
+  sx: PropTypes.object,
 };
 
 export default DashboardMainCard;

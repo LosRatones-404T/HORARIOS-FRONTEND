@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { Box, Typography, Avatar, IconButton, useTheme } from '@mui/material';
 import { FiUser } from 'react-icons/fi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 
@@ -12,41 +13,89 @@ const UserListItem = ({
   rol,
   avatar,
   onMenuClick,
-  className = ''
+  sx = {}
 }) => {
+  const theme = useTheme();
+
   return (
-    <div className={`bg-blue-500 rounded-lg p-4 flex items-center justify-between hover:bg-blue-600 transition-colors ${className}`}>
-      <div className="flex items-center gap-4 flex-1">
+    <Box
+      sx={{
+        bgcolor: theme.palette.primary.main,
+        borderRadius: 2,
+        p: 2,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        transition: 'background-color 0.2s',
+        '&:hover': {
+          bgcolor: theme.palette.primary.light,
+        },
+        ...sx,
+      }}
+    >
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
         {/* Avatar */}
-        <div className="w-10 h-10 bg-blue-300 rounded-full flex items-center justify-center text-white">
-          {avatar ? (
-            <img src={avatar} alt={nombre} className="w-full h-full rounded-full object-cover" />
-          ) : (
-            <FiUser size={20} />
-          )}
-        </div>
+        <Avatar
+          src={avatar}
+          sx={{
+            width: 40,
+            height: 40,
+            bgcolor: theme.palette.mode === 'light' ? theme.palette.primary.light : theme.palette.background.paper,
+            color: theme.palette.primary.contrastText,
+          }}
+        >
+          {!avatar && <FiUser size={20} />}
+        </Avatar>
 
         {/* Información del usuario */}
-        <div className="flex-1">
-          <h3 className="text-white font-medium">{nombre}</h3>
-          <p className="text-blue-100 text-sm">{email}</p>
-        </div>
+        <Box sx={{ flex: 1 }}>
+          <Typography 
+            variant="body1" 
+            sx={{ 
+              fontWeight: 500,
+              color: theme.palette.primary.contrastText,
+            }}
+          >
+            {nombre}
+          </Typography>
+          <Typography 
+            variant="body2" 
+            sx={{ 
+              color: theme.palette.mode === 'light' ? 'rgba(255,255,255,0.8)' : theme.palette.text.secondary,
+              fontSize: '0.875rem',
+            }}
+          >
+            {email}
+          </Typography>
+        </Box>
 
         {/* Rol */}
-        <div className="text-white font-medium px-4">
+        <Typography 
+          variant="body1" 
+          sx={{ 
+            fontWeight: 500,
+            color: theme.palette.primary.contrastText,
+            px: 2,
+          }}
+        >
           {rol}
-        </div>
-      </div>
+        </Typography>
+      </Box>
 
       {/* Menú de opciones */}
-      <button
+      <IconButton
         onClick={onMenuClick}
-        className="text-white hover:bg-blue-400 p-2 rounded-lg transition-colors"
+        sx={{
+          color: theme.palette.primary.contrastText,
+          '&:hover': {
+            bgcolor: theme.palette.mode === 'light' ? 'rgba(255,255,255,0.2)' : theme.palette.background.secondary,
+          },
+        }}
         aria-label="Opciones"
       >
         <BsThreeDotsVertical size={20} />
-      </button>
-    </div>
+      </IconButton>
+    </Box>
   );
 };
 
@@ -56,7 +105,7 @@ UserListItem.propTypes = {
   rol: PropTypes.string.isRequired,
   avatar: PropTypes.string,
   onMenuClick: PropTypes.func,
-  className: PropTypes.string,
+  sx: PropTypes.object,
 };
 
 export default UserListItem;
