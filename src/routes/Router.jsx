@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Home from '../screens/Home.jsx';
 import Login from '../screens/Login.jsx';
 import ForgotPassword from '../screens/ForgotPassword.jsx';
-import NotFound from '../screens/NotFound.jsx';
+import NotFound404 from '../screens/NotFound404.jsx';
 import Horarios from '../screens/Horarios.jsx';
 
 const Router = () => {
@@ -14,7 +14,7 @@ const Router = () => {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/home" element={<Home />} />
         <Route path="/horarios" element={<Horarios />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<NotFound404 />} />
       </Routes>
     </BrowserRouter>
   );
