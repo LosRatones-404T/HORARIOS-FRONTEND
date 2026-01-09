@@ -1,7 +1,14 @@
 import { Stack, Paper } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import OptionButton from "./OptionButton.jsx";
 
 export default function Body({ collapsed, options }) {
+  const navigate = useNavigate();
+
+  const handleNavigation = (path) => {
+    navigate(path);
+  };
+
   return (
     <Paper
       elevation={2}
@@ -24,7 +31,7 @@ export default function Body({ collapsed, options }) {
             icon={item.icon}
             label={item.label}
             collapsed={collapsed}
-            onClick={() => console.log("Ir a:", item.path)}
+            onClick={() => handleNavigation(item.path)}
           />
         ))}
       </Stack>

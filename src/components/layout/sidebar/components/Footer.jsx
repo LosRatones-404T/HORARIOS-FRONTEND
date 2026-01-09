@@ -1,8 +1,16 @@
 import { Box, Button, Typography, useTheme } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { LuLogOut } from "react-icons/lu";
 
 export default function Footer({ collapsed }) {
   const theme = useTheme();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Aquí puedes agregar lógica adicional de cierre de sesión
+    // Por ejemplo: limpiar tokens, estado global, etc.
+    navigate('/login');
+  };
   
   return (
     <Box
@@ -19,6 +27,7 @@ export default function Footer({ collapsed }) {
       }}
     >
       <Button
+        onClick={handleLogout}
         sx={{
           display: "flex",
           alignItems: "center",
