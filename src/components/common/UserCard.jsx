@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { ArrowRight } from 'lucide-react';
+import { IoArrowForward } from 'react-icons/io5';
 
 /**
  * Componente de tarjeta de usuario con información y acción
@@ -41,7 +41,7 @@ const UserCard = ({
           className="flex items-center gap-2 bg-blue-200 text-blue-900 px-4 py-2 rounded-lg hover:bg-blue-300 transition-colors font-medium"
         >
           Revisar
-          <ArrowRight size={18} />
+          <IoArrowForward size={18} />
         </button>
       </div>
     </div>

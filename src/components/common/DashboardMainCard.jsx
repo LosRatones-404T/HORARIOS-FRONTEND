@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Plus } from 'lucide-react';
+import { IoAdd } from 'react-icons/io5';
 import UserListItem from './UserListItem';
 import Button from './Button';
 
@@ -96,7 +96,7 @@ const DashboardMainCard = ({
             onClick={onActionClick}
             className="flex items-center gap-2 bg-pink-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-pink-400 transition-colors font-medium"
           >
-            <Plus size={18} />
+            <IoAdd size={18} />
             {actionButton}
           </button>
         )}

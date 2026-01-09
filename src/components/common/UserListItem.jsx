@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-import { User, MoreVertical } from 'lucide-react';
+import { FiUser } from 'react-icons/fi';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 
 /**
  * Componente universal de lista de usuarios
@@ -21,7 +22,7 @@ const UserListItem = ({
           {avatar ? (
             <img src={avatar} alt={nombre} className="w-full h-full rounded-full object-cover" />
           ) : (
-            <User size={20} />
+            <FiUser size={20} />
           )}
         </div>
 
@@ -43,7 +44,7 @@ const UserListItem = ({
         className="text-white hover:bg-blue-400 p-2 rounded-lg transition-colors"
         aria-label="Opciones"
       >
-        <MoreVertical size={20} />
+        <BsThreeDotsVertical size={20} />
       </button>
     </div>
   );
