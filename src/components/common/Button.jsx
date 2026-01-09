@@ -1,4 +1,6 @@
 import PropTypes from 'prop-types';
+import { Button as MuiButton, useTheme } from '@mui/material';
+import { Box } from '@mui/material';
 
 /**
  * Componente de botón reutilizable con soporte para iconos y variantes
@@ -9,38 +11,74 @@ const Button = ({
   variant = 'primary', 
   icon, 
   iconPosition = 'left',
-  className = '',
+  sx = {},
   disabled = false,
   type = 'button',
   ...props 
 }) => {
-  const baseStyles = 'flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
-  
-  const variants = {
-    primary: 'bg-purple-300 text-gray-800 hover:bg-purple-400 active:bg-purple-500',
-    secondary: 'bg-blue-300 text-white hover:bg-blue-400 active:bg-blue-500',
-    outline: 'border-2 border-purple-300 text-purple-800 hover:bg-purple-50',
-    ghost: 'text-gray-700 hover:bg-gray-100',
+  const theme = useTheme();
+
+  const variantStyles = {
+    primary: {
+      bgcolor: theme.palette.accent.main,
+      color: theme.palette.mode === 'light' ? theme.palette.text.primary : theme.palette.text.primary,
+      '&:hover': {
+        bgcolor: theme.palette.mode === 'light' ? '#E8C5EB' : theme.palette.tertiary.light,
+      },
+    },
+    secondary: {
+      bgcolor: theme.palette.primary.main,
+      color: theme.palette.primary.contrastText,
+      '&:hover': {
+        bgcolor: theme.palette.primary.light,
+      },
+    },
+    outline: {
+      border: `2px solid ${theme.palette.accent.main}`,
+      color: theme.palette.accent.main,
+      bgcolor: 'transparent',
+      '&:hover': {
+        bgcolor: theme.palette.mode === 'light' ? 'rgba(223, 188, 226, 0.1)' : 'rgba(223, 188, 226, 0.2)',
+      },
+    },
+    ghost: {
+      color: theme.palette.text.primary,
+      bgcolor: 'transparent',
+      '&:hover': {
+        bgcolor: theme.palette.background.secondary,
+      },
+    },
   };
 
-  const variantStyle = variants[variant] || variants.primary;
-
   return (
-    <button
+    <MuiButton
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`${baseStyles} ${variantStyle} ${className}`}
+      sx={{
+        px: 3,
+        py: 1.5,
+        borderRadius: 3,
+        fontWeight: 500,
+        textTransform: 'none',
+        gap: 1,
+        ...variantStyles[variant],
+        ...sx,
+      }}
       {...props}
     >
       {icon && iconPosition === 'left' && (
-        <span className="text-xl">{icon}</span>
+        <Box component="span" sx={{ display: 'flex', fontSize: '1.25rem' }}>
+          {icon}
+        </Box>
       )}
       {children}
       {icon && iconPosition === 'right' && (
-        <span className="text-xl">{icon}</span>
+        <Box component="span" sx={{ display: 'flex', fontSize: '1.25rem' }}>
+          {icon}
+        </Box>
       )}
-    </button>
+    </MuiButton>
   );
 };
 
@@ -50,7 +88,7 @@ Button.propTypes = {
   variant: PropTypes.oneOf(['primary', 'secondary', 'outline', 'ghost']),
   icon: PropTypes.node,
   iconPosition: PropTypes.oneOf(['left', 'right']),
-  className: PropTypes.string,
+  sx: PropTypes.object,
   disabled: PropTypes.bool,
   type: PropTypes.oneOf(['button', 'submit', 'reset']),
 };

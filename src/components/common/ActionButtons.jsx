@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Plus, Printer, FileCheck, ArrowRight } from 'lucide-react';
+import { IoAdd, IoPrint, IoArrowForward } from 'react-icons/io5';
 import Button from './Button';
 
 /**
@@ -10,7 +10,7 @@ export const AgregarButton = ({ onClick, children = 'Agregar', ...props }) => {
   return (
     <Button 
       variant="primary" 
-      icon={<Plus size={20} strokeWidth={2.5} />} 
+      icon={<IoAdd size={20} />} 
       onClick={onClick}
       {...props}
     >
@@ -23,7 +23,7 @@ export const ExportarButton = ({ onClick, children = 'Exportar', ...props }) => 
   return (
     <Button 
       variant="primary" 
-      icon={<Printer size={20} strokeWidth={2.5} />} 
+      icon={<IoPrint size={20} />} 
       onClick={onClick}
       {...props}
     >
@@ -36,7 +36,7 @@ export const GenerarButton = ({ onClick, children = 'Generar', ...props }) => {
   return (
     <Button 
       variant="primary" 
-      icon={<Plus size={20} strokeWidth={2.5} />} 
+      icon={<IoAdd size={20} />} 
       onClick={onClick}
       {...props}
     >
@@ -49,7 +49,7 @@ export const RevisarButton = ({ onClick, children = 'Revisar', ...props }) => {
   return (
     <Button 
       variant="secondary" 
-      icon={<ArrowRight size={20} strokeWidth={2.5} />} 
+      icon={<IoArrowForward size={20} />} 
       iconPosition="right"
       onClick={onClick}
       {...props}
