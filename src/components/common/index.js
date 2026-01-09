@@ -5,3 +5,5 @@ export {
   GenerarButton, 
   RevisarButton 
 } from './ActionButtons';
+export { default as UserCard } from './UserCard';
+export { default as UserListItem } from './UserListItem';
