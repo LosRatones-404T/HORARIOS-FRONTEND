@@ -7,3 +7,4 @@ export {
 } from './ActionButtons';
 export { default as UserCard } from './UserCard';
 export { default as UserListItem } from './UserListItem';
+export { default as DashboardCard } from './DashboardCard';
