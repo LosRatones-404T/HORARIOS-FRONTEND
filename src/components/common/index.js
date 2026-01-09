@@ -8,3 +8,4 @@ export {
 export { default as UserCard } from './UserCard';
 export { default as UserListItem } from './UserListItem';
 export { default as DashboardCard } from './DashboardCard';
+export { default as DashboardMainCard } from './DashboardMainCard';
