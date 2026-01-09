@@ -50,7 +50,7 @@ const MainLayout = ({ children, showSidebar = false, menuType = 'admin' }) => {
             flex: 1,
             mt: '70px', // Altura del header
             p: { xs: 2, sm: 3, md: 4 },
-            bgcolor: 'background.default',
+            bgcolor: 'background.paper',
             overflowY: 'auto',
             overflowX: 'hidden',
           }}

@@ -54,6 +54,7 @@ const DashboardCard = ({
           bgcolor: theme.palette.primary.main,
           borderRadius: 3,
           boxShadow: 2,
+          width: '100%',
           ...sx,
         }}
       >
@@ -70,6 +71,7 @@ const DashboardCard = ({
         bgcolor: theme.palette.primary.main,
         borderRadius: 3,
         boxShadow: 2,
+        width: '100%',
         ...sx,
       }}
     >

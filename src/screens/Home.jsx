@@ -1,4 +1,4 @@
-import { Box, Grid } from '@mui/material';
+import { Box } from '@mui/material';
 import MainLayout from '../components/layout/MainLayout';
 import { 
   DashboardCard, 
@@ -54,16 +54,16 @@ function Home() {
     <MainLayout showSidebar={true} menuType="admin">
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         {/* Grid de tarjetas de estadísticas */}
-        <Grid container spacing={2}>
+        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
           {dashboardStats.map((stat, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
+            <Box key={index} sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)', md: '1 1 calc(25% - 12px)' } }}>
               <DashboardCard
                 title={stat.title}
                 value={stat.value}
               />
-            </Grid>
+            </Box>
           ))}
-        </Grid>
+        </Box>
 
         {/* Tarjeta principal de gestión de usuarios */}
         <DashboardMainCard
