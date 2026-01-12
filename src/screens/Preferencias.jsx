@@ -430,9 +430,9 @@ const Preferencias = () => {
                 gridTemplateColumns: {
                   xs: '1fr',
                   sm: 'repeat(2, 1fr)',
-                  md: 'repeat(3, 1fr)',
-                  lg: 'repeat(4, 1fr)',
-                  xl: 'repeat(5, 1fr)',
+                  md: 'repeat(2, 1fr)',
+                  lg: 'repeat(3, 1fr)',
+                  xl: 'repeat(4, 1fr)',
                 },
                 gap: 2,
               }}
@@ -445,13 +445,6 @@ const Preferencias = () => {
                   sinodales={materia.sinodales}
                   modalidad={materia.modalidad}
                   academia={materia.academia}
-                  variant={
-                    materiaIndex % 3 === 0 
-                      ? 'primary' 
-                      : materiaIndex % 3 === 1 
-                        ? 'secondary' 
-                        : 'tertiary'
-                  }
                   onChange={(field, value) => handleMateriaChange(semestreIndex, materiaIndex, field, value)}
                 />
               ))}
