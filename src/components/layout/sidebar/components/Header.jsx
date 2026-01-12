@@ -9,25 +9,27 @@ export default function Header({ collapsed }) {
   return (
     <Box
       sx={{
-        p: collapsed ? { xs: '8px 4px', sm: '10px 6px' } : { xs: '12px', sm: '14px' },
+        p: collapsed ? { xs: '12px 8px', sm: '16px 12px' } : { xs: '16px', sm: '20px' },
         bgcolor: "primary.main",
         display: "flex",
         flexDirection: collapsed ? "column" : "row",
         alignItems: "center",
         justifyContent: collapsed ? "center" : "flex-start",
-        gap: collapsed ? 0.75 : { xs: 1, sm: 1.5 },
-        boxShadow: 1,
+        gap: collapsed ? 1 : { xs: 1.5, sm: 2 },
+        borderBottom: '1px solid',
+        borderColor: 'rgba(255, 255, 255, 0.1)',
       }}
     >
       {/* LOGO */}
       <Box
         sx={{
-          bgcolor: "primary.light",
-          p: collapsed ? { xs: 0.5, sm: 0.75 } : { xs: 1, sm: 1.5 },
-          borderRadius: collapsed ? theme.shape.borderRadius / 1.2 : theme.shape.borderRadius / 0.75,
+          bgcolor: "rgba(255, 255, 255, 0.15)",
+          p: collapsed ? { xs: 0.75, sm: 1 } : { xs: 1.25, sm: 1.75 },
+          borderRadius: 2.5,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          backdropFilter: 'blur(8px)',
         }}
       >
         <img
