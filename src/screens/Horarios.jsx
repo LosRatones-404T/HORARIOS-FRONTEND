@@ -15,14 +15,13 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Alert,
-  Snackbar,
   CircularProgress,
   useTheme,
   Divider,
 } from '@mui/material';
 import { IoAdd, IoRefresh } from 'react-icons/io5';
 import MainLayout from '../components/layout/MainLayout';
+import Notification from '../components/common/Notification';
 
 // Datos de ejemplo (mock data)
 const mockDegrees = [
@@ -83,13 +82,20 @@ function Horarios() {
   const [exams, setExams] = useState(mockExams);
   const [loading, setLoading] = useState(false);
   const [loadingGenerate, setLoadingGenerate] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
+  const [notification, setNotification] = useState({ 
+    open: false, 
+    message: '', 
+    severity: 'success' 
+  });
 
   // Generar horarios de exámenes (simulado)
   const handleGenerateSchedule = async () => {
     if (!selectedDegree) {
-      setError('Por favor selecciona una carrera');
+      setNotification({
+        open: true,
+        message: 'Por favor selecciona una carrera',
+        severity: 'error'
+      });
       return;
     }
 
@@ -98,7 +104,11 @@ function Horarios() {
     // Simular llamada al API
     setTimeout(() => {
       const selectedDegreeName = degrees.find(d => d.id === selectedDegree)?.name;
-      setSuccess(`Se generaron ${mockExams.length} exámenes para ${selectedDegreeName}`);
+      setNotification({
+        open: true,
+        message: `Se generaron ${mockExams.length} exámenes para ${selectedDegreeName}`,
+        severity: 'success'
+      });
       setLoadingGenerate(false);
       setSelectedDegree('');
     }, 2000);
@@ -110,7 +120,11 @@ function Horarios() {
     setTimeout(() => {
       setExams(mockExams);
       setLoading(false);
-      setSuccess('Horarios actualizados');
+      setNotification({
+        open: true,
+        message: 'Horarios actualizados',
+        severity: 'success'
+      });
     }, 1000);
   };
 
@@ -316,31 +330,15 @@ function Horarios() {
           </CardContent>
         </Card>
 
-        {/* Snackbars para mensajes */}
-        <Snackbar 
-          open={!!error} 
-          autoHideDuration={6000} 
-          onClose={() => setError(null)}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        >
-          <Alert onClose={() => setError(null)} severity="error" sx={{ width: '100%' }}>
-            {error}
-          </Alert>
-        </Snackbar>
-
-        <Snackbar 
-          open={!!success} 
-          autoHideDuration={4000} 
-          onClose={() => setSuccess(null)}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        >
-          <Alert onClose={() => setSuccess(null)} severity="success" sx={{ width: '100%' }}>
-            {success}
-          </Alert>
-        </Snackbar>
+        {/* Notificaciones */}
+        <Notification 
+          open={notification.open}
+          message={notification.message}
+          severity={notification.severity}
+          onClose={() => setNotification({ ...notification, open: false })}
+        />
       </Box>
     </MainLayout>
   );
 }
-
 export default Horarios;

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Box, Typography, Container, useTheme, Divider, Button } from '@mui/material';
 import { MdSave } from 'react-icons/md';
 import MateriaCard from '../components/common/MateriaCard';
+import Notification from '../components/common/Notification';
 import MainLayout from '../components/layout/MainLayout';
 
 /**
@@ -385,6 +386,13 @@ const Preferencias = () => {
 
   // Estado editable de las materias
   const [semestres, setSemestres] = useState(semestresIniciales);
+  
+  // Estado para notificaciones
+  const [notification, setNotification] = useState({ 
+    open: false, 
+    message: '', 
+    severity: 'success' 
+  });
 
   // Función para manejar cambios en las materias
   const handleMateriaChange = (semestreIndex, materiaIndex, field, value) => {
@@ -402,7 +410,13 @@ const Preferencias = () => {
   const handleSavePreferences = () => {
     console.log('Guardando preferencias:', semestres);
     // Aquí puedes agregar la lógica para guardar en el backend
-    alert('Preferencias guardadas exitosamente');
+    
+    // Mostrar notificación de éxito
+    setNotification({
+      open: true,
+      message: 'Preferencias guardadas exitosamente',
+      severity: 'success'
+    });
   };
 
   return (
@@ -493,6 +507,14 @@ const Preferencias = () => {
           </Box>
         ))}
       </Container>
+
+      {/* Notificaciones */}
+      <Notification 
+        open={notification.open}
+        message={notification.message}
+        severity={notification.severity}
+        onClose={() => setNotification({ ...notification, open: false })}
+      />
     </MainLayout>
   );
 };
