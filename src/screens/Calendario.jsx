@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Box, Typography, Container, useTheme, Divider } from '@mui/material';
 import HorarioSemanal from '../components/common/HorarioSemanal';
 import MainLayout from '../components/layout/MainLayout';
+import { Notification } from '../components/common';
 
 /**
  * Pantalla de Calendario
@@ -10,11 +11,25 @@ import MainLayout from '../components/layout/MainLayout';
 const Calendario = () => {
   const theme = useTheme();
 
+  // Estado de notificación
+  const [notification, setNotification] = useState({
+    open: false,
+    message: '',
+    severity: 'success'
+  });
+
   // Horarios de exámenes por semestre - Licenciatura en Informática
-  const semestres = [
+  const [semestres, setSemestres] = useState([
     {
       numero: 1,
       nombre: 'PRIMER SEMESTRE',
+      materias: [
+        'Diseño Estructurado de Algoritmos',
+        'Administración',
+        'Historia del Pensamiento Filosófico',
+        'Lógica Matemática',
+        'Cálculo I'
+      ],
       eventos: [
         { dia: 1, horaInicio: '08:00', materia: 'Diseño Estructurado de Algoritmos', aula: 'Lab-301' },
         { dia: 1, horaInicio: '10:00', materia: 'Administración', aula: 'Aula-102' },
@@ -26,6 +41,13 @@ const Calendario = () => {
     {
       numero: 2,
       nombre: 'SEGUNDO SEMESTRE',
+      materias: [
+        'Programación Estructurada',
+        'Fundamentos de Electrónica',
+        'Teoría General de Sistemas',
+        'Matemáticas Discretas',
+        'Cálculo II'
+      ],
       eventos: [
         { dia: 1, horaInicio: '09:00', materia: 'Programación Estructurada', aula: 'Lab-302' },
         { dia: 1, horaInicio: '14:00', materia: 'Fundamentos de Electrónica', aula: 'Lab-401' },
@@ -37,6 +59,13 @@ const Calendario = () => {
     {
       numero: 3,
       nombre: 'TERCER SEMESTRE',
+      materias: [
+        'Estructuras de Datos',
+        'Electrónica Digital',
+        'Contabilidad y Finanzas',
+        'Teoría de Autómatas',
+        'Álgebra Lineal'
+      ],
       eventos: [
         { dia: 1, horaInicio: '10:00', materia: 'Estructuras de Datos', aula: 'Lab-303' },
         { dia: 1, horaInicio: '15:00', materia: 'Electrónica Digital', aula: 'Lab-402' },
@@ -48,6 +77,13 @@ const Calendario = () => {
     {
       numero: 4,
       nombre: 'CUARTO SEMESTRE',
+      materias: [
+        'Paradigmas de Programación I',
+        'Arquitectura de Computadoras',
+        'Bases de Datos I',
+        'Programación de Sistemas',
+        'Métodos Numéricos'
+      ],
       eventos: [
         { dia: 1, horaInicio: '11:00', materia: 'Paradigmas de Programación I', aula: 'Lab-304' },
         { dia: 1, horaInicio: '16:00', materia: 'Arquitectura de Computadoras', aula: 'Lab-403' },
@@ -59,6 +95,13 @@ const Calendario = () => {
     {
       numero: 5,
       nombre: 'QUINTO SEMESTRE',
+      materias: [
+        'Paradigmas de Programación II',
+        'Redes I',
+        'Bases de Datos II',
+        'Fundamentos de Sistemas Operativos',
+        'Diseño Web'
+      ],
       eventos: [
         { dia: 1, horaInicio: '08:00', materia: 'Paradigmas de Programación II', aula: 'Lab-307' },
         { dia: 1, horaInicio: '13:00', materia: 'Redes I', aula: 'Lab-404' },
@@ -70,6 +113,13 @@ const Calendario = () => {
     {
       numero: 6,
       nombre: 'SEXTO SEMESTRE',
+      materias: [
+        'Tecnologías Web I',
+        'Redes II',
+        'Ingeniería de Software I',
+        'Sistemas Operativos de Red',
+        'Programación de Dispositivos Móviles'
+      ],
       eventos: [
         { dia: 1, horaInicio: '09:00', materia: 'Tecnologías Web I', aula: 'Lab-311' },
         { dia: 1, horaInicio: '14:00', materia: 'Redes II', aula: 'Lab-405' },
@@ -81,6 +131,13 @@ const Calendario = () => {
     {
       numero: 7,
       nombre: 'SÉPTIMO SEMESTRE',
+      materias: [
+        'Tecnologías Web II',
+        'Bases de Datos Avanzadas',
+        'Ingeniería de Software II',
+        'Probabilidad y Estadística',
+        'Derecho y Legislación en Informática'
+      ],
       eventos: [
         { dia: 1, horaInicio: '10:00', materia: 'Tecnologías Web II', aula: 'Lab-314' },
         { dia: 1, horaInicio: '15:00', materia: 'Bases de Datos Avanzadas', aula: 'Lab-315' },
@@ -92,6 +149,13 @@ const Calendario = () => {
     {
       numero: 8,
       nombre: 'OCTAVO SEMESTRE',
+      materias: [
+        'Sistemas Distribuidos',
+        'Calidad de Software',
+        'Interacción Humano-Computadora',
+        'Inteligencia de Negocios',
+        'Investigación de Operaciones'
+      ],
       eventos: [
         { dia: 1, horaInicio: '11:00', materia: 'Sistemas Distribuidos', aula: 'Lab-316' },
         { dia: 1, horaInicio: '16:00', materia: 'Calidad de Software', aula: 'Aula-210' },
@@ -100,12 +164,31 @@ const Calendario = () => {
         { dia: 4, horaInicio: '14:00', materia: 'Investigación de Operaciones', aula: 'Aula-106' },
       ]
     }
-  ];
+  ]);
 
-  // Manejar click en celda vacía
-  const handleSlotClick = ({ dia, hora }, semestreNum) => {
-    console.log(`Semestre ${semestreNum} - Celda seleccionada - Día: ${dia}, Hora: ${hora}`);
-    // Aquí puedes abrir un modal para crear un nuevo examen
+  // Manejar cambios en los eventos de un semestre
+  const handleEventsChange = (semestreNumero, newEvents) => {
+    setSemestres(prev => prev.map(sem => 
+      sem.numero === semestreNumero 
+        ? { ...sem, eventos: newEvents }
+        : sem
+    ));
+  };
+
+  // Guardar cambios de un semestre
+  const handleSaveSemestre = (semestreNumero) => {
+    // Aquí puedes hacer la llamada a la API para guardar
+    console.log(`Guardando cambios del semestre ${semestreNumero}`);
+    setNotification({
+      open: true,
+      message: `Cambios guardados exitosamente para el ${semestres.find(s => s.numero === semestreNumero)?.nombre}`,
+      severity: 'success'
+    });
+  };
+
+  // Cerrar notificación
+  const handleCloseNotification = () => {
+    setNotification({ ...notification, open: false });
   };
 
   return (
@@ -154,11 +237,21 @@ const Calendario = () => {
             {/* Componente de horario semanal */}
             <HorarioSemanal 
               events={semestre.eventos}
-              onSlotClick={(slot) => handleSlotClick(slot, semestre.numero)}
+              materias={semestre.materias}
+              onEventsChange={(newEvents) => handleEventsChange(semestre.numero, newEvents)}
+              onSave={() => handleSaveSemestre(semestre.numero)}
               showHeader={false}
             />
           </Box>
         ))}
+
+        {/* Notificación */}
+        <Notification
+          open={notification.open}
+          message={notification.message}
+          severity={notification.severity}
+          onClose={handleCloseNotification}
+        />
       </Container>
     </MainLayout>
   );

@@ -10,9 +10,19 @@ import {
   TableHead,
   TableRow,
   useTheme,
-  Chip
+  Chip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@mui/material';
-import { MdAccessTime } from 'react-icons/md';
+import { MdAccessTime, MdSave } from 'react-icons/md';
+import { useState } from 'react';
 
 /**
  * Componente de horario semanal
@@ -20,15 +30,25 @@ import { MdAccessTime } from 'react-icons/md';
  * 
  * @param {Object} props
  * @param {Array} props.events - Array de eventos/exámenes a mostrar en el horario
- * @param {Function} props.onSlotClick - Función a ejecutar al hacer click en una celda
+ * @param {Array} props.materias - Array de materias disponibles para asignar
+ * @param {Function} props.onEventsChange - Callback cuando cambian los eventos
+ * @param {Function} props.onSave - Función a ejecutar al guardar cambios
  * @param {boolean} props.showHeader - Mostrar encabezado del componente
  */
 const HorarioSemanal = ({ 
   events = [], 
-  onSlotClick = null,
+  materias = [],
+  onEventsChange = null,
+  onSave = null,
   showHeader = true 
 }) => {
   const theme = useTheme();
+  
+  // Estados locales
+  const [draggedEvent, setDraggedEvent] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [selectedMateria, setSelectedMateria] = useState('');
 
   // Días de la semana
   const dias = [
@@ -54,11 +74,63 @@ const HorarioSemanal = ({
     );
   };
 
-  // Manejar click en celda
+  // Abrir modal para asignar materia
   const handleCellClick = (dia, hora) => {
-    if (onSlotClick) {
-      onSlotClick({ dia, hora });
+    const existingEvent = getEventForSlot(dia, hora);
+    if (!existingEvent && materias.length > 0) {
+      setSelectedSlot({ dia, hora });
+      setSelectedMateria('');
+      setOpenDialog(true);
     }
+  };
+
+  // Asignar materia a una celda
+  const handleAssignMateria = () => {
+    if (selectedMateria && selectedSlot && onEventsChange) {
+      const newEvent = {
+        dia: selectedSlot.dia.id,
+        horaInicio: selectedSlot.hora,
+        materia: selectedMateria,
+        aula: 'Por asignar'
+      };
+      onEventsChange([...events, newEvent]);
+      setOpenDialog(false);
+      setSelectedMateria('');
+      setSelectedSlot(null);
+    }
+  };
+
+  // Drag & Drop handlers
+  const handleDragStart = (event, eventData) => {
+    setDraggedEvent(eventData);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (dia, hora) => {
+    if (draggedEvent && onEventsChange) {
+      const existingEvent = getEventForSlot(dia, hora);
+      
+      // Solo permitir drop si la celda está vacía
+      if (!existingEvent) {
+        // Remover el evento de su posición anterior
+        const updatedEvents = events.filter(e => 
+          !(e.dia === draggedEvent.dia && e.horaInicio === draggedEvent.horaInicio)
+        );
+        
+        // Agregar el evento en la nueva posición
+        const movedEvent = {
+          ...draggedEvent,
+          dia: dia.id,
+          horaInicio: hora
+        };
+        
+        onEventsChange([...updatedEvents, movedEvent]);
+      }
+    }
+    setDraggedEvent(null);
   };
 
   return (
@@ -178,15 +250,16 @@ const HorarioSemanal = ({
                 {/* Celdas de cada día */}
                 {dias.map((dia) => {
                   const event = getEventForSlot(dia, hora);
-                  const isClickable = onSlotClick && !event;
 
                   return (
                     <TableCell 
                       key={`${dia.id}-${hora}`}
                       align="center"
-                      onClick={() => isClickable && handleCellClick(dia, hora)}
+                      onClick={() => handleCellClick(dia, hora)}
+                      onDragOver={handleDragOver}
+                      onDrop={() => handleDrop(dia, hora)}
                       sx={{ 
-                        cursor: isClickable ? 'pointer' : 'default',
+                        cursor: event ? 'move' : 'pointer',
                         bgcolor: event 
                           ? theme.palette.primary.light + '40'
                           : 'transparent',
@@ -194,13 +267,17 @@ const HorarioSemanal = ({
                         p: 1,
                         minHeight: 60,
                         position: 'relative',
-                        '&:hover': isClickable ? {
-                          bgcolor: theme.palette.primary.light + '20',
-                        } : {}
+                        '&:hover': {
+                          bgcolor: event 
+                            ? theme.palette.primary.light + '60'
+                            : theme.palette.primary.light + '20',
+                        }
                       }}
                     >
                       {event && (
                         <Box
+                          draggable
+                          onDragStart={(e) => handleDragStart(e, event)}
                           sx={{
                             bgcolor: theme.palette.primary.main,
                             borderRadius: 1,
@@ -210,7 +287,9 @@ const HorarioSemanal = ({
                             flexDirection: 'column',
                             justifyContent: 'center',
                             gap: 0.5,
-                            boxShadow: 1
+                            boxShadow: 1,
+                            cursor: 'move',
+                            userSelect: 'none'
                           }}
                         >
                           <Typography 
@@ -250,47 +329,55 @@ const HorarioSemanal = ({
         </Table>
       </TableContainer>
 
-      {/* Leyenda */}
-      {events.length > 0 && (
-        <Box 
-          sx={{ 
-            mt: 2, 
-            display: 'flex', 
-            gap: 2, 
-            flexWrap: 'wrap',
-            justifyContent: 'flex-end'
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Box 
-              sx={{ 
-                width: 16, 
-                height: 16, 
-                bgcolor: theme.palette.primary.main,
-                borderRadius: 0.5 
-              }} 
-            />
-            <Typography variant="caption" sx={{ color: theme.palette.text.secondary }}>
-              Examen programado
-            </Typography>
-          </Box>
-          {onSlotClick && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Box 
-                sx={{ 
-                  width: 16, 
-                  height: 16, 
-                  border: `2px dashed ${theme.palette.divider}`,
-                  borderRadius: 0.5 
-                }} 
-              />
-              <Typography variant="caption" sx={{ color: theme.palette.text.secondary }}>
-                Disponible (click para asignar)
-              </Typography>
-            </Box>
-          )}
+      {/* Botón de guardar */}
+      {onSave && (
+        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+          <Button
+            variant="contained"
+            startIcon={<MdSave />}
+            onClick={onSave}
+            sx={{
+              bgcolor: 'success.main',
+              '&:hover': {
+                bgcolor: 'success.dark',
+              },
+            }}
+          >
+            Guardar Cambios
+          </Button>
         </Box>
       )}
+
+      {/* Dialog para asignar materia */}
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="xs" fullWidth>
+        <DialogTitle>Asignar Examen</DialogTitle>
+        <DialogContent>
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel>Seleccionar Materia</InputLabel>
+            <Select
+              value={selectedMateria}
+              label="Seleccionar Materia"
+              onChange={(e) => setSelectedMateria(e.target.value)}
+            >
+              {materias.map((materia) => (
+                <MenuItem key={materia} value={materia}>
+                  {materia}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
+          <Button 
+            onClick={handleAssignMateria} 
+            variant="contained" 
+            disabled={!selectedMateria}
+          >
+            Asignar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
@@ -305,7 +392,9 @@ HorarioSemanal.propTypes = {
       profesor: PropTypes.string,
     })
   ),
-  onSlotClick: PropTypes.func,
+  materias: PropTypes.arrayOf(PropTypes.string),
+  onEventsChange: PropTypes.func,
+  onSave: PropTypes.func,
   showHeader: PropTypes.bool,
 };
 
