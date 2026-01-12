@@ -51,7 +51,7 @@ function Home() {
   };
 
   return (
-    <MainLayout showSidebar={true} menuType="admin">
+    <MainLayout showSidebar={true}>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         {/* Grid de tarjetas de estadísticas */}
         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>

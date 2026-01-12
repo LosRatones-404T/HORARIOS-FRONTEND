@@ -420,7 +420,7 @@ const Preferencias = () => {
   };
 
   return (
-    <MainLayout showSidebar={true} menuType="admin">
+    <MainLayout showSidebar={true}>
       <Container maxWidth="xl" sx={{ py: 4 }}>
         {/* Encabezado */}
         <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>

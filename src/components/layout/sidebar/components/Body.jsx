@@ -27,7 +27,7 @@ export default function Body({ collapsed, options }) {
       >
         {options.map((item, index) => (
           <OptionButton
-            key={index}
+            key={`${item.path}-${item.label}`}
             icon={item.icon}
             label={item.label}
             collapsed={collapsed}

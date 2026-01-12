@@ -144,7 +144,7 @@ function Horarios() {
   };
 
   return (
-    <MainLayout showSidebar={true} menuType="admin">
+    <MainLayout showSidebar={true}>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         {/* Encabezado */}
         <Box>

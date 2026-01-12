@@ -192,7 +192,7 @@ const Calendario = () => {
   };
 
   return (
-    <MainLayout showSidebar={true} menuType="admin">
+    <MainLayout showSidebar={true}>
       <Container maxWidth="xl" sx={{ py: 4 }}>
         {/* Encabezado */}
         <Box sx={{ mb: 4 }}>

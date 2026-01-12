@@ -51,7 +51,6 @@ function Login() {
     const result = login(formData.usuario, formData.contrasena);
     
     if (result.success) {
-      // Redirigir según el rol del usuario
       navigate('/home');
     } else {
       setError(result.error);
