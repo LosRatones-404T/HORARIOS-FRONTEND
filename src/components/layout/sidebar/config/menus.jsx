@@ -6,6 +6,7 @@ import { TbCalendarCheck } from "react-icons/tb"; //Icono de Horarios
 import { LuSettings } from "react-icons/lu"; //Icono de Configuración
 import { LuCalendarCog } from "react-icons/lu"; //Icono de Generar Exámenes
 import { MdOutlineGrade } from "react-icons/md"; //Icono de Preferencias
+import { MdCalendarMonth } from "react-icons/md"; //Icono de Calendario
 
 
 export const menuOptions = {
@@ -15,6 +16,7 @@ export const menuOptions = {
     { label: "Materias", icon: <GiBookshelf/>, path: "/materias" },
     { label: "Aulas", icon: <LuSchool/>, path: "/aulas" },
     { label: "Horarios", icon: <TbCalendarCheck/>, path: "/horarios" },
+    { label: "Calendario", icon: <MdCalendarMonth/>, path: "/calendario" },
     { label: "Preferencias", icon: <MdOutlineGrade/>, path: "/preferencias" },
     { label: "Ajustes", icon: <LuSettings/>, path: "/configuracion" },
   ],
@@ -23,6 +25,7 @@ export const menuOptions = {
     { label: "Dashboard", icon: <FiHome/>, path: "/dashboard" },
     { label: "Generar", icon: <LuCalendarCog/>, path: "/generar" },
     { label: "Horarios", icon: <TbCalendarCheck/>, path: "/horarios" },
+    { label: "Calendario", icon: <MdCalendarMonth/>, path: "/calendario" },
     { label: "Preferencias", icon: <MdOutlineGrade/>, path: "/preferencias" },
     { label: "Ajustes", icon: <LuSettings/>, path: "/configuracion" },
   ],
@@ -30,7 +33,8 @@ export const menuOptions = {
   secretaria: [
     { label: "Dashboard", icon: <FiHome/>, path: "/dashboard" },
     { label: "Generar", icon: <LuCalendarCog/>, path: "/generar" },
-    { label: "Horarios", icon: <TbCalendarCheck/>, path: "/horarios" }, 
+    { label: "Horarios", icon: <TbCalendarCheck/>, path: "/horarios" },
+    { label: "Calendario", icon: <MdCalendarMonth/>, path: "/calendario" },
     { label: "Preferencias", icon: <MdOutlineGrade/>, path: "/preferencias" },
     { label: "Ajustes", icon: <LuSettings/>, path: "/configuracion" },
   ],

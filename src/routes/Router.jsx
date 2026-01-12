@@ -5,6 +5,7 @@ import ForgotPassword from '../screens/ForgotPassword.jsx';
 import NotFound404 from '../screens/NotFound404.jsx';
 import Horarios from '../screens/Horarios.jsx';
 import Preferencias from '../screens/Preferencias.jsx';
+import Calendario from '../screens/Calendario.jsx';
 
 const Router = () => {
   return (
@@ -25,6 +26,7 @@ const Router = () => {
         
         {/* Rutas compartidas */}
         <Route path="/horarios" element={<Horarios />} />
+        <Route path="/calendario" element={<Calendario />} />
         <Route path="/preferencias" element={<Preferencias />} />
         <Route path="/generar" element={<Home />} />
         <Route path="/configuracion" element={<Home />} />
