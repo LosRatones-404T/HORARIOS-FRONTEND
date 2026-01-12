@@ -1,5 +1,15 @@
-import { useState } from 'react';
-import { Box, Typography, Container, useTheme, Divider } from '@mui/material';
+import { useState, useMemo } from 'react';
+import { 
+  Box, 
+  Typography, 
+  Container, 
+  useTheme, 
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Button
+} from '@mui/material';
+import { MdExpandMore } from 'react-icons/md';
 import HorarioSemanal from '../components/common/HorarioSemanal';
 import MainLayout from '../components/layout/MainLayout';
 import { Notification } from '../components/common';
@@ -18,8 +28,11 @@ const Calendario = () => {
     severity: 'success'
   });
 
-  // Horarios de exámenes por semestre - Licenciatura en Informática
-  const [semestres, setSemestres] = useState([
+  // Estado de expansión de accordions (primer semestre expandido por defecto)
+  const [expandedSemesters, setExpandedSemesters] = useState({ 1: true });
+
+  // Horarios de exámenes por semestre - Licenciatura en Informática (solo impares)
+  const semestresData = useMemo(() => [
     {
       numero: 1,
       nombre: 'PRIMER SEMESTRE',
@@ -36,24 +49,6 @@ const Calendario = () => {
         { dia: 2, horaInicio: '09:00', materia: 'Historia del Pensamiento Filosófico', aula: 'Aula-205' },
         { dia: 3, horaInicio: '11:00', materia: 'Lógica Matemática', aula: 'Aula-303' },
         { dia: 4, horaInicio: '08:00', materia: 'Cálculo I', aula: 'Aula-101' },
-      ]
-    },
-    {
-      numero: 2,
-      nombre: 'SEGUNDO SEMESTRE',
-      materias: [
-        'Programación Estructurada',
-        'Fundamentos de Electrónica',
-        'Teoría General de Sistemas',
-        'Matemáticas Discretas',
-        'Cálculo II'
-      ],
-      eventos: [
-        { dia: 1, horaInicio: '09:00', materia: 'Programación Estructurada', aula: 'Lab-302' },
-        { dia: 1, horaInicio: '14:00', materia: 'Fundamentos de Electrónica', aula: 'Lab-401' },
-        { dia: 2, horaInicio: '10:00', materia: 'Teoría General de Sistemas', aula: 'Aula-206' },
-        { dia: 3, horaInicio: '08:00', materia: 'Matemáticas Discretas', aula: 'Aula-304' },
-        { dia: 4, horaInicio: '11:00', materia: 'Cálculo II', aula: 'Aula-102' },
       ]
     },
     {
@@ -75,24 +70,6 @@ const Calendario = () => {
       ]
     },
     {
-      numero: 4,
-      nombre: 'CUARTO SEMESTRE',
-      materias: [
-        'Paradigmas de Programación I',
-        'Arquitectura de Computadoras',
-        'Bases de Datos I',
-        'Programación de Sistemas',
-        'Métodos Numéricos'
-      ],
-      eventos: [
-        { dia: 1, horaInicio: '11:00', materia: 'Paradigmas de Programación I', aula: 'Lab-304' },
-        { dia: 1, horaInicio: '16:00', materia: 'Arquitectura de Computadoras', aula: 'Lab-403' },
-        { dia: 2, horaInicio: '08:00', materia: 'Bases de Datos I', aula: 'Lab-305' },
-        { dia: 3, horaInicio: '10:00', materia: 'Programación de Sistemas', aula: 'Lab-306' },
-        { dia: 4, horaInicio: '14:00', materia: 'Métodos Numéricos', aula: 'Aula-104' },
-      ]
-    },
-    {
       numero: 5,
       nombre: 'QUINTO SEMESTRE',
       materias: [
@@ -108,24 +85,6 @@ const Calendario = () => {
         { dia: 2, horaInicio: '09:00', materia: 'Bases de Datos II', aula: 'Lab-308' },
         { dia: 3, horaInicio: '11:00', materia: 'Fundamentos de Sistemas Operativos', aula: 'Lab-309' },
         { dia: 4, horaInicio: '15:00', materia: 'Diseño Web', aula: 'Lab-310' },
-      ]
-    },
-    {
-      numero: 6,
-      nombre: 'SEXTO SEMESTRE',
-      materias: [
-        'Tecnologías Web I',
-        'Redes II',
-        'Ingeniería de Software I',
-        'Sistemas Operativos de Red',
-        'Programación de Dispositivos Móviles'
-      ],
-      eventos: [
-        { dia: 1, horaInicio: '09:00', materia: 'Tecnologías Web I', aula: 'Lab-311' },
-        { dia: 1, horaInicio: '14:00', materia: 'Redes II', aula: 'Lab-405' },
-        { dia: 2, horaInicio: '10:00', materia: 'Ingeniería de Software I', aula: 'Aula-208' },
-        { dia: 3, horaInicio: '08:00', materia: 'Sistemas Operativos de Red', aula: 'Lab-312' },
-        { dia: 4, horaInicio: '16:00', materia: 'Programación de Dispositivos Móviles', aula: 'Lab-313' },
       ]
     },
     {
@@ -147,8 +106,8 @@ const Calendario = () => {
       ]
     },
     {
-      numero: 8,
-      nombre: 'OCTAVO SEMESTRE',
+      numero: 9,
+      nombre: 'NOVENO SEMESTRE',
       materias: [
         'Sistemas Distribuidos',
         'Calidad de Software',
@@ -164,7 +123,9 @@ const Calendario = () => {
         { dia: 4, horaInicio: '14:00', materia: 'Investigación de Operaciones', aula: 'Aula-106' },
       ]
     }
-  ]);
+  ], []);
+
+  const [semestres, setSemestres] = useState(semestresData);
 
   // Manejar cambios en los eventos de un semestre
   const handleEventsChange = (semestreNumero, newEvents) => {
@@ -177,7 +138,6 @@ const Calendario = () => {
 
   // Guardar cambios de un semestre
   const handleSaveSemestre = (semestreNumero) => {
-    // Aquí puedes hacer la llamada a la API para guardar
     console.log(`Guardando cambios del semestre ${semestreNumero}`);
     setNotification({
       open: true,
@@ -191,58 +151,121 @@ const Calendario = () => {
     setNotification({ ...notification, open: false });
   };
 
+  // Manejar expansión de accordions
+  const handleAccordionChange = (semestreNumero) => (event, isExpanded) => {
+    setExpandedSemesters(prev => ({
+      ...prev,
+      [semestreNumero]: isExpanded
+    }));
+  };
+
+  // Expandir/Colapsar todos
+  const handleToggleAll = () => {
+    const allExpanded = semestres.every(sem => expandedSemesters[sem.numero]);
+    if (allExpanded) {
+      // Colapsar todos
+      setExpandedSemesters({});
+    } else {
+      // Expandir todos
+      const newState = {};
+      semestres.forEach(sem => {
+        newState[sem.numero] = true;
+      });
+      setExpandedSemesters(newState);
+    }
+  };
+
   return (
     <MainLayout showSidebar={true}>
       <Container maxWidth="xl" sx={{ py: 4 }}>
         {/* Encabezado */}
-        <Box sx={{ mb: 4 }}>
-          <Typography 
-            variant="h4" 
-            sx={{ 
-              fontWeight: 700,
-              color: theme.palette.text.primary,
-              mb: 1
+        <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <Box>
+            <Typography 
+              variant="h4" 
+              sx={{ 
+                fontWeight: 700,
+                color: theme.palette.text.primary,
+                mb: 1
+              }}
+            >
+              Calendario de Exámenes
+            </Typography>
+            <Typography 
+              variant="body1" 
+              sx={{ 
+                color: theme.palette.text.secondary 
+              }}
+            >
+              Licenciatura en Informática - Horarios por semestre
+            </Typography>
+          </Box>
+          <Button
+            variant="outlined"
+            onClick={handleToggleAll}
+            sx={{
+              borderColor: theme.palette.primary.main,
+              color: theme.palette.primary.main,
+              '&:hover': {
+                borderColor: theme.palette.primary.dark,
+                bgcolor: theme.palette.primary.main + '10',
+              },
             }}
           >
-            Calendario de Exámenes
-          </Typography>
-          <Typography 
-            variant="body1" 
-            sx={{ 
-              color: theme.palette.text.secondary 
-            }}
-          >
-            Licenciatura en Informática - Horarios por semestre
-          </Typography>
+            {semestres.every(sem => expandedSemesters[sem.numero]) ? 'Colapsar Todo' : 'Expandir Todo'}
+          </Button>
         </Box>
 
-        {/* Horarios por semestre */}
-        {semestres.map((semestre, index) => (
-          <Box key={semestre.numero} sx={{ mb: 5 }}>
-            {/* Título del semestre */}
-            <Box sx={{ mb: 3 }}>
-              <Typography 
-                variant="h5" 
-                sx={{ 
-                  fontWeight: 600,
-                  color: theme.palette.primary.main,
-                  mb: 1
-                }}
-              >
+        {/* Accordions por semestre */}
+        {semestres.map((semestre) => (
+          <Accordion
+            key={semestre.numero}
+            expanded={expandedSemesters[semestre.numero] || false}
+            onChange={handleAccordionChange(semestre.numero)}
+            elevation={0}
+            sx={{
+              mb: 2,
+              border: '1px solid',
+              borderColor: 'divider',
+              borderRadius: 2,
+              '&:before': { display: 'none' },
+              overflow: 'hidden',
+            }}
+            TransitionProps={{ timeout: 300 }}
+          >
+            <AccordionSummary
+              expandIcon={<MdExpandMore size={24} color="#fff" />}
+              sx={{
+                bgcolor: 'primary.main',
+                color: '#fff',
+                minHeight: 64,
+                '&:hover': {
+                  bgcolor: 'primary.dark',
+                },
+                '& .MuiAccordionSummary-content': {
+                  my: 1.5,
+                },
+              }}
+            >
+              <Typography variant="h6" sx={{ fontWeight: 600, color: '#fff' }}>
                 {semestre.nombre}
               </Typography>
-              <Divider sx={{ borderColor: theme.palette.primary.main, borderWidth: 2 }} />
-            </Box>
-
-            {/* Componente de horario semanal */}
-            <HorarioSemanal 
-              events={semestre.eventos}
-              materias={semestre.materias}
-              onEventsChange={(newEvents) => handleEventsChange(semestre.numero, newEvents)}
-              onSave={() => handleSaveSemestre(semestre.numero)}
-              showHeader={false}
-            />
-          </Box>
+            </AccordionSummary>
+            <AccordionDetails
+              sx={{
+                p: 3,
+                bgcolor: 'background.paper',
+              }}
+            >
+              <HorarioSemanal 
+                events={semestre.eventos}
+                materias={semestre.materias}
+                onEventsChange={(newEvents) => handleEventsChange(semestre.numero, newEvents)}
+                onSave={() => handleSaveSemestre(semestre.numero)}
+                showHeader={false}
+              />
+            </AccordionDetails>
+          </Accordion>
         ))}
 
         {/* Notificación */}
