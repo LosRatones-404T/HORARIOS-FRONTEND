@@ -11,3 +11,4 @@ export { default as DashboardCard } from './DashboardCard';
 export { default as DashboardMainCard } from './DashboardMainCard';
 export { default as MateriaCard } from './MateriaCard';
 export { default as Notification } from './Notification';
+export { default as HorarioSemanal } from './HorarioSemanal';
