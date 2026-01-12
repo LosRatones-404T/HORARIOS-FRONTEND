@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { 
   Box, 
   Typography, 
@@ -7,9 +7,13 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Button
+  Button,
+  Tabs,
+  Tab,
+  Chip,
+  Paper
 } from '@mui/material';
-import { MdExpandMore } from 'react-icons/md';
+import { MdExpandMore, MdCalendarToday } from 'react-icons/md';
 import HorarioSemanal from '../components/common/HorarioSemanal';
 import MainLayout from '../components/layout/MainLayout';
 import { Notification } from '../components/common';
@@ -20,6 +24,20 @@ import { Notification } from '../components/common';
  */
 const Calendario = () => {
   const theme = useTheme();
+
+  // Tipos de examen disponibles
+  const tiposExamen = [
+    { id: 'parcial1', label: 'Parcial 1' },
+    { id: 'parcial2', label: 'Parcial 2' },
+    { id: 'parcial3', label: 'Parcial 3' },
+    { id: 'ordinario', label: 'Ordinario' },
+    { id: 'extraordinario1', label: 'Extraordinario 1' },
+    { id: 'extraordinario2', label: 'Extraordinario 2' },
+    { id: 'especial', label: 'Especial' },
+  ];
+
+  // Estado del tipo de examen seleccionado (por defecto Parcial 1)
+  const [tipoExamenActual, setTipoExamenActual] = useState('parcial1');
 
   // Estado de notificación
   const [notification, setNotification] = useState({
@@ -32,6 +50,9 @@ const Calendario = () => {
   const [expandedSemesters, setExpandedSemesters] = useState({ 1: true });
 
   // Horarios de exámenes por semestre - Licenciatura en Informática (solo impares)
+  // TODO: Estos datos vendrán del backend filtrados por tipoExamenActual
+  // GET /api/calendario?tipo_examen=parcial1&periodo=2026-1
+  // Cada tipo de examen tendrá sus propios horarios guardados en la BD
   const semestresData = useMemo(() => [
     {
       numero: 1,
@@ -127,6 +148,24 @@ const Calendario = () => {
 
   const [semestres, setSemestres] = useState(semestresData);
 
+  // Efecto para cargar datos cuando cambia el tipo de examen
+  useEffect(() => {
+    // TODO: Aquí se hará la llamada al backend
+    // const fetchHorarios = async () => {
+    //   try {
+    //     const response = await fetch(`/api/calendario?tipo_examen=${tipoExamenActual}&periodo=2026-1`);
+    //     const data = await response.json();
+    //     setSemestres(data.semestres);
+    //   } catch (error) {
+    //     console.error('Error al cargar horarios:', error);
+    //   }
+    // };
+    // fetchHorarios();
+    
+    // Por ahora, solo recargamos los datos mock
+    setSemestres(semestresData);
+  }, [tipoExamenActual, semestresData]);
+
   // Manejar cambios en los eventos de un semestre
   const handleEventsChange = (semestreNumero, newEvents) => {
     setSemestres(prev => prev.map(sem => 
@@ -138,10 +177,11 @@ const Calendario = () => {
 
   // Guardar cambios de un semestre
   const handleSaveSemestre = (semestreNumero) => {
-    console.log(`Guardando cambios del semestre ${semestreNumero}`);
+    // TODO: Aquí se enviará al backend junto con el tipo de examen actual
+    console.log(`Guardando cambios del semestre ${semestreNumero} para ${tipoExamenActual}`);
     setNotification({
       open: true,
-      message: `Cambios guardados exitosamente para el ${semestres.find(s => s.numero === semestreNumero)?.nombre}`,
+      message: `Cambios guardados exitosamente para el ${semestres.find(s => s.numero === semestreNumero)?.nombre} - ${tiposExamen.find(t => t.id === tipoExamenActual)?.label}`,
       severity: 'success'
     });
   };
@@ -173,6 +213,16 @@ const Calendario = () => {
       });
       setExpandedSemesters(newState);
     }
+  };
+
+  // Manejar cambio de tipo de examen
+  const handleChangeTipoExamen = (event, newValue) => {
+    setTipoExamenActual(newValue);
+    setNotification({
+      open: true,
+      message: `Mostrando horarios de ${tiposExamen.find(t => t.id === newValue)?.label}`,
+      severity: 'info'
+    });
   };
 
   return (
@@ -214,6 +264,76 @@ const Calendario = () => {
           >
             {semestres.every(sem => expandedSemesters[sem.numero]) ? 'Colapsar Todo' : 'Expandir Todo'}
           </Button>
+        </Box>
+
+        {/* Selector de Tipo de Examen */}
+        <Paper 
+          elevation={0} 
+          sx={{ 
+            mb: 4, 
+            p: 2,
+            border: '1px solid',
+            borderColor: 'divider',
+            borderRadius: 2,
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <MdCalendarToday size={20} color={theme.palette.primary.main} />
+              <Typography variant="subtitle1" fontWeight={600}>
+                Tipo de Examen
+              </Typography>
+            </Box>
+            <Chip 
+              label="Periodo Actual" 
+              color="primary" 
+              size="small"
+              sx={{ fontWeight: 600 }}
+            />
+          </Box>
+          
+          <Tabs
+            value={tipoExamenActual}
+            onChange={handleChangeTipoExamen}
+            variant="scrollable"
+            scrollButtons="auto"
+            sx={{
+              '& .MuiTabs-indicator': {
+                height: 3,
+                borderRadius: 1.5,
+              },
+              '& .MuiTab-root': {
+                textTransform: 'none',
+                fontWeight: 500,
+                fontSize: '0.9375rem',
+                minHeight: 48,
+                '&.Mui-selected': {
+                  fontWeight: 600,
+                },
+              },
+            }}
+          >
+            {tiposExamen.map((tipo) => (
+              <Tab 
+                key={tipo.id} 
+                label={tipo.label} 
+                value={tipo.id}
+              />
+            ))}
+          </Tabs>
+        </Paper>
+
+        {/* Indicador de tipo de examen actual */}
+        <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Typography variant="body2" color="text.secondary">
+            Mostrando horarios de:
+          </Typography>
+          <Chip 
+            label={tiposExamen.find(t => t.id === tipoExamenActual)?.label} 
+            color="primary"
+            variant="outlined"
+            size="small"
+          />
         </Box>
 
         {/* Accordions por semestre */}
