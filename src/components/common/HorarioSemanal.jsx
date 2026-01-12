@@ -359,6 +359,7 @@ const HorarioSemanal = ({
             onClick={onSave}
             sx={{
               bgcolor: 'success.main',
+              color: theme.palette.mode === 'dark' ? '#fff' : 'success.contrastText',
               '&:hover': {
                 bgcolor: 'success.dark',
               },
