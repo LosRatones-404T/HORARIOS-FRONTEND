@@ -1,6 +1,16 @@
-import { useState } from 'react';
-import { Box, Typography, Container, useTheme, Divider, Button } from '@mui/material';
-import { MdSave } from 'react-icons/md';
+import { useState, useMemo } from 'react';
+import { 
+  Box, 
+  Typography, 
+  Container, 
+  useTheme, 
+  Divider, 
+  Button,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from '@mui/material';
+import { MdSave, MdExpandMore } from 'react-icons/md';
 import MateriaCard from '../components/common/MateriaCard';
 import Notification from '../components/common/Notification';
 import MainLayout from '../components/layout/MainLayout';
@@ -12,8 +22,8 @@ import MainLayout from '../components/layout/MainLayout';
 const Preferencias = () => {
   const theme = useTheme();
 
-  // Datos de materias por semestre para la carrera de Informática
-  const semestresIniciales = [
+  // Datos de materias por semestre para la carrera de Informática (memoizado)
+  const semestresIniciales = useMemo(() => [
     {
       numero: 1,
       nombre: 'PRIMER SEMESTRE',
@@ -55,52 +65,6 @@ const Preferencias = () => {
           profesor: 'Dr. Fernando Castillo',
           aplicador: '',
           sinodales: ['Dr. Ricardo Méndez', 'Mtra. Sofía Herrera'],
-          modalidad: 'Digital',
-          academia: true
-        }
-      ]
-    },
-    {
-      numero: 2,
-      nombre: 'SEGUNDO SEMESTRE',
-      materias: [
-        {
-          nombre: 'Programación Estructurada',
-          profesor: 'Dr. Alberto Gutiérrez',
-          aplicador: '',
-          sinodales: ['Mtro. Jorge Vega', 'Mtra. Diana Cruz'],
-          modalidad: 'Digital',
-          academia: true
-        },
-        {
-          nombre: 'Fundamentos de Electrónica',
-          profesor: 'Ing. Carmen Delgado',
-          aplicador: '',
-          sinodales: ['Dr. Luis Navarro'],
-          modalidad: 'Tradicional',
-          academia: false
-        },
-        {
-          nombre: 'Teoría General de Sistemas',
-          profesor: 'Dr. Héctor Ortiz',
-          aplicador: '',
-          sinodales: ['Dra. Gabriela Rojas', 'Mtro. Andrés Silva'],
-          modalidad: 'Digital',
-          academia: true
-        },
-        {
-          nombre: 'Matemáticas Discretas',
-          profesor: 'Dra. Isabel Vargas',
-          aplicador: '',
-          sinodales: ['Dr. Francisco Medina'],
-          modalidad: 'Digital',
-          academia: true
-        },
-        {
-          nombre: 'Cálculo II',
-          profesor: 'Dr. Sergio Ramos',
-          aplicador: '',
-          sinodales: ['Dra. Mónica Flores', 'Dr. Antonio Reyes'],
           modalidad: 'Digital',
           academia: true
         }
@@ -153,52 +117,6 @@ const Preferencias = () => {
       ]
     },
     {
-      numero: 4,
-      nombre: 'CUARTO SEMESTRE',
-      materias: [
-        {
-          nombre: 'Paradigmas de Programación I',
-          profesor: 'Dr. Guillermo Santos',
-          aplicador: '',
-          sinodales: ['Mtro. Mario Guzmán', 'Dra. Rosa Núñez'],
-          modalidad: 'Digital',
-          academia: true
-        },
-        {
-          nombre: 'Arquitectura de Computadoras',
-          profesor: 'Ing. Alejandro Bravo',
-          aplicador: '',
-          sinodales: ['Dr. Ernesto Chávez'],
-          modalidad: 'Tradicional',
-          academia: true
-        },
-        {
-          nombre: 'Bases de Datos I',
-          profesor: 'Dra. Norma Fuentes',
-          aplicador: '',
-          sinodales: ['Mtro. Víctor Escobar', 'Mtra. Adriana Mejía'],
-          modalidad: 'Digital',
-          academia: true
-        },
-        {
-          nombre: 'Programación de Sistemas',
-          profesor: 'Dr. Arturo Maldonado',
-          aplicador: '',
-          sinodales: ['Dra. Teresa Valencia'],
-          modalidad: 'Digital',
-          academia: true
-        },
-        {
-          nombre: 'Métodos Numéricos',
-          profesor: 'Dr. Ignacio Peña',
-          aplicador: '',
-          sinodales: ['Dra. Alma Ibarra', 'Dr. Rodrigo Carrillo'],
-          modalidad: 'Digital',
-          academia: true
-        }
-      ]
-    },
-    {
       numero: 5,
       nombre: 'QUINTO SEMESTRE',
       materias: [
@@ -240,52 +158,6 @@ const Preferencias = () => {
           aplicador: '',
           sinodales: ['Mtro. Samuel Gallegos', 'Mtra. Fernanda Ugalde'],
           modalidad: 'Tradicional',
-          academia: false
-        }
-      ]
-    },
-    {
-      numero: 6,
-      nombre: 'SEXTO SEMESTRE',
-      materias: [
-        {
-          nombre: 'Tecnologías Web I',
-          profesor: 'Dr. Óscar Villanueva',
-          aplicador: '',
-          sinodales: ['Mtra. Paola Mendoza', 'Mtro. Ramiro Cabrera'],
-          modalidad: 'Digital',
-          academia: true
-        },
-        {
-          nombre: 'Redes II',
-          profesor: 'Ing. Alfredo Palacios',
-          aplicador: '',
-          sinodales: ['Dr. Jaime Montoya'],
-          modalidad: 'Tradicional',
-          academia: true
-        },
-        {
-          nombre: 'Ingeniería de Software I',
-          profesor: 'Dra. Lorena Barrios',
-          aplicador: '',
-          sinodales: ['Dr. Manuel Estrada', 'Mtra. Brenda Quintero'],
-          modalidad: 'Digital',
-          academia: true
-        },
-        {
-          nombre: 'Sistemas Operativos de Red',
-          profesor: 'Dr. Rubén Zamora',
-          aplicador: '',
-          sinodales: ['Dra. Cristina Velázquez'],
-          modalidad: 'Digital',
-          academia: true
-        },
-        {
-          nombre: 'Programación de Dispositivos Móviles',
-          profesor: 'Mtro. Iván Solís',
-          aplicador: '',
-          sinodales: ['Mtra. Jazmin Padilla', 'Mtro. Esteban Olvera'],
-          modalidad: 'Digital',
           academia: false
         }
       ]
@@ -337,55 +209,58 @@ const Preferencias = () => {
       ]
     },
     {
-      numero: 8,
-      nombre: 'OCTAVO SEMESTRE',
+      numero: 9,
+      nombre: 'NOVENO SEMESTRE',
       materias: [
         {
-          nombre: 'Sistemas Distribuidos',
-          profesor: 'Dr. Sebastián Pacheco',
+          nombre: 'Inteligencia Artificial',
+          profesor: 'Dr. Xavier Montes',
           aplicador: '',
-          sinodales: ['Mtra. Victoria Soto', 'Dr. Tomás Figueroa'],
+          sinodales: ['Dra. Raquel Orozco', 'Mtro. Augusto Parra'],
           modalidad: 'Digital',
           academia: true
         },
         {
-          nombre: 'Calidad de Software',
-          profesor: 'Dra. Amparo Santillán',
+          nombre: 'Seguridad Informática',
+          profesor: 'Dr. Leonardo Bermúdez',
           aplicador: '',
-          sinodales: ['Mtro. Édgar Prieto'],
+          sinodales: ['Dra. Mireya Galván'],
           modalidad: 'Digital',
           academia: true
         },
         {
-          nombre: 'Interacción Humano-Computadora',
-          profesor: 'Mtra. Natalia Molina',
+          nombre: 'Administración de Proyectos',
+          profesor: 'Mtra. Ximena Salinas',
           aplicador: '',
-          sinodales: ['Dr. Luciano Badillo', 'Mtra. Esmeralda Quiroz'],
+          sinodales: ['Lic. Gustavo Macías', 'Mtra. Liliana Robles'],
           modalidad: 'Tradicional',
           academia: false
         },
         {
-          nombre: 'Inteligencia de Negocios',
-          profesor: 'Dr. Adrián Cano',
+          nombre: 'Cómputo en la Nube',
+          profesor: 'Dr. Maximiliano Aranda',
           aplicador: '',
-          sinodales: ['Dra. Magdalena Duran'],
+          sinodales: ['Dr. Octavio Serrano'],
           modalidad: 'Digital',
           academia: true
         },
         {
-          nombre: 'Investigación de Operaciones',
-          profesor: 'Dr. Nicolás Tapia',
+          nombre: 'Auditoría Informática',
+          profesor: 'Lic. Flor Mariana Cortés',
           aplicador: '',
-          sinodales: ['Dra. Gloria Pedraza', 'Dr. Julio Vázquez'],
-          modalidad: 'Digital',
-          academia: true
+          sinodales: ['Lic. Salvador Ochoa', 'Mtra. Nadia Suárez'],
+          modalidad: 'Tradicional',
+          academia: false
         }
       ]
     }
-  ];
+  ], []);
 
   // Estado editable de las materias
   const [semestres, setSemestres] = useState(semestresIniciales);
+  
+  // Estado para manejar qué semestres están expandidos (solo el primero al inicio)
+  const [expandedSemesters, setExpandedSemesters] = useState([0]);
   
   // Estado para notificaciones
   const [notification, setNotification] = useState({ 
@@ -406,17 +281,36 @@ const Preferencias = () => {
     });
   };
 
-  // Función para guardar las preferencias
-  const handleSavePreferences = () => {
-    console.log('Guardando preferencias:', semestres);
-    // Aquí puedes agregar la lógica para guardar en el backend
+  // Función para guardar las preferencias de un semestre específico
+  const handleSaveSemester = (semestreIndex) => {
+    console.log(`Guardando cambios del semestre ${semestreIndex + 1}`);
     
     // Mostrar notificación de éxito
     setNotification({
       open: true,
-      message: 'Preferencias guardadas exitosamente',
+      message: `Cambios guardados exitosamente para ${semestres[semestreIndex].nombre}`,
       severity: 'success'
     });
+  };
+
+  // Manejar expansión/colapso de semestre
+  const handleAccordionChange = (index) => {
+    setExpandedSemesters(prev => 
+      prev.includes(index) 
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    );
+  };
+
+  // Expandir o colapsar todos los semestres
+  const handleToggleAll = () => {
+    if (expandedSemesters.length === semestres.length) {
+      // Si todos están expandidos, colapsar todos
+      setExpandedSemesters([]);
+    } else {
+      // Expandir todos
+      setExpandedSemesters(semestres.map((_, index) => index));
+    }
   };
 
   return (
@@ -433,7 +327,7 @@ const Preferencias = () => {
                 mb: 1
               }}
             >
-              Preferencias de Materias
+              Preferencias de Exámenes
             </Typography>
             <Typography 
               variant="body1" 
@@ -441,70 +335,119 @@ const Preferencias = () => {
                 color: theme.palette.text.secondary 
               }}
             >
-              Licenciatura en Informática - Gestión de exámenes por semestre
+              Configura las preferencias de examen para cada materia de la Licenciatura en Informática
             </Typography>
           </Box>
           <Button
-            variant="contained"
-            startIcon={<MdSave />}
-            onClick={handleSavePreferences}
+            variant="outlined"
+            onClick={handleToggleAll}
             sx={{
-              bgcolor: theme.palette.success.main,
+              borderColor: theme.palette.primary.main,
+              color: theme.palette.primary.main,
               '&:hover': {
-                bgcolor: theme.palette.success.dark,
+                borderColor: theme.palette.primary.dark,
+                bgcolor: theme.palette.primary.main + '10',
               },
             }}
           >
-            Guardar Cambios
+            {expandedSemesters.length === semestres.length ? 'Colapsar Todo' : 'Expandir Todo'}
           </Button>
         </Box>
 
-        {/* Semestres */}
+        {/* Semestres como Accordions */}
         {semestres.map((semestre, semestreIndex) => (
-          <Box key={semestre.numero} sx={{ mb: 5 }}>
-            {/* Título del Semestre */}
-            <Box sx={{ mb: 3 }}>
-              <Typography 
-                variant="h5" 
-                sx={{ 
-                  fontWeight: 600,
-                  color: theme.palette.primary.main,
-                  mb: 1
-                }}
-              >
-                {semestre.nombre}
-              </Typography>
-              <Divider sx={{ borderColor: theme.palette.primary.main, borderWidth: 2 }} />
-            </Box>
-
-            {/* Grid de Materias */}
-            <Box
+          <Accordion 
+            key={semestre.numero}
+            expanded={expandedSemesters.includes(semestreIndex)}
+            onChange={() => handleAccordionChange(semestreIndex)}
+            TransitionProps={{ timeout: 300 }}
+            sx={{
+              mb: 2,
+              '&:before': {
+                display: 'none',
+              },
+              boxShadow: 2,
+              borderRadius: 1,
+              transition: 'all 0.2s ease',
+              '&.Mui-expanded': {
+                margin: '0 0 16px 0',
+              },
+            }}
+          >
+            <AccordionSummary
+              expandIcon={<MdExpandMore size={24} style={{ color: '#fff' }} />}
               sx={{
-                display: 'grid',
-                gridTemplateColumns: {
-                  xs: '1fr',
-                  sm: 'repeat(2, 1fr)',
-                  md: 'repeat(2, 1fr)',
-                  lg: 'repeat(3, 1fr)',
-                  xl: 'repeat(4, 1fr)',
+                bgcolor: theme.palette.primary.main,
+                color: '#fff',
+                borderRadius: 1,
+                transition: 'all 0.2s ease',
+                '&.Mui-expanded': {
+                  minHeight: 56,
+                  borderBottomLeftRadius: 0,
+                  borderBottomRightRadius: 0,
                 },
-                gap: 2,
+                '& .MuiAccordionSummary-content': {
+                  my: 1.5,
+                },
+                '& .MuiAccordionSummary-expandIconWrapper': {
+                  color: '#fff',
+                },
               }}
             >
-              {semestre.materias.map((materia, materiaIndex) => (
-                <MateriaCard
-                  key={materiaIndex}
-                  nombre={materia.nombre}
-                  profesor={materia.profesor}
-                  aplicador={materia.aplicador}
-                  sinodales={materia.sinodales}
-                  modalidad={materia.modalidad}
-                  academia={materia.academia}
-                  onChange={(field, value) => handleMateriaChange(semestreIndex, materiaIndex, field, value)}
-                />
-              ))}
-            </Box>
-          </Box>
+              <Typography variant="h6" sx={{ fontWeight: 600, color: '#fff' }}>
+                {semestre.nombre}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails sx={{ p: 3 }}>
+              {/* Grid de Materias */}
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: {
+                    xs: '1fr',
+                    sm: 'repeat(2, 1fr)',
+                    md: 'repeat(2, 1fr)',
+                    lg: 'repeat(3, 1fr)',
+                    xl: 'repeat(4, 1fr)',
+                  },
+                  gap: 2,
+                  mb: 3,
+                }}
+              >
+                {semestre.materias.map((materia, materiaIndex) => (
+                  <MateriaCard
+                    key={materiaIndex}
+                    nombre={materia.nombre}
+                    profesor={materia.profesor}
+                    aplicador={materia.aplicador}
+                    sinodales={materia.sinodales}
+                    modalidad={materia.modalidad}
+                    academia={materia.academia}
+                    onChange={(field, value) => handleMateriaChange(semestreIndex, materiaIndex, field, value)}
+                  />
+                ))}
+              </Box>
+
+              {/* Botón Guardar del Semestre */}
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button
+                  variant="contained"
+                  startIcon={<MdSave />}
+                  onClick={() => handleSaveSemester(semestreIndex)}
+                  sx={{
+                    bgcolor: theme.palette.success.main,
+                    color: theme.palette.mode === 'dark' ? '#fff' : theme.palette.success.contrastText,
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      bgcolor: theme.palette.success.dark,
+                    },
+                  }}
+                >
+                  Guardar {semestre.nombre}
+                </Button>
+              </Box>
+            </AccordionDetails>
+          </Accordion>
         ))}
       </Container>
 
