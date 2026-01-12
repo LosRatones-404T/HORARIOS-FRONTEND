@@ -20,6 +20,7 @@ const Preferencias = () => {
         {
           nombre: 'Diseño Estructurado de Algoritmos',
           profesor: 'Dr. Juan Pérez García',
+          aplicador: '',
           sinodales: ['Dra. María López', 'Mtro. Carlos Ruiz'],
           modalidad: 'Digital',
           academia: true
@@ -27,6 +28,7 @@ const Preferencias = () => {
         {
           nombre: 'Administración',
           profesor: 'Mtra. Ana González Martínez',
+          aplicador: '',
           sinodales: ['Lic. Pedro Sánchez'],
           modalidad: 'Tradicional',
           academia: false
@@ -34,6 +36,7 @@ const Preferencias = () => {
         {
           nombre: 'Historia del Pensamiento Filosófico',
           profesor: 'Dr. Roberto Fernández',
+          aplicador: '',
           sinodales: ['Dra. Laura Jiménez', 'Mtro. José Ramírez'],
           modalidad: 'Digital',
           academia: true
@@ -41,6 +44,7 @@ const Preferencias = () => {
         {
           nombre: 'Lógica Matemática',
           profesor: 'Dr. Miguel Ángel Torres',
+          aplicador: '',
           sinodales: ['Dra. Patricia Morales'],
           modalidad: 'Digital',
           academia: true
@@ -48,6 +52,7 @@ const Preferencias = () => {
         {
           nombre: 'Cálculo I',
           profesor: 'Dr. Fernando Castillo',
+          aplicador: '',
           sinodales: ['Dr. Ricardo Méndez', 'Mtra. Sofía Herrera'],
           modalidad: 'Digital',
           academia: true
@@ -61,6 +66,7 @@ const Preferencias = () => {
         {
           nombre: 'Programación Estructurada',
           profesor: 'Dr. Alberto Gutiérrez',
+          aplicador: '',
           sinodales: ['Mtro. Jorge Vega', 'Mtra. Diana Cruz'],
           modalidad: 'Digital',
           academia: true
@@ -68,6 +74,7 @@ const Preferencias = () => {
         {
           nombre: 'Fundamentos de Electrónica',
           profesor: 'Ing. Carmen Delgado',
+          aplicador: '',
           sinodales: ['Dr. Luis Navarro'],
           modalidad: 'Tradicional',
           academia: false
@@ -75,6 +82,7 @@ const Preferencias = () => {
         {
           nombre: 'Teoría General de Sistemas',
           profesor: 'Dr. Héctor Ortiz',
+          aplicador: '',
           sinodales: ['Dra. Gabriela Rojas', 'Mtro. Andrés Silva'],
           modalidad: 'Digital',
           academia: true
@@ -82,6 +90,7 @@ const Preferencias = () => {
         {
           nombre: 'Matemáticas Discretas',
           profesor: 'Dra. Isabel Vargas',
+          aplicador: '',
           sinodales: ['Dr. Francisco Medina'],
           modalidad: 'Digital',
           academia: true
@@ -89,6 +98,7 @@ const Preferencias = () => {
         {
           nombre: 'Cálculo II',
           profesor: 'Dr. Sergio Ramos',
+          aplicador: '',
           sinodales: ['Dra. Mónica Flores', 'Dr. Antonio Reyes'],
           modalidad: 'Digital',
           academia: true
@@ -102,6 +112,7 @@ const Preferencias = () => {
         {
           nombre: 'Estructuras de Datos',
           profesor: 'Dr. Raúl Domínguez',
+          aplicador: '',
           sinodales: ['Mtro. Javier Cortés', 'Mtra. Beatriz Luna'],
           modalidad: 'Digital',
           academia: true
@@ -109,6 +120,7 @@ const Preferencias = () => {
         {
           nombre: 'Electrónica Digital',
           profesor: 'Ing. Eduardo Castro',
+          aplicador: '',
           sinodales: ['Dr. Pablo Aguilar'],
           modalidad: 'Tradicional',
           academia: false
@@ -116,6 +128,7 @@ const Preferencias = () => {
         {
           nombre: 'Contabilidad y Finanzas',
           profesor: 'Lic. Mariana Salazar',
+          aplicador: '',
           sinodales: ['Mtra. Claudia Paredes', 'Lic. Enrique Benítez'],
           modalidad: 'Digital',
           academia: false
@@ -123,6 +136,7 @@ const Preferencias = () => {
         {
           nombre: 'Teoría de Autómatas',
           profesor: 'Dr. Daniel Ochoa',
+          aplicador: '',
           sinodales: ['Dra. Liliana Campos'],
           modalidad: 'Digital',
           academia: true
@@ -130,6 +144,7 @@ const Preferencias = () => {
         {
           nombre: 'Álgebra Lineal',
           profesor: 'Dra. Verónica Ponce',
+          aplicador: '',
           sinodales: ['Dr. Armando León', 'Mtra. Cecilia Ríos'],
           modalidad: 'Digital',
           academia: true
@@ -143,6 +158,7 @@ const Preferencias = () => {
         {
           nombre: 'Paradigmas de Programación I',
           profesor: 'Dr. Guillermo Santos',
+          aplicador: '',
           sinodales: ['Mtro. Mario Guzmán', 'Dra. Rosa Núñez'],
           modalidad: 'Digital',
           academia: true
@@ -150,6 +166,7 @@ const Preferencias = () => {
         {
           nombre: 'Arquitectura de Computadoras',
           profesor: 'Ing. Alejandro Bravo',
+          aplicador: '',
           sinodales: ['Dr. Ernesto Chávez'],
           modalidad: 'Tradicional',
           academia: true
@@ -157,6 +174,7 @@ const Preferencias = () => {
         {
           nombre: 'Bases de Datos I',
           profesor: 'Dra. Norma Fuentes',
+          aplicador: '',
           sinodales: ['Mtro. Víctor Escobar', 'Mtra. Adriana Mejía'],
           modalidad: 'Digital',
           academia: true
@@ -164,6 +182,7 @@ const Preferencias = () => {
         {
           nombre: 'Programación de Sistemas',
           profesor: 'Dr. Arturo Maldonado',
+          aplicador: '',
           sinodales: ['Dra. Teresa Valencia'],
           modalidad: 'Digital',
           academia: true
@@ -171,6 +190,7 @@ const Preferencias = () => {
         {
           nombre: 'Métodos Numéricos',
           profesor: 'Dr. Ignacio Peña',
+          aplicador: '',
           sinodales: ['Dra. Alma Ibarra', 'Dr. Rodrigo Carrillo'],
           modalidad: 'Digital',
           academia: true
@@ -184,6 +204,7 @@ const Preferencias = () => {
         {
           nombre: 'Paradigmas de Programación II',
           profesor: 'Dr. Oscar Montes',
+          aplicador: '',
           sinodales: ['Mtra. Silvia Ortega', 'Mtro. Felipe Márquez'],
           modalidad: 'Digital',
           academia: true
@@ -191,6 +212,7 @@ const Preferencias = () => {
         {
           nombre: 'Redes I',
           profesor: 'Ing. Mauricio Acosta',
+          aplicador: '',
           sinodales: ['Dr. Gerardo Lara'],
           modalidad: 'Tradicional',
           academia: true
@@ -198,6 +220,7 @@ const Preferencias = () => {
         {
           nombre: 'Bases de Datos II',
           profesor: 'Dra. Elena Cordero',
+          aplicador: '',
           sinodales: ['Mtro. Hugo Sandoval', 'Dra. Yolanda Cervantes'],
           modalidad: 'Digital',
           academia: true
@@ -205,6 +228,7 @@ const Preferencias = () => {
         {
           nombre: 'Fundamentos de Sistemas Operativos',
           profesor: 'Dr. César Espinosa',
+          aplicador: '',
           sinodales: ['Dra. Karla Miranda'],
           modalidad: 'Digital',
           academia: true
@@ -212,6 +236,7 @@ const Preferencias = () => {
         {
           nombre: 'Diseño Web',
           profesor: 'Mtra. Daniela Rosales',
+          aplicador: '',
           sinodales: ['Mtro. Samuel Gallegos', 'Mtra. Fernanda Ugalde'],
           modalidad: 'Tradicional',
           academia: false
@@ -225,6 +250,7 @@ const Preferencias = () => {
         {
           nombre: 'Tecnologías Web I',
           profesor: 'Dr. Óscar Villanueva',
+          aplicador: '',
           sinodales: ['Mtra. Paola Mendoza', 'Mtro. Ramiro Cabrera'],
           modalidad: 'Digital',
           academia: true
@@ -232,6 +258,7 @@ const Preferencias = () => {
         {
           nombre: 'Redes II',
           profesor: 'Ing. Alfredo Palacios',
+          aplicador: '',
           sinodales: ['Dr. Jaime Montoya'],
           modalidad: 'Tradicional',
           academia: true
@@ -239,6 +266,7 @@ const Preferencias = () => {
         {
           nombre: 'Ingeniería de Software I',
           profesor: 'Dra. Lorena Barrios',
+          aplicador: '',
           sinodales: ['Dr. Manuel Estrada', 'Mtra. Brenda Quintero'],
           modalidad: 'Digital',
           academia: true
@@ -246,6 +274,7 @@ const Preferencias = () => {
         {
           nombre: 'Sistemas Operativos de Red',
           profesor: 'Dr. Rubén Zamora',
+          aplicador: '',
           sinodales: ['Dra. Cristina Velázquez'],
           modalidad: 'Digital',
           academia: true
@@ -253,6 +282,7 @@ const Preferencias = () => {
         {
           nombre: 'Programación de Dispositivos Móviles',
           profesor: 'Mtro. Iván Solís',
+          aplicador: '',
           sinodales: ['Mtra. Jazmin Padilla', 'Mtro. Esteban Olvera'],
           modalidad: 'Digital',
           academia: false
@@ -266,6 +296,7 @@ const Preferencias = () => {
         {
           nombre: 'Tecnologías Web II',
           profesor: 'Dr. Marcos Arellano',
+          aplicador: '',
           sinodales: ['Mtro. Omar Alvarado', 'Mtra. Regina Santos'],
           modalidad: 'Digital',
           academia: true
@@ -273,6 +304,7 @@ const Preferencias = () => {
         {
           nombre: 'Bases de Datos Avanzadas',
           profesor: 'Dra. Pilar Rangel',
+          aplicador: '',
           sinodales: ['Dr. Gonzalo Trejo'],
           modalidad: 'Digital',
           academia: true
@@ -280,6 +312,7 @@ const Preferencias = () => {
         {
           nombre: 'Ingeniería de Software II',
           profesor: 'Dr. Benjamín Camacho',
+          aplicador: '',
           sinodales: ['Dra. Leticia Arriaga', 'Mtro. Saúl Hidalgo'],
           modalidad: 'Digital',
           academia: true
@@ -287,6 +320,7 @@ const Preferencias = () => {
         {
           nombre: 'Probabilidad y Estadística',
           profesor: 'Dra. Susana Cárdenas',
+          aplicador: '',
           sinodales: ['Dr. Emilio Zúñiga'],
           modalidad: 'Digital',
           academia: true
@@ -294,6 +328,7 @@ const Preferencias = () => {
         {
           nombre: 'Derecho y Legislación en Informática',
           profesor: 'Lic. Leonel Arias',
+          aplicador: '',
           sinodales: ['Lic. Angélica Duarte', 'Lic. Martín Guerra'],
           modalidad: 'Tradicional',
           academia: false
@@ -307,6 +342,7 @@ const Preferencias = () => {
         {
           nombre: 'Sistemas Distribuidos',
           profesor: 'Dr. Sebastián Pacheco',
+          aplicador: '',
           sinodales: ['Mtra. Victoria Soto', 'Dr. Tomás Figueroa'],
           modalidad: 'Digital',
           academia: true
@@ -314,6 +350,7 @@ const Preferencias = () => {
         {
           nombre: 'Calidad de Software',
           profesor: 'Dra. Amparo Santillán',
+          aplicador: '',
           sinodales: ['Mtro. Édgar Prieto'],
           modalidad: 'Digital',
           academia: true
@@ -321,6 +358,7 @@ const Preferencias = () => {
         {
           nombre: 'Interacción Humano-Computadora',
           profesor: 'Mtra. Natalia Molina',
+          aplicador: '',
           sinodales: ['Dr. Luciano Badillo', 'Mtra. Esmeralda Quiroz'],
           modalidad: 'Tradicional',
           academia: false
@@ -328,6 +366,7 @@ const Preferencias = () => {
         {
           nombre: 'Inteligencia de Negocios',
           profesor: 'Dr. Adrián Cano',
+          aplicador: '',
           sinodales: ['Dra. Magdalena Duran'],
           modalidad: 'Digital',
           academia: true
@@ -335,6 +374,7 @@ const Preferencias = () => {
         {
           nombre: 'Investigación de Operaciones',
           profesor: 'Dr. Nicolás Tapia',
+          aplicador: '',
           sinodales: ['Dra. Gloria Pedraza', 'Dr. Julio Vázquez'],
           modalidad: 'Digital',
           academia: true
@@ -442,6 +482,7 @@ const Preferencias = () => {
                   key={materiaIndex}
                   nombre={materia.nombre}
                   profesor={materia.profesor}
+                  aplicador={materia.aplicador}
                   sinodales={materia.sinodales}
                   modalidad={materia.modalidad}
                   academia={materia.academia}
@@ -457,4 +498,5 @@ const Preferencias = () => {
 };
 
 export default Preferencias;
+
 

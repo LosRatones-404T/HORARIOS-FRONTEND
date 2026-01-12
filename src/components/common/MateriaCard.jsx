@@ -10,6 +10,7 @@ import { useState } from 'react';
 const MateriaCard = ({ 
   nombre,
   profesor,
+  aplicador = '',
   sinodales = [],
   modalidad,
   academia = false,
@@ -132,6 +133,48 @@ const MateriaCard = ({
           >
             <MenuItem value="" disabled>
               <em>Seleccionar profesor</em>
+            </MenuItem>
+            {profesoresDisponibles.map((prof, index) => (
+              <MenuItem key={index} value={prof}>
+                {prof}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
+
+      {/* Aplicador */}
+      <Box sx={{ mb: 2 }}>
+        <Typography 
+          variant="body2" 
+          sx={{ 
+            fontWeight: 600, 
+            color: theme.palette.text.primary,
+            mb: 1,
+            fontSize: '0.875rem'
+          }}
+        >
+          Aplicador
+        </Typography>
+        <FormControl fullWidth size="small">
+          <Select
+            value={aplicador}
+            onChange={(e) => handleFieldChange('aplicador', e.target.value)}
+            displayEmpty
+            sx={{
+              bgcolor: theme.palette.mode === 'light' 
+                ? theme.palette.background.default 
+                : theme.palette.background.default,
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: theme.palette.divider,
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: theme.palette.primary.main,
+              },
+            }}
+          >
+            <MenuItem value="">
+              <em>Mismo que el profesor</em>
             </MenuItem>
             {profesoresDisponibles.map((prof, index) => (
               <MenuItem key={index} value={prof}>
@@ -330,6 +373,7 @@ const MateriaCard = ({
 MateriaCard.propTypes = {
   nombre: PropTypes.string.isRequired,
   profesor: PropTypes.string.isRequired,
+  aplicador: PropTypes.string,
   sinodales: PropTypes.arrayOf(PropTypes.string),
   modalidad: PropTypes.oneOf(['Digital', 'Tradicional']).isRequired,
   academia: PropTypes.bool,
