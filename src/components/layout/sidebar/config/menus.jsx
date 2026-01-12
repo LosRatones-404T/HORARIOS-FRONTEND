@@ -11,31 +11,21 @@ import { MdCalendarMonth } from "react-icons/md"; //Icono de Calendario
 
 export const menuOptions = {
   admin: [
-    { label: "Dashboard", icon: <FiHome/>, path: "/dashboard" },
+    { label: "Home", icon: <FiHome/>, path: "/home" },
     { label: "Profesores", icon: <LuUser/>, path: "/profesores" },
-    { label: "Materias", icon: <GiBookshelf/>, path: "/materias" },
     { label: "Aulas", icon: <LuSchool/>, path: "/aulas" },
-    { label: "Horarios", icon: <TbCalendarCheck/>, path: "/horarios" },
-    { label: "Calendario", icon: <MdCalendarMonth/>, path: "/calendario" },
-    { label: "Preferencias", icon: <MdOutlineGrade/>, path: "/preferencias" },
-    { label: "Ajustes", icon: <LuSettings/>, path: "/configuracion" },
+    { label: "Materias", icon: <GiBookshelf/>, path: "/materias" },
   ],
   
   jefe: [
-    { label: "Dashboard", icon: <FiHome/>, path: "/dashboard" },
-    { label: "Generar", icon: <LuCalendarCog/>, path: "/generar" },
+    { label: "Home", icon: <FiHome/>, path: "/home" },
+    { label: "Preferencias", icon: <MdOutlineGrade/>, path: "/preferencias" },
     { label: "Horarios", icon: <TbCalendarCheck/>, path: "/horarios" },
     { label: "Calendario", icon: <MdCalendarMonth/>, path: "/calendario" },
-    { label: "Preferencias", icon: <MdOutlineGrade/>, path: "/preferencias" },
-    { label: "Ajustes", icon: <LuSettings/>, path: "/configuracion" },
   ],
   
   secretaria: [
-    { label: "Dashboard", icon: <FiHome/>, path: "/dashboard" },
-    { label: "Generar", icon: <LuCalendarCog/>, path: "/generar" },
-    { label: "Horarios", icon: <TbCalendarCheck/>, path: "/horarios" },
+    { label: "Home", icon: <FiHome/>, path: "/home" },
     { label: "Calendario", icon: <MdCalendarMonth/>, path: "/calendario" },
-    { label: "Preferencias", icon: <MdOutlineGrade/>, path: "/preferencias" },
-    { label: "Ajustes", icon: <LuSettings/>, path: "/configuracion" },
   ],
 };
