@@ -3,7 +3,7 @@ import Home from '../screens/Home.jsx';
 import Login from '../screens/Login.jsx';
 import ForgotPassword from '../screens/ForgotPassword.jsx';
 import NotFound404 from '../screens/NotFound404.jsx';
-import Horarios from '../screens/Horarios.jsx';
+import Generar from '../screens/Generar.jsx';
 import Preferencias from '../screens/Preferencias.jsx';
 import Calendario from '../screens/Calendario.jsx';
 
@@ -25,7 +25,7 @@ const Router = () => {
         <Route path="/aulas" element={<Home />} />
         
         {/* Rutas compartidas */}
-        <Route path="/horarios" element={<Horarios />} />
+        <Route path="/generar" element={<Generar />} />
         <Route path="/calendario" element={<Calendario />} />
         <Route path="/preferencias" element={<Preferencias />} />
         <Route path="/generar" element={<Home />} />

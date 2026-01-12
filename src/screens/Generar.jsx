@@ -1,0 +1,504 @@
+import { useState } from 'react';
+import { 
+  Box, 
+  Typography, 
+  Button,
+  Card,
+  CardContent,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Chip,
+  Stepper,
+  Step,
+  StepLabel,
+  Paper,
+  Alert,
+  TextField,
+  useTheme,
+  Divider,
+  Stack,
+} from '@mui/material';
+import { 
+  MdCheckCircle, 
+  MdError, 
+  MdSchedule, 
+  MdSend,
+  MdAutorenew,
+  MdSettings,
+  MdCalendarMonth,
+  MdWarning,
+} from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
+import MainLayout from '../components/layout/MainLayout';
+import Notification from '../components/common/Notification';
+
+/**
+ * Estados del horario generado
+ */
+const ESTADOS = {
+  BORRADOR: 'borrador',
+  ENVIADO: 'enviado',
+  EN_REVISION: 'en_revision',
+  REVISADO: 'revisado',
+  APROBADO: 'aprobado',
+  RECHAZADO: 'rechazado',
+};
+
+const ESTADO_LABELS = {
+  [ESTADOS.BORRADOR]: 'Borrador',
+  [ESTADOS.ENVIADO]: 'Enviado',
+  [ESTADOS.EN_REVISION]: 'En Revisión',
+  [ESTADOS.REVISADO]: 'Revisado',
+  [ESTADOS.APROBADO]: 'Aprobado',
+  [ESTADOS.RECHAZADO]: 'Rechazado',
+};
+
+const ESTADO_COLORS = {
+  [ESTADOS.BORRADOR]: 'default',
+  [ESTADOS.ENVIADO]: 'info',
+  [ESTADOS.EN_REVISION]: 'warning',
+  [ESTADOS.REVISADO]: 'primary',
+  [ESTADOS.APROBADO]: 'success',
+  [ESTADOS.RECHAZADO]: 'error',
+};
+
+function Generar() {
+  const theme = useTheme();
+  const navigate = useNavigate();
+  
+  // Estados
+  const [horarioGenerado, setHorarioGenerado] = useState(null);
+  const [estadoActual, setEstadoActual] = useState(null);
+  const [openDialogGenerar, setOpenDialogGenerar] = useState(false);
+  const [openDialogEnviar, setOpenDialogEnviar] = useState(false);
+  const [generando, setGenerando] = useState(false);
+  const [enviando, setEnviando] = useState(false);
+  const [notification, setNotification] = useState({ 
+    open: false, 
+    message: '', 
+    severity: 'success' 
+  });
+
+  // Log de cambios (mock data - vendrá del backend)
+  const [logCambios] = useState([
+    {
+      id: 1,
+      fecha: '2026-01-11 10:30',
+      usuario: 'Dr. Juan Pérez (Jefe)',
+      accion: 'Horario generado',
+      estado: ESTADOS.BORRADOR,
+      comentario: 'Primera generación del periodo'
+    },
+    {
+      id: 2,
+      fecha: '2026-01-11 11:15',
+      usuario: 'Dr. Juan Pérez (Jefe)',
+      accion: 'Horario enviado',
+      estado: ESTADOS.ENVIADO,
+      comentario: 'Enviado a revisión administrativa'
+    },
+    {
+      id: 3,
+      fecha: '2026-01-11 14:20',
+      usuario: 'Mtra. Ana López (Secretaria)',
+      accion: 'En revisión',
+      estado: ESTADOS.EN_REVISION,
+      comentario: 'Iniciada revisión de conflictos'
+    },
+  ]);
+
+  // Manejar generación de horarios
+  const handleConfirmarGeneracion = async () => {
+    setGenerando(true);
+    
+    // Simular llamada al backend
+    setTimeout(() => {
+      setHorarioGenerado({
+        id: 1,
+        periodo: 'Periodo 1 - 2026',
+        fecha_generacion: new Date().toISOString(),
+        total_examenes: 25,
+      });
+      setEstadoActual(ESTADOS.BORRADOR);
+      setOpenDialogGenerar(false);
+      setGenerando(false);
+      setNotification({
+        open: true,
+        message: 'Horario generado exitosamente. Revisa el calendario y envía a revisión.',
+        severity: 'success'
+      });
+    }, 2500);
+  };
+
+  // Enviar a revisión
+  const handleEnviarRevision = () => {
+    setEnviando(true);
+    
+    setTimeout(() => {
+      setEstadoActual(ESTADOS.ENVIADO);
+      setOpenDialogEnviar(false);
+      setEnviando(false);
+      setNotification({
+        open: true,
+        message: 'Horario enviado a revisión administrativa',
+        severity: 'success'
+      });
+    }, 1500);
+  };
+
+  // Obtener paso actual del stepper
+  const getActiveStep = () => {
+    const steps = [
+      ESTADOS.BORRADOR,
+      ESTADOS.ENVIADO,
+      ESTADOS.EN_REVISION,
+      ESTADOS.REVISADO,
+      ESTADOS.APROBADO,
+    ];
+    return steps.indexOf(estadoActual);
+  };
+
+  return (
+    <MainLayout showSidebar={true}>
+      <Box sx={{ maxWidth: 1400, mx: 'auto', py: 4, px: 2 }}>
+        {/* Encabezado */}
+        <Box sx={{ mb: 4 }}>
+          <Typography 
+            variant="h4" 
+            sx={{ 
+              fontWeight: 700,
+              color: theme.palette.text.primary,
+              mb: 1
+            }}
+          >
+            Generar Horarios de Exámenes
+          </Typography>
+          <Typography 
+            variant="body1" 
+            sx={{ 
+              color: theme.palette.text.secondary 
+            }}
+          >
+            Administra la generación y revisión de horarios de exámenes del periodo actual
+          </Typography>
+        </Box>
+
+        {/* Acciones rápidas */}
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 4 }}>
+          <Button
+            variant="outlined"
+            startIcon={<MdSettings />}
+            onClick={() => navigate('/preferencias')}
+            sx={{ flex: 1 }}
+          >
+            Configurar Preferencias
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<MdAutorenew />}
+            onClick={() => setOpenDialogGenerar(true)}
+            disabled={estadoActual === ESTADOS.APROBADO}
+            sx={{ flex: 1 }}
+          >
+            {horarioGenerado ? 'Regenerar Horarios' : 'Generar Horarios'}
+          </Button>
+          <Button
+            variant="outlined"
+            startIcon={<MdCalendarMonth />}
+            onClick={() => navigate('/calendario')}
+            disabled={!horarioGenerado}
+            sx={{ flex: 1 }}
+          >
+            Ver Calendario
+          </Button>
+        </Stack>
+
+        {/* Estado actual */}
+        {horarioGenerado && (
+          <>
+            <Card elevation={0} sx={{ mb: 4, border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+              <CardContent>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Estado del Horario
+                  </Typography>
+                  <Chip 
+                    label={ESTADO_LABELS[estadoActual]} 
+                    color={ESTADO_COLORS[estadoActual]}
+                    icon={estadoActual === ESTADOS.APROBADO ? <MdCheckCircle /> : <MdSchedule />}
+                  />
+                </Box>
+
+                {/* Stepper de progreso */}
+                <Stepper activeStep={getActiveStep()} alternativeLabel sx={{ mb: 3 }}>
+                  <Step>
+                    <StepLabel>Borrador</StepLabel>
+                  </Step>
+                  <Step>
+                    <StepLabel>Enviado</StepLabel>
+                  </Step>
+                  <Step>
+                    <StepLabel>En Revisión</StepLabel>
+                  </Step>
+                  <Step>
+                    <StepLabel>Revisado</StepLabel>
+                  </Step>
+                  <Step>
+                    <StepLabel>Aprobado</StepLabel>
+                  </Step>
+                </Stepper>
+
+                {/* Información del horario */}
+                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 2, mb: 3 }}>
+                  <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+                    <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 0.5 }}>Periodo</Typography>
+                    <Typography variant="body1" fontWeight={600}>{horarioGenerado.periodo}</Typography>
+                  </Paper>
+                  <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+                    <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 0.5 }}>Fecha Generación</Typography>
+                    <Typography variant="body1" fontWeight={600}>
+                      {new Date(horarioGenerado.fecha_generacion).toLocaleDateString('es-MX')}
+                    </Typography>
+                  </Paper>
+                  <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+                    <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 0.5 }}>Total Exámenes</Typography>
+                    <Typography variant="body1" fontWeight={600}>{horarioGenerado.total_examenes}</Typography>
+                  </Paper>
+                </Box>
+
+                {/* Acción según estado */}
+                {estadoActual === ESTADOS.BORRADOR && (
+                  <Button
+                    variant="contained"
+                    startIcon={<MdSend />}
+                    onClick={() => setOpenDialogEnviar(true)}
+                    fullWidth
+                  >
+                    Enviar a Revisión
+                  </Button>
+                )}
+
+                {estadoActual === ESTADOS.RECHAZADO && (
+                  <Alert severity="error" sx={{ mt: 2 }}>
+                    El horario fue rechazado. Revisa la retroalimentación en el log de cambios y genera un nuevo horario.
+                  </Alert>
+                )}
+
+                {estadoActual === ESTADOS.APROBADO && (
+                  <Alert severity="success" sx={{ mt: 2 }}>
+                    Horario aprobado y publicado. Los estudiantes pueden consultar sus exámenes.
+                  </Alert>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Log de cambios */}
+            <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
+                  Historial de Cambios
+                </Typography>
+                
+                <Stack spacing={2}>
+                  {logCambios.map((log, index) => (
+                    <Paper 
+                      key={log.id} 
+                      elevation={0} 
+                      sx={{ 
+                        p: 2.5,
+                        borderLeft: `4px solid`,
+                        borderLeftColor: `${ESTADO_COLORS[log.estado]}.main`,
+                        border: '1px solid',
+                        borderColor: 'divider',
+                        borderRadius: 2,
+                        position: 'relative'
+                      }}
+                    >
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                        <Box sx={{ flex: 1 }}>
+                          <Typography variant="subtitle2" fontWeight={600}>
+                            {log.accion}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary" display="block">
+                            {log.usuario}
+                          </Typography>
+                        </Box>
+                        <Chip 
+                          label={ESTADO_LABELS[log.estado]} 
+                          color={ESTADO_COLORS[log.estado]}
+                          size="small"
+                          sx={{ ml: 2 }}
+                        />
+                      </Box>
+                      {log.comentario && (
+                        <Typography variant="body2" sx={{ mt: 1.5, color: 'text.secondary' }}>
+                          {log.comentario}
+                        </Typography>
+                      )}
+                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1.5 }}>
+                        {log.fecha}
+                      </Typography>
+                    </Paper>
+                  ))}
+                </Stack>
+              </CardContent>
+            </Card>
+          </>
+        )}
+
+        {/* Mensaje cuando no hay horario generado */}
+        {!horarioGenerado && (
+          <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+            <CardContent sx={{ textAlign: 'center', py: 6 }}>
+              <MdSchedule size={64} color={theme.palette.text.secondary} />
+              <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
+                No hay horarios generados
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                Configura tus preferencias de exámenes y genera el horario para el periodo actual
+              </Typography>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
+                <Button
+                  variant="outlined"
+                  startIcon={<MdSettings />}
+                  onClick={() => navigate('/preferencias')}
+                >
+                  Ir a Preferencias
+                </Button>
+                <Button
+                  variant="contained"
+                  startIcon={<MdAutorenew />}
+                  onClick={() => setOpenDialogGenerar(true)}
+                >
+                  Generar Horarios
+                </Button>
+              </Stack>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Dialog: Confirmar generación */}
+        <Dialog 
+          open={openDialogGenerar} 
+          onClose={() => !generando && setOpenDialogGenerar(false)}
+          maxWidth="sm"
+          fullWidth
+          PaperProps={{
+            sx: { borderRadius: 3 }
+          }}
+        >
+          <DialogTitle>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <MdWarning size={24} color={theme.palette.warning.main} />
+              Confirmar Generación de Horarios
+            </Box>
+          </DialogTitle>
+          <DialogContent>
+            <Alert severity="warning" sx={{ mb: 2 }}>
+              Este proceso utilizará las preferencias configuradas para generar automáticamente los horarios de exámenes.
+            </Alert>
+            <Typography variant="body2" paragraph>
+              Antes de generar, asegúrate de que:
+            </Typography>
+            <ul style={{ marginTop: 0 }}>
+              <li>
+                <Typography variant="body2">
+                  Has configurado todas las preferencias de materias
+                </Typography>
+              </li>
+              <li>
+                <Typography variant="body2">
+                  Los datos de profesores, aplicadores y sinodales son correctos
+                </Typography>
+              </li>
+              <li>
+                <Typography variant="body2">
+                  Las modalidades de examen están actualizadas
+                </Typography>
+              </li>
+            </ul>
+            <Typography variant="body2" sx={{ mt: 2 }}>
+              ¿Estás seguro de que deseas generar los horarios?
+            </Typography>
+          </DialogContent>
+          <DialogActions sx={{ px: 3, pb: 2.5 }}>
+            <Button onClick={() => setOpenDialogGenerar(false)} disabled={generando}>
+              Cancelar
+            </Button>
+            <Button 
+              onClick={handleConfirmarGeneracion} 
+              variant="contained"
+              disabled={generando}
+              startIcon={generando ? <MdAutorenew className="spin" /> : <MdCheckCircle />}
+            >
+              {generando ? 'Generando...' : 'Sí, Generar'}
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Dialog: Enviar a revisión */}
+        <Dialog 
+          open={openDialogEnviar} 
+          onClose={() => !enviando && setOpenDialogEnviar(false)}
+          maxWidth="sm"
+          fullWidth
+          PaperProps={{
+            sx: { borderRadius: 3 }
+          }}
+        >
+          <DialogTitle>Enviar a Revisión</DialogTitle>
+          <DialogContent>
+            <Typography variant="body2" paragraph>
+              El horario será enviado al área administrativa para su revisión. Una vez enviado, no podrás modificarlo hasta que sea aprobado o rechazado.
+            </Typography>
+            <TextField
+              fullWidth
+              multiline
+              rows={3}
+              label="Comentarios (opcional)"
+              placeholder="Agrega comentarios para los revisores..."
+              sx={{ mt: 2 }}
+            />
+          </DialogContent>
+          <DialogActions sx={{ px: 3, pb: 2.5 }}>
+            <Button onClick={() => setOpenDialogEnviar(false)} disabled={enviando}>
+              Cancelar
+            </Button>
+            <Button 
+              onClick={handleEnviarRevision} 
+              variant="contained"
+              disabled={enviando}
+              startIcon={enviando ? <MdAutorenew className="spin" /> : <MdSend />}
+            >
+              {enviando ? 'Enviando...' : 'Enviar'}
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Notificaciones */}
+        <Notification 
+          open={notification.open}
+          message={notification.message}
+          severity={notification.severity}
+          onClose={() => setNotification({ ...notification, open: false })}
+        />
+      </Box>
+
+      <style>
+        {`
+          @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+          .spin {
+            animation: spin 1s linear infinite;
+          }
+        `}
+      </style>
+    </MainLayout>
+  );
+}
+
+export default Generar;
