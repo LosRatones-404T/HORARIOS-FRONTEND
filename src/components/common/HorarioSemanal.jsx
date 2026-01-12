@@ -47,8 +47,10 @@ const HorarioSemanal = ({
   // Estados locales
   const [draggedEvent, setDraggedEvent] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [selectedMateria, setSelectedMateria] = useState('');
+  const [eventToDelete, setEventToDelete] = useState(null);
 
   // Días de la semana
   const dias = [
@@ -74,10 +76,15 @@ const HorarioSemanal = ({
     );
   };
 
-  // Abrir modal para asignar materia
+  // Abrir modal para asignar materia o eliminar evento
   const handleCellClick = (dia, hora) => {
     const existingEvent = getEventForSlot(dia, hora);
-    if (!existingEvent && materias.length > 0) {
+    if (existingEvent) {
+      // Si hay un evento, abrir dialog de eliminación
+      setEventToDelete(existingEvent);
+      setOpenDeleteDialog(true);
+    } else if (materias.length > 0) {
+      // Si está vacío, abrir dialog de asignación
       setSelectedSlot({ dia, hora });
       setSelectedMateria('');
       setOpenDialog(true);
@@ -131,6 +138,18 @@ const HorarioSemanal = ({
       }
     }
     setDraggedEvent(null);
+  };
+
+  // Eliminar evento
+  const handleDeleteEvent = () => {
+    if (eventToDelete && onEventsChange) {
+      const updatedEvents = events.filter(e => 
+        !(e.dia === eventToDelete.dia && e.horaInicio === eventToDelete.horaInicio && e.materia === eventToDelete.materia)
+      );
+      onEventsChange(updatedEvents);
+      setOpenDeleteDialog(false);
+      setEventToDelete(null);
+    }
   };
 
   return (
@@ -199,8 +218,8 @@ const HorarioSemanal = ({
                     bgcolor: theme.palette.primary.main,
                     color: theme.palette.primary.contrastText,
                     fontWeight: 700,
-                    fontSize: '0.875rem',
-                    minWidth: 150
+                    fontSize: '0.75rem',
+                    minWidth: 100
                   }}
                 >
                   <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
@@ -236,12 +255,14 @@ const HorarioSemanal = ({
                       ? theme.palette.background.default
                       : theme.palette.background.paper,
                     fontWeight: 600,
-                    fontSize: '0.875rem',
+                    fontSize: '0.7rem',
                     color: theme.palette.text.primary,
                     position: 'sticky',
                     left: 0,
                     zIndex: 2,
-                    borderRight: `2px solid ${theme.palette.divider}`
+                    borderRight: `2px solid ${theme.palette.divider}`,
+                    py: 0.5,
+                    px: 1
                   }}
                 >
                   {hora}
@@ -281,8 +302,8 @@ const HorarioSemanal = ({
                           sx={{
                             bgcolor: theme.palette.primary.main,
                             borderRadius: 1,
-                            p: 1,
-                            minHeight: 50,
+                            p: 0.5,
+                            minHeight: 40,
                             display: 'flex',
                             flexDirection: 'column',
                             justifyContent: 'center',
@@ -297,8 +318,8 @@ const HorarioSemanal = ({
                             sx={{ 
                               fontWeight: 600,
                               color: theme.palette.primary.contrastText,
-                              fontSize: '0.75rem',
-                              lineHeight: 1.2
+                              fontSize: '0.65rem',
+                              lineHeight: 1.1
                             }}
                           >
                             {event.materia}
@@ -308,8 +329,8 @@ const HorarioSemanal = ({
                               label={event.aula}
                               size="small"
                               sx={{
-                                height: 18,
-                                fontSize: '0.65rem',
+                                height: 16,
+                                fontSize: '0.6rem',
                                 bgcolor: theme.palette.mode === 'light'
                                   ? 'rgba(255, 255, 255, 0.3)'
                                   : 'rgba(0, 0, 0, 0.3)',
@@ -375,6 +396,26 @@ const HorarioSemanal = ({
             disabled={!selectedMateria}
           >
             Asignar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog para eliminar examen */}
+      <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)} maxWidth="xs" fullWidth>
+        <DialogTitle>Eliminar Examen</DialogTitle>
+        <DialogContent>
+          <Typography>
+            ¿Estás seguro de que deseas eliminar el examen de <strong>{eventToDelete?.materia}</strong>?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDeleteDialog(false)}>Cancelar</Button>
+          <Button 
+            onClick={handleDeleteEvent} 
+            variant="contained" 
+            color="error"
+          >
+            Eliminar
           </Button>
         </DialogActions>
       </Dialog>

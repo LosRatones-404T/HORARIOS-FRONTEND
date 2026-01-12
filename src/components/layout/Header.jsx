@@ -1,10 +1,42 @@
-import React from "react";
-import { Box, IconButton, InputBase, Paper, useTheme } from "@mui/material";
-import { FaBars, FaBell, FaUser, FaSearch } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { Box, IconButton, InputBase, Paper, useTheme, Menu, MenuItem, Typography, Divider } from "@mui/material";
+import { FaBars, FaBell, FaUser, FaSearch, FaSignOutAlt } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import ThemeToggle from "../ThemeToggle";
+import { getCurrentUser, logout } from "../../store/authStore";
 
 const Header = ({ sidebarWidth = '0px', onToggleSidebar, showSidebar = false }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [user, setUser] = useState(null);
+  
+  useEffect(() => {
+    const currentUser = getCurrentUser();
+    setUser(currentUser);
+  }, []);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+  
+  const getRoleLabel = (role) => {
+    const roles = {
+      admin: 'Administrador',
+      secretaria: 'Secretaria Académica',
+      jefe: 'Jefe de Carrera',
+    };
+    return roles[role] || role;
+  };
   
   return (
     <Box
@@ -126,9 +158,48 @@ const Header = ({ sidebarWidth = '0px', onToggleSidebar, showSidebar = false }) 
           role="button"
           aria-label="Perfil de usuario"
           tabIndex={0}
+          onClick={handleMenuOpen}
         >
           <FaUser color={theme.palette.mode === 'light' ? '#FFFFFF' : '#2A3344'} size={16} />
         </Box>
+
+        {/* Menú de usuario */}
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          sx={{
+            mt: 1,
+            '& .MuiPaper-root': {
+              minWidth: 200,
+              borderRadius: 2,
+            },
+          }}
+        >
+          {user && (
+            <Box sx={{ px: 2, py: 1.5 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                {user.name}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {getRoleLabel(user.role)}
+              </Typography>
+            </Box>
+          )}
+          <Divider />
+          <MenuItem onClick={handleLogout} sx={{ gap: 1.5, py: 1.5 }}>
+            <FaSignOutAlt size={16} />
+            <Typography variant="body2">Cerrar Sesión</Typography>
+          </MenuItem>
+        </Menu>
       </Box>
     </Box>
   );

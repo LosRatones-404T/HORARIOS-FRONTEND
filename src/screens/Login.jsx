@@ -11,15 +11,18 @@ import {
   Container,
   Paper,
   Link,
+  Alert,
 } from '@mui/material';
 import { FaUser, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 import logoUnsis from '../assets/logo-unsis.png';
 import loginIlustration from '../assets/login-ilustration.png';
+import { login } from '../store/authStore';
 
 function Login() {
   const navigate = useNavigate();
   const theme = useTheme();
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     usuario: '',
     contrasena: '',
@@ -36,7 +39,23 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Login:', formData);
+    setError('');
+
+    // Validación básica
+    if (!formData.usuario || !formData.contrasena) {
+      setError('Por favor completa todos los campos');
+      return;
+    }
+
+    // Intentar autenticar
+    const result = login(formData.usuario, formData.contrasena);
+    
+    if (result.success) {
+      // Redirigir según el rol del usuario
+      navigate('/home');
+    } else {
+      setError(result.error);
+    }
   };
 
   const handleForgotPassword = () => {
@@ -192,6 +211,12 @@ function Login() {
                 </Link>
               </Box>
 
+              {error && (
+                <Alert severity="error" sx={{ mb: 2, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                  {error}
+                </Alert>
+              )}
+
               <Button
                 type="submit"
                 fullWidth
@@ -210,6 +235,22 @@ function Login() {
               >
                 Iniciar Sesión
               </Button>
+
+              {/* Credenciales de prueba */}
+              <Box sx={{ mt: 3, p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
+                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, display: 'block', mb: 1 }}>
+                  Credenciales de prueba:
+                </Typography>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontFamily: 'monospace' }}>
+                  admin / pass123
+                </Typography>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontFamily: 'monospace' }}>
+                  secretaria / pass123
+                </Typography>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontFamily: 'monospace' }}>
+                  jefe / pass123
+                </Typography>
+              </Box>
             </Box>
           </Box>
 
