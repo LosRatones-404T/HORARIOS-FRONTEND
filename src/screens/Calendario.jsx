@@ -462,6 +462,7 @@ const Calendario = () => {
                 onEventsChange={(newEvents) => handleEventsChange(semestre.numero, newEvents)}
                 onSave={() => handleSaveSemestre(semestre.numero)}
                 showHeader={false}
+                readOnly={isSecretaria}
               />
             </AccordionDetails>
           </Accordion>

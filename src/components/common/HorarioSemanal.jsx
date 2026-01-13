@@ -34,13 +34,15 @@ import { useState } from 'react';
  * @param {Function} props.onEventsChange - Callback cuando cambian los eventos
  * @param {Function} props.onSave - Función a ejecutar al guardar cambios
  * @param {boolean} props.showHeader - Mostrar encabezado del componente
+ * @param {boolean} props.readOnly - Modo solo lectura (deshabilita edición)
  */
 const HorarioSemanal = ({ 
   events = [], 
   materias = [],
   onEventsChange = null,
   onSave = null,
-  showHeader = true 
+  showHeader = true,
+  readOnly = false 
 }) => {
   const theme = useTheme();
   
@@ -78,6 +80,8 @@ const HorarioSemanal = ({
 
   // Abrir modal para asignar materia o eliminar evento
   const handleCellClick = (dia, hora) => {
+    if (readOnly) return; // No hacer nada si está en modo solo lectura
+    
     const existingEvent = getEventForSlot(dia, hora);
     if (existingEvent) {
       // Si hay un evento, abrir dialog de eliminación
@@ -276,11 +280,11 @@ const HorarioSemanal = ({
                     <TableCell 
                       key={`${dia.id}-${hora}`}
                       align="center"
-                      onClick={() => handleCellClick(dia, hora)}
-                      onDragOver={handleDragOver}
-                      onDrop={() => handleDrop(dia, hora)}
+                      onClick={() => !readOnly && handleCellClick(dia, hora)}
+                      onDragOver={!readOnly ? handleDragOver : undefined}
+                      onDrop={!readOnly ? () => handleDrop(dia, hora) : undefined}
                       sx={{ 
-                        cursor: event ? 'move' : 'pointer',
+                        cursor: readOnly ? 'default' : (event ? 'move' : 'pointer'),
                         bgcolor: event 
                           ? theme.palette.primary.light + '40'
                           : 'transparent',
@@ -288,7 +292,7 @@ const HorarioSemanal = ({
                         p: 1,
                         minHeight: 60,
                         position: 'relative',
-                        '&:hover': {
+                        '&:hover': readOnly ? {} : {
                           bgcolor: event 
                             ? theme.palette.primary.light + '60'
                             : theme.palette.primary.light + '20',
@@ -297,8 +301,8 @@ const HorarioSemanal = ({
                     >
                       {event && (
                         <Box
-                          draggable
-                          onDragStart={(e) => handleDragStart(e, event)}
+                          draggable={!readOnly}
+                          onDragStart={!readOnly ? (e) => handleDragStart(e, event) : undefined}
                           sx={{
                             bgcolor: theme.palette.primary.main,
                             borderRadius: 1,
@@ -309,7 +313,7 @@ const HorarioSemanal = ({
                             justifyContent: 'center',
                             gap: 0.5,
                             boxShadow: 1,
-                            cursor: 'move',
+                            cursor: readOnly ? 'default' : 'move',
                             userSelect: 'none'
                           }}
                         >
@@ -351,7 +355,7 @@ const HorarioSemanal = ({
       </TableContainer>
 
       {/* Botón de guardar */}
-      {onSave && (
+      {onSave && !readOnly && (
         <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
           <Button
             variant="contained"
@@ -438,6 +442,7 @@ HorarioSemanal.propTypes = {
   onEventsChange: PropTypes.func,
   onSave: PropTypes.func,
   showHeader: PropTypes.bool,
+  readOnly: PropTypes.bool,
 };
 
 export default HorarioSemanal;
