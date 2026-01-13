@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Box, IconButton, InputBase, Paper, useTheme, Menu, MenuItem, Typography, Divider } from "@mui/material";
-import { FaBars, FaBell, FaUser, FaSearch, FaSignOutAlt } from "react-icons/fa";
+import { FaBars, FaUser, FaSearch, FaSignOutAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import ThemeToggle from "../ThemeToggle";
+import { NotificationMenu } from "../common";
 import { getCurrentUser, logout } from "../../store/authStore";
 
 const Header = ({ sidebarWidth = '0px', onToggleSidebar, showSidebar = false }) => {
@@ -133,15 +134,7 @@ const Header = ({ sidebarWidth = '0px', onToggleSidebar, showSidebar = false }) 
           <ThemeToggle />
         </Box>
         
-        <IconButton 
-          sx={{ 
-            color: theme.palette.mode === 'light' ? '#FFFFFF' : '#2A3344',
-            p: { xs: 1, sm: 1.5 },
-          }}
-          aria-label="Notificaciones"
-        >
-          <FaBell size={18} />
-        </IconButton>
+        <NotificationMenu />
         
         <Box
           sx={{
