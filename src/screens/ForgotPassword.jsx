@@ -87,14 +87,16 @@ function ForgotPassword() {
             </Box>
 
             {/* Logo y título */}
-            <Box sx={{ textAlign: 'center', mb: { xs: 2, sm: 3 } }}>
+            <Box sx={{ textAlign: 'center', mb: { xs: 3, sm: 4 } }}>
               <Box
                 component="img"
                 src={logoUnsis}
                 alt="Logo UNSIS"
                 sx={{
                   height: { xs: 70, sm: 90, md: 100 },
-                  mb: 1.5,
+                  mb: 2,
+                  display: 'block',
+                  mx: 'auto',
                 }}
               />
               <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>

@@ -96,14 +96,16 @@ function Login() {
             }}
           >
             {/* Logo y título */}
-            <Box sx={{ textAlign: 'center', mb: { xs: 2, sm: 3 } }}>
+            <Box sx={{ textAlign: 'center', mb: { xs: 3, sm: 4 } }}>
               <Box
                 component="img"
                 src={logoUnsis}
                 alt="Logo UNSIS"
                 sx={{
                   height: { xs: 80, sm: 100, md: 120 },
-                  mb: 1.5,
+                  mb: 2,
+                  display: 'block',
+                  mx: 'auto',
                 }}
               />
               <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
@@ -234,22 +236,6 @@ function Login() {
               >
                 Iniciar Sesión
               </Button>
-
-              {/* Credenciales de prueba */}
-              <Box sx={{ mt: 3, p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
-                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, display: 'block', mb: 1 }}>
-                  Credenciales de prueba:
-                </Typography>
-                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontFamily: 'monospace' }}>
-                  admin / pass123
-                </Typography>
-                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontFamily: 'monospace' }}>
-                  secretaria / pass123
-                </Typography>
-                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontFamily: 'monospace' }}>
-                  jefe / pass123
-                </Typography>
-              </Box>
             </Box>
           </Box>
 
