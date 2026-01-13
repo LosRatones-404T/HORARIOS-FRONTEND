@@ -6,6 +6,7 @@ import NotFound404 from '../screens/NotFound404.jsx';
 import Generar from '../screens/Generar.jsx';
 import Preferencias from '../screens/Preferencias.jsx';
 import Calendario from '../screens/Calendario.jsx';
+import Revision from '../screens/Revision.jsx';
 
 const Router = () => {
   return (
@@ -28,6 +29,7 @@ const Router = () => {
         <Route path="/generar" element={<Generar />} />
         <Route path="/calendario" element={<Calendario />} />
         <Route path="/preferencias" element={<Preferencias />} />
+        <Route path="/revision" element={<Revision />} />
         <Route path="/generar" element={<Home />} />
         <Route path="/configuracion" element={<Home />} />
         

@@ -7,6 +7,7 @@ import { LuSettings } from "react-icons/lu"; //Icono de Configuración
 import { LuCalendarCog } from "react-icons/lu"; //Icono de Generar Exámenes
 import { MdOutlineGrade } from "react-icons/md"; //Icono de Preferencias
 import { MdCalendarMonth } from "react-icons/md"; //Icono de Calendario
+import { MdRateReview } from "react-icons/md"; //Icono de Revisión
 
 
 export const menuOptions = {
@@ -26,6 +27,7 @@ export const menuOptions = {
   
   secretaria: [
     { label: "Home", icon: <FiHome/>, path: "/home" },
+    { label: "Revisión", icon: <MdRateReview/>, path: "/revision" },
     { label: "Calendario", icon: <MdCalendarMonth/>, path: "/calendario" },
   ],
 };
