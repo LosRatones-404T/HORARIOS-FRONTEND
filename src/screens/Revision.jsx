@@ -26,7 +26,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  useTheme
+  useTheme,
+  Container
 } from '@mui/material';
 import { 
   MdCheckCircle, 
@@ -39,6 +40,7 @@ import {
 } from 'react-icons/md';
 import useRevision from '../hooks/useRevision';
 import { ESTADO_LABELS } from '../constants/estadosExamen';
+import MainLayout from '../components/layout/MainLayout';
 
 const Revision = () => {
   const theme = useTheme();
@@ -63,14 +65,17 @@ const Revision = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
-        <CircularProgress />
-      </Box>
+      <MainLayout showSidebar={true}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+          <CircularProgress />
+        </Box>
+      </MainLayout>
     );
   }
 
   return (
-    <Box sx={{ py: 4, px: 3, width: '100%', maxWidth: '100%' }}>
+    <MainLayout showSidebar={true}>
+      <Container maxWidth="xl" sx={{ py: 4 }}>
       {/* Encabezado */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 1 }}>
@@ -431,7 +436,8 @@ const Revision = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+      </Container>
+    </MainLayout>
   );
 };
 

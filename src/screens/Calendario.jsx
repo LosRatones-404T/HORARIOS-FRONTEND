@@ -17,6 +17,7 @@ import { MdExpandMore, MdCalendarToday } from 'react-icons/md';
 import HorarioSemanal from '../components/common/HorarioSemanal';
 import MainLayout from '../components/layout/MainLayout';
 import { Notification } from '../components/common';
+import { getCurrentUser } from '../store/authStore';
 
 /**
  * Pantalla de Calendario
@@ -24,6 +25,16 @@ import { Notification } from '../components/common';
  */
 const Calendario = () => {
   const theme = useTheme();
+  const currentUser = getCurrentUser();
+  const isSecretaria = currentUser?.role === 'secretaria';
+
+  // Carreras disponibles (solo para secretaria)
+  const carreras = [
+    { id: 'informatica', label: 'Lic. en Informática' },
+    { id: 'sistemas', label: 'Ing. en Sistemas Computacionales' },
+    { id: 'industrial', label: 'Ing. Industrial' },
+    { id: 'electronica', label: 'Ing. Electrónica' },
+  ];
 
   // Tipos de examen disponibles
   const tiposExamen = [
@@ -38,6 +49,9 @@ const Calendario = () => {
 
   // Estado del tipo de examen seleccionado (por defecto Parcial 1)
   const [tipoExamenActual, setTipoExamenActual] = useState('parcial1');
+  
+  // Estado de carrera seleccionada (solo para secretaria)
+  const [carreraSeleccionada, setCarreraSeleccionada] = useState('informatica');
 
   // Estado de notificación
   const [notification, setNotification] = useState({
@@ -148,12 +162,15 @@ const Calendario = () => {
 
   const [semestres, setSemestres] = useState(semestresData);
 
-  // Efecto para cargar datos cuando cambia el tipo de examen
+  // Efecto para cargar datos cuando cambia el tipo de examen o carrera
   useEffect(() => {
     // TODO: Aquí se hará la llamada al backend
     // const fetchHorarios = async () => {
     //   try {
-    //     const response = await fetch(`/api/calendario?tipo_examen=${tipoExamenActual}&periodo=2026-1`);
+    //     const url = isSecretaria 
+    //       ? `/api/calendario?tipo_examen=${tipoExamenActual}&carrera=${carreraSeleccionada}&periodo=2026-1`
+    //       : `/api/calendario?tipo_examen=${tipoExamenActual}&periodo=2026-1`;
+    //     const response = await fetch(url);
     //     const data = await response.json();
     //     setSemestres(data.semestres);
     //   } catch (error) {
@@ -164,7 +181,7 @@ const Calendario = () => {
     
     // Por ahora, solo recargamos los datos mock
     setSemestres(semestresData);
-  }, [tipoExamenActual, semestresData]);
+  }, [tipoExamenActual, carreraSeleccionada, semestresData, isSecretaria]);
 
   // Manejar cambios en los eventos de un semestre
   const handleEventsChange = (semestreNumero, newEvents) => {
@@ -225,6 +242,16 @@ const Calendario = () => {
     });
   };
 
+  // Manejar cambio de carrera
+  const handleChangeCarrera = (event, newValue) => {
+    setCarreraSeleccionada(newValue);
+    setNotification({
+      open: true,
+      message: `Mostrando horarios de ${carreras.find(c => c.id === newValue)?.label}`,
+      severity: 'info'
+    });
+  };
+
   return (
     <MainLayout showSidebar={true}>
       <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -247,7 +274,10 @@ const Calendario = () => {
                 color: theme.palette.text.secondary 
               }}
             >
-              Licenciatura en Informática - Horarios por semestre
+              {isSecretaria 
+                ? `${carreras.find(c => c.id === carreraSeleccionada)?.label} - Horarios por semestre`
+                : 'Licenciatura en Informática - Horarios por semestre'
+              }
             </Typography>
           </Box>
           <Button
@@ -265,6 +295,55 @@ const Calendario = () => {
             {semestres.every(sem => expandedSemesters[sem.numero]) ? 'Colapsar Todo' : 'Expandir Todo'}
           </Button>
         </Box>
+
+        {/* Selector de carrera (solo para secretaria) */}
+        {isSecretaria && (
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              mb: 3, 
+              p: 2,
+              border: '1px solid',
+              borderColor: 'divider',
+              borderRadius: 2,
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+              <MdCalendarToday size={20} color={theme.palette.info.main} />
+              <Typography variant="subtitle1" fontWeight={600}>
+                Carrera
+              </Typography>
+            </Box>
+            
+            <Tabs
+              value={carreraSeleccionada}
+              onChange={handleChangeCarrera}
+              variant="scrollable"
+              scrollButtons="auto"
+              sx={{
+                '& .MuiTab-root': {
+                  textTransform: 'none',
+                  fontWeight: 500,
+                  minHeight: 48,
+                },
+                '& .Mui-selected': {
+                  color: theme.palette.info.main,
+                },
+              }}
+              TabIndicatorProps={{
+                sx: { bgcolor: theme.palette.info.main }
+              }}
+            >
+              {carreras.map((carrera) => (
+                <Tab
+                  key={carrera.id}
+                  value={carrera.id}
+                  label={carrera.label}
+                />
+              ))}
+            </Tabs>
+          </Paper>
+        )}
 
         {/* Selector de Tipo de Examen */}
         <Paper 
