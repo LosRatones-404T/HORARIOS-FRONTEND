@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   Grid,
-  Button,
   useTheme,
   Stack,
   Chip,
@@ -14,31 +13,18 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
   Alert,
   AlertTitle,
-  IconButton,
-  Tooltip,
-  CircularProgress,
-  Divider,
-  MenuItem,
-  Select,
   FormControl,
-  InputLabel
+  InputLabel,
+  MenuItem,
+  Select
 } from '@mui/material';
 import { 
   MdPeople,
-  MdPersonAdd,
-  MdRefresh,
-  MdDelete,
-  MdMail,
+  MdCheckCircle,
   MdWarning,
-  MdCheckCircle
+  MdMail
 } from 'react-icons/md';
 import { useState, useEffect } from 'react';
 
@@ -79,119 +65,7 @@ const AdminHome = () => {
     }
   ]);
 
-  const [openResetDialog, setOpenResetDialog] = useState(false);
-  const [openAddUserDialog, setOpenAddUserDialog] = useState(false);
-  const [selectedUsuario, setSelectedUsuario] = useState(null);
-  const [newPassword, setNewPassword] = useState('');
-  const [loadingReset, setLoadingReset] = useState(false);
-  const [loadingAdd, setLoadingAdd] = useState(false);
-  const [newUser, setNewUser] = useState({ nombre: '', email: '', rol: 'jefe' });
-  const [successMessage, setSuccessMessage] = useState('');
   const [filterRol, setFilterRol] = useState('todos');
-
-  // Simular obtención de usuarios desde el backend
-  useEffect(() => {
-    // TODO: Reemplazar con llamada a API real
-    // fetchUsuarios();
-  }, []);
-
-  const handleOpenResetDialog = (usuario) => {
-    setSelectedUsuario(usuario);
-    setNewPassword('');
-    setOpenResetDialog(true);
-  };
-
-  const handleCloseResetDialog = () => {
-    setOpenResetDialog(false);
-    setSelectedUsuario(null);
-    setNewPassword('');
-  };
-
-  const handleResetPassword = async () => {
-    if (!newPassword.trim()) {
-      alert('Por favor, ingresa una contraseña');
-      return;
-    }
-
-    setLoadingReset(true);
-    try {
-      // TODO: Integrar con API real para resetear contraseña
-      // const response = await resetPassword(selectedUsuario.id, newPassword);
-      
-      // Simular delay de API
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // TODO: Integrar con API real para enviar email
-      // await sendPasswordEmail(selectedUsuario.email, newPassword);
-      
-      setSuccessMessage(`Contraseña restablecida para ${selectedUsuario.nombre}. Email enviado a ${selectedUsuario.email}`);
-      
-      // Limpiar mensaje después de 5 segundos
-      setTimeout(() => setSuccessMessage(''), 5000);
-      
-      handleCloseResetDialog();
-    } catch (error) {
-      alert('Error al restablecer la contraseña');
-      console.error(error);
-    } finally {
-      setLoadingReset(false);
-    }
-  };
-
-  const handleOpenAddUserDialog = () => {
-    setNewUser({ nombre: '', email: '', rol: 'jefe' });
-    setOpenAddUserDialog(true);
-  };
-
-  const handleCloseAddUserDialog = () => {
-    setOpenAddUserDialog(false);
-    setNewUser({ nombre: '', email: '', rol: 'jefe' });
-  };
-
-  const handleAddUser = async () => {
-    if (!newUser.nombre.trim() || !newUser.email.trim()) {
-      alert('Por favor, completa todos los campos');
-      return;
-    }
-
-    setLoadingAdd(true);
-    try {
-      // TODO: Integrar con API real para crear usuario
-      // const response = await createUser(newUser);
-      
-      // Simular delay de API
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // TODO: Integrar con API real para enviar email de bienvenida
-      // await sendWelcomeEmail(newUser.email, newUser.nombre);
-      
-      const nuevoUsuario = {
-        id: usuarios.length + 1,
-        ...newUser,
-        estado: 'activo',
-        ultimaActividad: new Date().toISOString().split('T')[0]
-      };
-
-      setUsuarios([...usuarios, nuevoUsuario]);
-      setSuccessMessage(`Usuario ${newUser.nombre} creado exitosamente. Email enviado a ${newUser.email}`);
-      
-      setTimeout(() => setSuccessMessage(''), 5000);
-      handleCloseAddUserDialog();
-    } catch (error) {
-      alert('Error al crear el usuario');
-      console.error(error);
-    } finally {
-      setLoadingAdd(false);
-    }
-  };
-
-  const handleDeleteUser = (usuarioId) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-      setUsuarios(usuarios.filter(u => u.id !== usuarioId));
-      setSuccessMessage('Usuario eliminado correctamente');
-      setTimeout(() => setSuccessMessage(''), 5000);
-    }
-  };
 
   const filteredUsuarios = filterRol === 'todos' 
     ? usuarios 
@@ -211,16 +85,8 @@ const AdminHome = () => {
         </Typography>
       </Box>
 
-      {/* Mensaje de éxito */}
-      {successMessage && (
-        <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }} onClose={() => setSuccessMessage('')}>
-          <AlertTitle sx={{ fontWeight: 600 }}>Éxito</AlertTitle>
-          {successMessage}
-        </Alert>
-      )}
-
       {/* Tarjetas de Estadísticas */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
+      <Grid container spacing={3} sx={{ mb: 4, justifyContent: 'center' }}>
         <Grid item xs={12} sm={6} md={3} sx={{ display: 'flex' }}>
           <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, width: '100%', minWidth: 220 }}>
             <CardContent sx={{ p: 3 }}>
@@ -291,16 +157,8 @@ const AdminHome = () => {
         <CardContent>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
             <Typography variant="h6" sx={{ fontWeight: 600 }}>
-              Gestión de Usuarios
+              Usuarios del Sistema
             </Typography>
-            <Button 
-              variant="contained" 
-              startIcon={<MdPersonAdd size={20} />}
-              onClick={handleOpenAddUserDialog}
-              sx={{ textTransform: 'none', fontWeight: 600 }}
-            >
-              Agregar Usuario
-            </Button>
           </Box>
 
           {/* Filtro por rol */}
@@ -329,7 +187,6 @@ const AdminHome = () => {
                   <TableCell sx={{ fontWeight: 600 }}>Rol</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>Estado</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>Última Actividad</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }} align="right">Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -365,26 +222,6 @@ const AdminHome = () => {
                         {usuario.ultimaActividad}
                       </Typography>
                     </TableCell>
-                    <TableCell align="right">
-                      <Tooltip title="Restablecer Contraseña">
-                        <IconButton 
-                          size="small" 
-                          color="warning"
-                          onClick={() => handleOpenResetDialog(usuario)}
-                        >
-                          <MdRefresh size={18} />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Eliminar Usuario">
-                        <IconButton 
-                          size="small" 
-                          color="error"
-                          onClick={() => handleDeleteUser(usuario.id)}
-                        >
-                          <MdDelete size={18} />
-                        </IconButton>
-                      </Tooltip>
-                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -400,122 +237,6 @@ const AdminHome = () => {
           )}
         </CardContent>
       </Card>
-
-      {/* Dialog para resetear contraseña */}
-      <Dialog open={openResetDialog} onClose={handleCloseResetDialog} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <MdRefresh size={24} color={theme.palette.warning.main} />
-          Restablecer Contraseña
-        </DialogTitle>
-        <Divider />
-        <DialogContent sx={{ pt: 3 }}>
-          {selectedUsuario && (
-            <Stack spacing={3}>
-              <Box>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                  Usuario:
-                </Typography>
-                <Typography variant="body1" fontWeight={600}>
-                  {selectedUsuario.nombre}
-                </Typography>
-              </Box>
-              <Box>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                  Email:
-                </Typography>
-                <Typography variant="body1" fontWeight={600}>
-                  {selectedUsuario.email}
-                </Typography>
-              </Box>
-              <Alert severity="info" sx={{ borderRadius: 2 }}>
-                Se enviará un correo a {selectedUsuario.email} con la nueva contraseña
-              </Alert>
-              <TextField
-                label="Nueva Contraseña"
-                type="password"
-                fullWidth
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Ingresa una contraseña temporal"
-                variant="outlined"
-              />
-            </Stack>
-          )}
-        </DialogContent>
-        <Divider />
-        <DialogActions sx={{ p: 2 }}>
-          <Button onClick={handleCloseResetDialog} variant="outlined">
-            Cancelar
-          </Button>
-          <Button 
-            onClick={handleResetPassword} 
-            variant="contained" 
-            color="warning"
-            disabled={loadingReset || !newPassword.trim()}
-            startIcon={loadingReset ? <CircularProgress size={20} /> : <MdRefresh />}
-          >
-            {loadingReset ? 'Procesando...' : 'Restablecer y Enviar'}
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Dialog para agregar usuario */}
-      <Dialog open={openAddUserDialog} onClose={handleCloseAddUserDialog} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <MdPersonAdd size={24} color={theme.palette.primary.main} />
-          Agregar Nuevo Usuario
-        </DialogTitle>
-        <Divider />
-        <DialogContent sx={{ pt: 3 }}>
-          <Stack spacing={3}>
-            <TextField
-              label="Nombre Completo"
-              fullWidth
-              value={newUser.nombre}
-              onChange={(e) => setNewUser({ ...newUser, nombre: e.target.value })}
-              placeholder="Ej: Juan García"
-              variant="outlined"
-            />
-            <TextField
-              label="Email"
-              fullWidth
-              type="email"
-              value={newUser.email}
-              onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-              placeholder="Ej: juan@ejemplo.com"
-              variant="outlined"
-            />
-            <FormControl fullWidth>
-              <InputLabel>Rol</InputLabel>
-              <Select
-                value={newUser.rol}
-                label="Rol"
-                onChange={(e) => setNewUser({ ...newUser, rol: e.target.value })}
-              >
-                <MenuItem value="jefe">Jefe de Carrera</MenuItem>
-                <MenuItem value="secretaria">Servicios Escolares</MenuItem>
-              </Select>
-            </FormControl>
-            <Alert severity="info" sx={{ borderRadius: 2 }}>
-              Se enviará un email al usuario con sus credenciales de acceso
-            </Alert>
-          </Stack>
-        </DialogContent>
-        <Divider />
-        <DialogActions sx={{ p: 2 }}>
-          <Button onClick={handleCloseAddUserDialog} variant="outlined">
-            Cancelar
-          </Button>
-          <Button 
-            onClick={handleAddUser} 
-            variant="contained"
-            disabled={loadingAdd || !newUser.nombre.trim() || !newUser.email.trim()}
-            startIcon={loadingAdd ? <CircularProgress size={20} /> : <MdPersonAdd />}
-          >
-            {loadingAdd ? 'Creando...' : 'Crear Usuario'}
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 };
