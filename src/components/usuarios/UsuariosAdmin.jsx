@@ -233,11 +233,11 @@ const UsuariosAdmin = () => {
       )}
 
       {/* Layout en dos columnas */}
-      <Box sx={{ height: 'calc(100% - 120px)' }}>
-        <Grid container spacing={3} sx={{ height: '100%' }}>
+      <Box sx={{ height: 'calc(100% - 120px)', width: '100%' }}>
+        <Grid container spacing={3} sx={{ height: '100%', width: '100%' }}>
         
           {/* COLUMNA IZQUIERDA: Lista de Usuarios */}
-          <Grid item xs={12} md={5} sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Grid item xs={12} sm={6} md={4} lg={5} sx={{ display: 'flex', flexDirection: 'column' }}>
           <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
             <CardContent sx={{ display: 'flex', flexDirection: 'column', height: '100%', p: 2 }}>
               
@@ -350,7 +350,7 @@ const UsuariosAdmin = () => {
         </Grid>
 
         {/* COLUMNA DERECHA: Panel de Edición */}
-        <Grid item xs={12} md={7} sx={{ display: 'flex', flexDirection: 'column' }}>
+        <Grid item xs={12} sm={6} md={8} lg={7} sx={{ display: 'flex', flexDirection: 'column' }}>
           {selectedUsuario || isNewUser ? (
             <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
               <CardContent sx={{ display: 'flex', flexDirection: 'column', height: '100%', p: 3 }}>
