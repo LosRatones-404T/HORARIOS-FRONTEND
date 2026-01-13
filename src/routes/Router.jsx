@@ -7,6 +7,7 @@ import Generar from '../screens/Generar.jsx';
 import Preferencias from '../screens/Preferencias.jsx';
 import Calendario from '../screens/Calendario.jsx';
 import Revision from '../screens/Revision.jsx';
+import Usuarios from '../screens/Usuarios.jsx';
 
 const Router = () => {
   return (
@@ -21,17 +22,13 @@ const Router = () => {
         <Route path="/dashboard" element={<Home />} />
         
         {/* Rutas de administrador */}
-        <Route path="/profesores" element={<Home />} />
-        <Route path="/materias" element={<Home />} />
-        <Route path="/aulas" element={<Home />} />
+        <Route path="/usuarios" element={<Usuarios />} />
         
         {/* Rutas compartidas */}
         <Route path="/generar" element={<Generar />} />
         <Route path="/calendario" element={<Calendario />} />
         <Route path="/preferencias" element={<Preferencias />} />
         <Route path="/revision" element={<Revision />} />
-        <Route path="/generar" element={<Home />} />
-        <Route path="/configuracion" element={<Home />} />
         
         {/* 404 */}
         <Route path="*" element={<NotFound404 />} />
