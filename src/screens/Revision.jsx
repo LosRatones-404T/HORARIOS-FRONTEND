@@ -29,6 +29,7 @@ import {
   useTheme,
   Container
 } from '@mui/material';
+import { useEffect } from 'react';
 import { 
   MdCheckCircle, 
   MdCancel, 
@@ -38,12 +39,14 @@ import {
   MdEventNote,
   MdSchool
 } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 import useRevision from '../hooks/useRevision';
 import { ESTADO_LABELS } from '../constants/estadosExamen';
 import MainLayout from '../components/layout/MainLayout';
 
 const Revision = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const {
     horariosPendientes,
     horarioSeleccionado,
@@ -63,6 +66,12 @@ const Revision = () => {
     rechazarHorario,
   } = useRevision();
 
+  useEffect(() => {
+    if (!horarioSeleccionado && horariosPendientes.length > 0) {
+      seleccionarHorario(horariosPendientes[0]);
+    }
+  }, [horariosPendientes, horarioSeleccionado, seleccionarHorario]);
+
   if (loading) {
     return (
       <MainLayout showSidebar={true}>
@@ -75,7 +84,13 @@ const Revision = () => {
 
   return (
     <MainLayout showSidebar={true}>
-      <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Box sx={{ 
+        py: 4, 
+        px: { xs: 2, md: 3 },
+        maxWidth: '1400px',
+        mx: 'auto',
+        width: '100%'
+      }}>
       {/* Encabezado */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 1 }}>
@@ -87,12 +102,12 @@ const Revision = () => {
       </Box>
 
       {/* Estadísticas */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item xs={12} sm={4}>
-          <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+      <Grid container spacing={3} sx={{ mb: 4, justifyContent: 'center' }}>
+        <Grid item xs={12} sm={6} md={4} sx={{ display: 'flex' }}>
+          <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, width: '100%', minWidth: 200 }}>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                <MdSchedule size={32} color={theme.palette.warning.main} />
+                <MdSchedule size={32} color={theme.palette.primary.main} />
                 <Typography variant="h4" sx={{ ml: 2, fontWeight: 700 }}>
                   {horariosPendientes.length}
                 </Typography>
@@ -104,11 +119,11 @@ const Revision = () => {
           </Card>
         </Grid>
         
-        <Grid item xs={12} sm={4}>
-          <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+        <Grid item xs={12} sm={6} md={4} sx={{ display: 'flex' }}>
+          <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, width: '100%', minWidth: 200 }}>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                <MdEventNote size={32} color={theme.palette.info.main} />
+                <MdEventNote size={32} color={theme.palette.primary.main} />
                 <Typography variant="h4" sx={{ ml: 2, fontWeight: 700 }}>
                   {horariosPendientes.reduce((acc, h) => acc + h.total_examenes, 0)}
                 </Typography>
@@ -120,8 +135,8 @@ const Revision = () => {
           </Card>
         </Grid>
 
-        <Grid item xs={12} sm={4}>
-          <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+        <Grid item xs={12} sm={6} md={4} sx={{ display: 'flex' }}>
+          <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, width: '100%', minWidth: 200 }}>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                 <MdSchool size={32} color={theme.palette.primary.main} />
@@ -142,209 +157,350 @@ const Revision = () => {
           No hay horarios pendientes de revisión en este momento.
         </Alert>
       ) : (
-        <Grid container spacing={3}>
-          {/* Lista de horarios pendientes */}
-          <Grid item xs={12} md={4}>
-            <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
-              <CardContent>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-                  Horarios Pendientes
-                </Typography>
-                <List sx={{ p: 0 }}>
-                  {horariosPendientes.map((horario, index) => (
-                    <Box key={horario.id}>
-                      <ListItem disablePadding>
-                        <ListItemButton 
-                          onClick={() => seleccionarHorario(horario)}
-                          selected={horarioSeleccionado?.id === horario.id}
-                          sx={{ 
-                            borderRadius: 1,
-                            '&.Mui-selected': {
+        <Paper 
+          elevation={0} 
+          sx={{ 
+            border: '1px solid', 
+            borderColor: 'divider', 
+            borderRadius: 2,
+            p: 3,
+            bgcolor: 'background.paper'
+          }}
+        >
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', md: '1fr 1.6fr' },
+              gap: { xs: 2, md: 3 },
+              alignItems: 'start'
+            }}
+          >
+            {/* Lista de horarios pendientes */}
+            <Box>
+              <Card 
+                elevation={0} 
+                sx={{ 
+                  border: '1px solid', 
+                  borderColor: 'divider', 
+                  borderRadius: 2,
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
+              >
+                <CardContent sx={{ pb: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                      Pendientes
+                    </Typography>
+                    <Chip 
+                      label={horariosPendientes.length} 
+                      color="primary" 
+                      size="small"
+                      sx={{ fontWeight: 600 }}
+                    />
+                  </Box>
+                </CardContent>
+                <Divider />
+                <Box sx={{ overflow: 'auto', flex: 1 }}>
+                  <List sx={{ p: 2, pt: 1 }}>
+                    {horariosPendientes.map((horario, index) => (
+                      <Box key={horario.id}>
+                        <Paper
+                          elevation={0}
+                          sx={{
+                            border: '1px solid',
+                            borderColor: horarioSeleccionado?.id === horario.id ? 'primary.main' : 'divider',
+                            borderRadius: 2,
+                            bgcolor: horarioSeleccionado?.id === horario.id ? 'primary.lighter' : 'transparent',
+                            transition: 'all 0.2s',
+                            cursor: 'pointer',
+                            '&:hover': {
+                              borderColor: 'primary.main',
                               bgcolor: 'primary.lighter',
-                              '&:hover': {
-                                bgcolor: 'primary.lighter',
-                              }
+                              transform: 'translateY(-2px)',
+                              boxShadow: 1
                             }
                           }}
+                          onClick={() => seleccionarHorario(horario)}
                         >
-                          <ListItemText
-                            primary={
-                              <Typography variant="subtitle2" fontWeight={600}>
-                                {horario.carrera}
-                              </Typography>
-                            }
-                            secondary={
-                              <Box>
-                                <Typography variant="caption" display="block" color="text.secondary">
+                          <Box sx={{ p: 2 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5, mb: 1.5 }}>
+                              <Box 
+                                sx={{ 
+                                  p: 1, 
+                                  bgcolor: 'primary.main',
+                                  borderRadius: 1.5,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center'
+                                }}
+                              >
+                                <MdSchool size={20} color="white" />
+                              </Box>
+                              <Box sx={{ flex: 1, minWidth: 0 }}>
+                                <Typography 
+                                  variant="subtitle2" 
+                                  fontWeight={600}
+                                  sx={{ 
+                                    mb: 0.5,
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: 'vertical'
+                                  }}
+                                >
+                                  {horario.carrera}
+                                </Typography>
+                                <Typography 
+                                  variant="caption" 
+                                  color="text.secondary"
+                                  sx={{ 
+                                    display: 'block',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap'
+                                  }}
+                                >
                                   {horario.jefe_carrera}
                                 </Typography>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
-                                  <Chip 
-                                    label={horario.tipo_examen} 
-                                    size="small" 
-                                    color="warning"
-                                  />
-                                  <Typography variant="caption" color="text.secondary">
-                                    {horario.total_examenes} exámenes
-                                  </Typography>
-                                </Box>
                               </Box>
-                            }
-                          />
-                        </ListItemButton>
-                      </ListItem>
-                      {index < horariosPendientes.length - 1 && <Divider sx={{ my: 1 }} />}
-                    </Box>
-                  ))}
-                </List>
-              </CardContent>
-            </Card>
-          </Grid>
+                            </Box>
+                            
+                            <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+                              <Chip 
+                                label={horario.tipo_examen} 
+                                size="small" 
+                                color="primary"
+                                variant={horarioSeleccionado?.id === horario.id ? 'filled' : 'outlined'}
+                              />
+                              <Chip 
+                                icon={<MdEventNote size={14} />}
+                                label={`${horario.total_examenes}`}
+                                size="small"
+                                variant="outlined"
+                              />
+                            </Stack>
+                            
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                              <MdCalendarMonth size={14} color={theme.palette.text.secondary} />
+                              <Typography variant="caption" color="text.secondary">
+                                Enviado: {horario.fecha_envio}
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </Paper>
+                        {index < horariosPendientes.length - 1 && <Box sx={{ my: 1.5 }} />}
+                      </Box>
+                    ))}
+                  </List>
+                </Box>
+              </Card>
+            </Box>
 
-          {/* Detalle del horario seleccionado */}
-          <Grid item xs={12} md={8}>
-            {horarioSeleccionado ? (
-              <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
-                    <Box>
-                      <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                        {horarioSeleccionado.carrera}
-                      </Typography>
-                      <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
-                        <Chip 
-                          label={horarioSeleccionado.tipo_examen} 
-                          color="warning" 
-                          size="small"
-                        />
-                        <Chip 
-                          label={ESTADO_LABELS[horarioSeleccionado.estado]} 
-                          color="warning" 
-                          size="small"
-                        />
-                      </Stack>
-                    </Box>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                      <Button
-                        variant="contained"
-                        color="success"
-                        startIcon={<MdCheckCircle />}
-                        onClick={abrirDialogoAprobar}
-                      >
-                        Aprobar
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="error"
-                        startIcon={<MdCancel />}
-                        onClick={abrirDialogoRechazar}
-                      >
-                        Rechazar
-                      </Button>
-                    </Box>
+            {/* Detalle del horario seleccionado */}
+            <Box>
+              {horarioSeleccionado ? (
+                <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, height: '100%' }}>
+                  {/* Header con fondo */}
+                  <Box sx={{ bgcolor: 'primary.lighter', borderBottom: '1px solid', borderColor: 'divider' }}>
+                    <CardContent>
+                      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' } }}>
+                        <Box sx={{ flex: 1 }}>
+                          <Typography variant="h5" sx={{ fontWeight: 700, mb: 1, color: 'primary.dark' }}>
+                            {horarioSeleccionado.carrera}
+                          </Typography>
+                          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                            <Chip 
+                              label={horarioSeleccionado.tipo_examen} 
+                              color="primary" 
+                              size="medium"
+                              sx={{ fontWeight: 600 }}
+                            />
+                            <Chip 
+                              label={ESTADO_LABELS[horarioSeleccionado.estado]} 
+                              color="info" 
+                              variant="outlined"
+                              size="medium"
+                            />
+                            <Chip 
+                              icon={<MdEventNote size={18} />}
+                              label={`${horarioSeleccionado.total_examenes} Exámenes`}
+                              variant="outlined"
+                              size="medium"
+                            />
+                          </Stack>
+                        </Box>
+                      </Box>
+                    </CardContent>
                   </Box>
 
-                  <Divider sx={{ mb: 3 }} />
+                  {/* Botones de acción flotantes */}
+                  <Box sx={{ 
+                    p: 2, 
+                    borderBottom: '1px solid', 
+                    borderColor: 'divider',
+                    bgcolor: 'background.paper',
+                    display: 'flex',
+                    gap: 2,
+                    flexDirection: { xs: 'column', sm: 'row' }
+                  }}>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      startIcon={<MdCheckCircle />}
+                      onClick={abrirDialogoAprobar}
+                      fullWidth
+                      sx={{ py: 1.5, fontWeight: 600 }}
+                    >
+                      Aprobar Horario
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      startIcon={<MdCancel />}
+                      onClick={abrirDialogoRechazar}
+                      fullWidth
+                      sx={{ py: 1.5, fontWeight: 600 }}
+                    >
+                      Rechazar Horario
+                    </Button>
+                  </Box>
 
-                  {/* Información general */}
-                  <Grid container spacing={2} sx={{ mb: 3 }}>
-                    <Grid item xs={12} sm={6}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                        <MdPerson size={20} style={{ marginRight: 8 }} color={theme.palette.text.secondary} />
-                        <Typography variant="body2" color="text.secondary">
-                          Jefe de Carrera
-                        </Typography>
-                      </Box>
-                      <Typography variant="body1" fontWeight={500}>
-                        {horarioSeleccionado.jefe_carrera}
-                      </Typography>
-                    </Grid>
-                    
-                    <Grid item xs={12} sm={6}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                        <MdCalendarMonth size={20} style={{ marginRight: 8 }} color={theme.palette.text.secondary} />
-                        <Typography variant="body2" color="text.secondary">
-                          Periodo
-                        </Typography>
-                      </Box>
-                      <Typography variant="body1" fontWeight={500}>
-                        {horarioSeleccionado.periodo}
-                      </Typography>
+                  <CardContent sx={{ pt: 3 }}>
+
+                    {/* Información general */}
+                    <Grid container spacing={3} sx={{ mb: 4 }}>
+                      <Grid item xs={12} sm={6}>
+                        <Paper elevation={0} sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
+                            <Box sx={{ p: 1, bgcolor: 'primary.lighter', borderRadius: 1, display: 'flex' }}>
+                              <MdPerson size={24} color={theme.palette.primary.main} />
+                            </Box>
+                            <Typography variant="caption" color="text.secondary" fontWeight={600} textTransform="uppercase">
+                              Jefe de Carrera
+                            </Typography>
+                          </Box>
+                          <Typography variant="body1" fontWeight={600} sx={{ ml: 5 }}>
+                            {horarioSeleccionado.jefe_carrera}
+                          </Typography>
+                        </Paper>
+                      </Grid>
+                      
+                      <Grid item xs={12} sm={6}>
+                        <Paper elevation={0} sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
+                            <Box sx={{ p: 1, bgcolor: 'info.lighter', borderRadius: 1, display: 'flex' }}>
+                              <MdCalendarMonth size={24} color={theme.palette.info.main} />
+                            </Box>
+                            <Typography variant="caption" color="text.secondary" fontWeight={600} textTransform="uppercase">
+                              Periodo
+                            </Typography>
+                          </Box>
+                          <Typography variant="body1" fontWeight={600} sx={{ ml: 5 }}>
+                            {horarioSeleccionado.periodo}
+                          </Typography>
+                        </Paper>
+                      </Grid>
+
+                      <Grid item xs={12} sm={6}>
+                        <Paper elevation={0} sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
+                            <Box sx={{ p: 1, bgcolor: 'primary.lighter', borderRadius: 1, display: 'flex' }}>
+                              <MdSchedule size={24} color={theme.palette.primary.main} />
+                            </Box>
+                            <Typography variant="caption" color="text.secondary" fontWeight={600} textTransform="uppercase">
+                              Fecha de Envío
+                            </Typography>
+                          </Box>
+                          <Typography variant="body1" fontWeight={600} sx={{ ml: 5 }}>
+                            {horarioSeleccionado.fecha_envio}
+                          </Typography>
+                        </Paper>
+                      </Grid>
+
+                      <Grid item xs={12} sm={6}>
+                        <Paper elevation={0} sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
+                            <Box sx={{ p: 1, bgcolor: 'success.lighter', borderRadius: 1, display: 'flex' }}>
+                              <MdEventNote size={24} color={theme.palette.success.main} />
+                            </Box>
+                            <Typography variant="caption" color="text.secondary" fontWeight={600} textTransform="uppercase">
+                              Total de Exámenes
+                            </Typography>
+                          </Box>
+                          <Typography variant="body1" fontWeight={600} sx={{ ml: 5 }}>
+                            {horarioSeleccionado.total_examenes}
+                          </Typography>
+                        </Paper>
+                      </Grid>
                     </Grid>
 
-                    <Grid item xs={12} sm={6}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                        <MdSchedule size={20} style={{ marginRight: 8 }} color={theme.palette.text.secondary} />
-                        <Typography variant="body2" color="text.secondary">
-                          Fecha de Envío
-                        </Typography>
-                      </Box>
-                      <Typography variant="body1" fontWeight={500}>
-                        {horarioSeleccionado.fecha_envio}
-                      </Typography>
-                    </Grid>
-
-                    <Grid item xs={12} sm={6}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                        <MdEventNote size={20} style={{ marginRight: 8 }} color={theme.palette.text.secondary} />
-                        <Typography variant="body2" color="text.secondary">
-                          Total de Exámenes
-                        </Typography>
-                      </Box>
-                      <Typography variant="body1" fontWeight={500}>
-                        {horarioSeleccionado.total_examenes}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-
-                  {/* Tabla de horarios */}
-                  <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
-                    Detalle de Exámenes
-                  </Typography>
-                  <TableContainer component={Paper} elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
-                    <Table size="small">
-                      <TableHead>
-                        <TableRow sx={{ bgcolor: 'grey.50' }}>
-                          <TableCell sx={{ fontWeight: 600 }}>Semestre</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Materia</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Profesor</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Aula</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Fecha</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Horario</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Alumnos</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {horarioSeleccionado.horarios.map((examen, index) => (
-                          <TableRow key={index} hover>
-                            <TableCell>{examen.semestre}</TableCell>
-                            <TableCell>{examen.materia}</TableCell>
-                            <TableCell>{examen.profesor}</TableCell>
-                            <TableCell>
-                              <Chip label={examen.aula} size="small" variant="outlined" />
-                            </TableCell>
-                            <TableCell>{examen.fecha}</TableCell>
-                            <TableCell>{examen.hora_inicio} - {examen.hora_fin}</TableCell>
-                            <TableCell>{examen.alumnos}</TableCell>
-                          </TableRow>
+                    {/* Resumen de Semestres */}
+                    <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
+                      Semestres Incluidos
+                    </Typography>
+                    <Box sx={{ mb: 3 }}>
+                      <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                        {horarioSeleccionado.semestres.map((sem) => (
+                          <Chip 
+                            key={sem}
+                            label={`${sem} Semestre`} 
+                            color="primary" 
+                            variant="outlined"
+                            sx={{ mb: 1 }}
+                          />
                         ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </CardContent>
-              </Card>
-            ) : (
-              <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
-                <CardContent sx={{ py: 8, textAlign: 'center' }}>
-                  <MdSchedule size={64} color={theme.palette.text.disabled} />
-                  <Typography variant="h6" color="text.secondary" sx={{ mt: 2 }}>
-                    Selecciona un horario para revisar
-                  </Typography>
-                </CardContent>
-              </Card>
-            )}
-          </Grid>
-        </Grid>
+                      </Stack>
+                    </Box>
+
+                    {/* Resumen de exámenes por semestre */}
+                    <Paper 
+                      elevation={0} 
+                      sx={{ 
+                        p: 2, 
+                        bgcolor: 'primary.lighter',
+                        border: '1px solid',
+                        borderColor: 'primary.main',
+                        borderRadius: 2,
+                        mb: 2
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                        Este horario incluye {horarioSeleccionado.total_examenes} exámenes distribuidos en {horarioSeleccionado.semestres.length} semestres.
+                      </Typography>
+                      <Button
+                        variant="contained"
+                        startIcon={<MdCalendarMonth />}
+                        onClick={() => navigate('/calendario')}
+                        fullWidth
+                        sx={{ mt: 1 }}
+                      >
+                        Ver Horario Completo en Calendario
+                      </Button>
+                    </Paper>
+
+                    <Divider sx={{ my: 2 }} />
+                    
+                    <Typography variant="caption" color="text.secondary" display="block" sx={{ textAlign: 'center', mb: 2 }}>
+                      Revisa el calendario completo antes de aprobar o rechazar el horario
+                    </Typography>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+                  <CardContent sx={{ py: 8, textAlign: 'center' }}>
+                    <MdSchedule size={64} color={theme.palette.text.disabled} />
+                    <Typography variant="h6" color="text.secondary" sx={{ mt: 2 }}>
+                      Selecciona un horario para revisar
+                    </Typography>
+                  </CardContent>
+                </Card>
+              )}
+            </Box>
+          </Box>
+        </Paper>
       )}
 
       {/* Diálogo de Aprobar */}
@@ -436,7 +592,7 @@ const Revision = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      </Container>
+      </Box>
     </MainLayout>
   );
 };

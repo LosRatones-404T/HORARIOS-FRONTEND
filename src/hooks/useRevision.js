@@ -41,13 +41,13 @@ const useRevision = () => {
             fecha_envio: '2026-01-10',
             total_examenes: 25,
             estado: ESTADOS.EN_REVISION,
-            semestres: ['1°', '2°', '3°', '4°', '5°'],
+            semestres: ['1°', '3°', '5°', '7°', '9°'],
             horarios: [
               {
                 semestre: '1°',
-                materia: 'Cálculo Diferencial',
-                profesor: 'Ing. María López',
-                aula: 'A101',
+                materia: 'Fundamentos de Programación',
+                profesor: 'Ing. Carlos Ramírez',
+                aula: 'Lab-301',
                 fecha: '2026-01-20',
                 hora_inicio: '08:00',
                 hora_fin: '10:00',
@@ -56,9 +56,9 @@ const useRevision = () => {
               },
               {
                 semestre: '1°',
-                materia: 'Fundamentos de Programación',
-                profesor: 'Ing. Carlos Ramírez',
-                aula: 'L1',
+                materia: 'Cálculo Diferencial',
+                profesor: 'Ing. María López',
+                aula: 'Aula-101',
                 fecha: '2026-01-20',
                 hora_inicio: '10:00',
                 hora_fin: '12:00',
@@ -66,26 +66,48 @@ const useRevision = () => {
                 alumnos: 32
               },
               {
-                semestre: '2°',
-                materia: 'Estructura de Datos',
+                semestre: '3°',
+                materia: 'Estructuras de Datos',
                 profesor: 'Dr. Ana Torres',
-                aula: 'L2',
+                aula: 'Lab-303',
                 fecha: '2026-01-20',
-                hora_inicio: '12:00',
-                hora_fin: '14:00',
+                hora_inicio: '10:00',
+                hora_fin: '12:00',
                 duracion: 2,
                 alumnos: 30
               },
               {
-                semestre: '3°',
-                materia: 'Base de Datos',
+                semestre: '5°',
+                materia: 'Bases de Datos II',
                 profesor: 'Mtro. Pedro Sánchez',
-                aula: 'L3',
+                aula: 'Lab-308',
                 fecha: '2026-01-21',
-                hora_inicio: '08:00',
-                hora_fin: '10:00',
+                hora_inicio: '09:00',
+                hora_fin: '11:00',
                 duracion: 2,
                 alumnos: 28
+              },
+              {
+                semestre: '7°',
+                materia: 'Ingeniería de Software II',
+                profesor: 'Dra. Laura Martínez',
+                aula: 'Aula-209',
+                fecha: '2026-01-21',
+                hora_inicio: '11:00',
+                hora_fin: '13:00',
+                duracion: 2,
+                alumnos: 26
+              },
+              {
+                semestre: '9°',
+                materia: 'Sistemas Distribuidos',
+                profesor: 'Dr. Roberto Silva',
+                aula: 'Lab-316',
+                fecha: '2026-01-22',
+                hora_inicio: '11:00',
+                hora_fin: '13:00',
+                duracion: 2,
+                alumnos: 24
               },
             ]
           },
@@ -96,15 +118,15 @@ const useRevision = () => {
             tipo_examen: 'Parcial 1',
             periodo: 'Periodo 1 - 2026',
             fecha_envio: '2026-01-11',
-            total_examenes: 18,
+            total_examenes: 15,
             estado: ESTADOS.EN_REVISION,
-            semestres: ['1°', '2°', '3°'],
+            semestres: ['1°', '3°', '5°'],
             horarios: [
               {
                 semestre: '1°',
                 materia: 'Probabilidad y Estadística',
                 profesor: 'Dr. Roberto Méndez',
-                aula: 'A201',
+                aula: 'Aula-201',
                 fecha: '2026-01-22',
                 hora_inicio: '14:00',
                 hora_fin: '16:00',
@@ -112,15 +134,26 @@ const useRevision = () => {
                 alumnos: 40
               },
               {
-                semestre: '2°',
+                semestre: '3°',
                 materia: 'Ingeniería de Métodos',
                 profesor: 'Ing. Laura Castillo',
-                aula: 'A202',
+                aula: 'Aula-202',
                 fecha: '2026-01-22',
                 hora_inicio: '16:00',
                 hora_fin: '18:00',
                 duracion: 2,
                 alumnos: 35
+              },
+              {
+                semestre: '5°',
+                materia: 'Planeación y Control de la Producción',
+                profesor: 'Mtro. José Ramírez',
+                aula: 'Aula-203',
+                fecha: '2026-01-23',
+                hora_inicio: '08:00',
+                hora_fin: '10:00',
+                duracion: 2,
+                alumnos: 30
               },
             ]
           },
@@ -131,26 +164,63 @@ const useRevision = () => {
             tipo_examen: 'Ordinario',
             periodo: 'Periodo 1 - 2026',
             fecha_envio: '2026-01-12',
-            total_examenes: 15,
+            total_examenes: 20,
             estado: ESTADOS.EN_REVISION,
-            semestres: ['4°', '5°', '6°'],
+            semestres: ['1°', '3°', '5°', '7°'],
             horarios: [
               {
-                semestre: '4°',
-                materia: 'Circuitos Eléctricos II',
+                semestre: '1°',
+                materia: 'Análisis de Circuitos Eléctricos',
                 profesor: 'Dr. Jorge Hernández',
-                aula: 'LE1',
+                aula: 'Lab-E01',
                 fecha: '2026-01-23',
                 hora_inicio: '08:00',
-                hora_fin: '11:00',
-                duracion: 3,
-                alumnos: 25
+                hora_fin: '10:00',
+                duracion: 2,
+                alumnos: 28
+              },
+              {
+                semestre: '3°',
+                materia: 'Electrónica Analógica',
+                profesor: 'Ing. Patricia Gómez',
+                aula: 'Lab-E02',
+                fecha: '2026-01-23',
+                hora_inicio: '10:00',
+                hora_fin: '12:00',
+                duracion: 2,
+                alumnos: 26
+              },
+              {
+                semestre: '5°',
+                materia: 'Microprocesadores',
+                profesor: 'Mtro. Fernando Torres',
+                aula: 'Lab-E03',
+                fecha: '2026-01-24',
+                hora_inicio: '08:00',
+                hora_fin: '10:00',
+                duracion: 2,
+                alumnos: 24
+              },
+              {
+                semestre: '7°',
+                materia: 'Sistemas de Control',
+                profesor: 'Dra. Carmen Ortiz',
+                aula: 'Lab-E04',
+                fecha: '2026-01-24',
+                hora_inicio: '10:00',
+                hora_fin: '12:00',
+                duracion: 2,
+                alumnos: 22
               },
             ]
           }
         ];
         
         setHorariosPendientes(mockHorarios);
+        // Seleccionar automáticamente el primer horario
+        if (mockHorarios.length > 0) {
+          setHorarioSeleccionado(mockHorarios[0]);
+        }
         setLoading(false);
       }, 1000);
     };
