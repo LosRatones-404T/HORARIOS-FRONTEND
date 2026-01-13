@@ -32,7 +32,7 @@ import {
   MdClose,
   MdSearch
 } from 'react-icons/md';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const UsuariosAdmin = () => {
   const theme = useTheme();
@@ -86,6 +86,19 @@ const UsuariosAdmin = () => {
   // Formulario de usuario
   const [formData, setFormData] = useState({ nombre: '', email: '', rol: 'jefe' });
   const [isNewUser, setIsNewUser] = useState(false);
+
+  // Pre-seleccionar el primer usuario al cargar
+  useEffect(() => {
+    if (usuarios.length > 0 && !selectedUsuario) {
+      const primerUsuario = usuarios[0];
+      setSelectedUsuario(primerUsuario);
+      setFormData({
+        nombre: primerUsuario.nombre,
+        email: primerUsuario.email,
+        rol: primerUsuario.rol
+      });
+    }
+  }, []);
 
   const filteredUsuarios = usuarios.filter(u => {
     const matchSearch = u.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
