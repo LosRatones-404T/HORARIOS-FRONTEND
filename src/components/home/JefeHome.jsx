@@ -54,14 +54,6 @@ const JefeHome = ({ estadoExamen, logsRecientes }) => {
         </Alert>
       )}
 
-      {/* Estado Aprobado */}
-      {estadoExamen.existe && estadoExamen.estado === ESTADOS.APROBADO && (
-        <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }}>
-          <AlertTitle sx={{ fontWeight: 600 }}>Horario Aprobado</AlertTitle>
-          El horario de {estadoExamen.tipo_examen} ha sido aprobado y publicado.
-        </Alert>
-      )}
-
       {/* Tarjetas de Estadísticas */}
       <Grid container spacing={3} sx={{ mb: 4, justifyContent: 'center' }}>
         <Grid item xs={12} sm={6} md={3} sx={{ display: 'flex' }}>
@@ -133,6 +125,70 @@ const JefeHome = ({ estadoExamen, logsRecientes }) => {
           </Card>
         </Grid>
       </Grid>
+
+      {/* Card de Estado Aprobado con Observaciones */}
+      {estadoExamen.existe && estadoExamen.estado === ESTADOS.APROBADO && estadoExamen.observaciones && (
+        <Card 
+          elevation={0} 
+          sx={{ 
+            mb: 4, 
+            border: '2px solid', 
+            borderColor: 'success.main', 
+            borderRadius: 2,
+            bgcolor: 'rgba(46, 125, 50, 0.04)'
+          }}
+        >
+          <CardContent sx={{ p: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <Box 
+                sx={{ 
+                  p: 1.5, 
+                  bgcolor: 'success.main', 
+                  borderRadius: 2, 
+                  display: 'flex',
+                  mr: 2 
+                }}
+              >
+                <MdEventNote size={28} color="#fff" />
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, color: 'success.dark' }}>
+                  Horario Aprobado - {estadoExamen.tipo_examen}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Fecha de aprobación: {estadoExamen.fecha_aprobacion}
+                </Typography>
+              </Box>
+              <Chip 
+                label="Aprobado" 
+                color="success" 
+                sx={{ fontWeight: 600 }}
+              />
+            </Box>
+            
+            <Divider sx={{ mb: 2 }} />
+            
+            <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'success.dark', mb: 1 }}>
+              Observaciones y Sugerencias de Servicios Escolares:
+            </Typography>
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                whiteSpace: 'pre-line',
+                color: 'text.primary',
+                lineHeight: 1.6,
+                p: 2,
+                bgcolor: 'background.paper',
+                borderRadius: 1,
+                border: '1px solid',
+                borderColor: 'divider'
+              }}
+            >
+              {estadoExamen.observaciones}
+            </Typography>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Actividad Reciente */}
       <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>

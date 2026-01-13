@@ -17,7 +17,8 @@ export const useHomeData = () => {
     fecha_generacion: '2026-01-11',
     total_examenes: 25,
     fecha_aprobacion: '2026-01-11',
-    retroalimentacion: null
+    retroalimentacion: null, // Para horarios rechazados
+    observaciones: 'El horario cumple con los requisitos establecidos.\n\nSugerencias:\n- Se recomienda revisar la distribución de aulas para el grupo 3A en el laboratorio L2.\n- Considerar ajustar el horario de la materia "Programación Web" para evitar conflictos con actividades extracurriculares.' // Para horarios aprobados
   });
 
   // Logs recientes (mock - vendrán del backend)
