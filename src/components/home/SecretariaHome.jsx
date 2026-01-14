@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { 
   Box,
   Typography, 
@@ -16,9 +17,11 @@ import {
   MdCheckCircle,
   MdCancel,
   MdRateReview,
-  MdCalendarMonth 
+  MdCalendarMonth,
+  MdSettings 
 } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+import { periodosApi } from '../../services/api';
 
 const SecretariaHome = () => {
   const theme = useTheme();
@@ -28,6 +31,26 @@ const SecretariaHome = () => {
   const pendientesRevision = 3;
   const revisadosHoy = 2;
   const totalRevisados = 15;
+
+  // Estado del período académico
+  const [periodoActual, setPeriodoActual] = useState(null);
+  const [loadingPeriodo, setLoadingPeriodo] = useState(true);
+
+  useEffect(() => {
+    cargarPeriodoActivo();
+  }, []);
+
+  const cargarPeriodoActivo = async () => {
+    try {
+      setLoadingPeriodo(true);
+      const periodo = await periodosApi.obtenerPeriodoActivo();
+      setPeriodoActual(periodo);
+    } catch (error) {
+      console.error('Error al cargar período:', error);
+    } finally {
+      setLoadingPeriodo(false);
+    }
+  };
 
   return (
     <Box sx={{ py: 4, px: 3, width: '100%', maxWidth: '100%' }}>
@@ -40,6 +63,47 @@ const SecretariaHome = () => {
           Panel de control - Revisión de horarios de exámenes
         </Typography>
       </Box>
+
+      {/* Alerta de Período Académico */}
+      {!loadingPeriodo && !periodoActual && (
+        <Alert 
+          severity="error" 
+          sx={{ mb: 3, borderRadius: 2 }}
+          action={
+            <Button 
+              color="inherit" 
+              size="small" 
+              onClick={() => navigate('/periodo-academico')}
+            >
+              Configurar
+            </Button>
+          }
+        >
+          <AlertTitle sx={{ fontWeight: 600 }}>No hay período académico activo</AlertTitle>
+          Los jefes de carrera no pueden generar exámenes sin un período académico activo. 
+          Configura uno ahora.
+        </Alert>
+      )}
+
+      {!loadingPeriodo && periodoActual && periodoActual.estado === 'planificado' && (
+        <Alert 
+          severity="warning" 
+          sx={{ mb: 3, borderRadius: 2 }}
+          action={
+            <Button 
+              color="inherit" 
+              size="small" 
+              onClick={() => navigate('/periodo-academico')}
+            >
+              Iniciar
+            </Button>
+          }
+        >
+          <AlertTitle sx={{ fontWeight: 600 }}>Período Académico Planificado</AlertTitle>
+          Hay un período académico creado pero aún no ha sido iniciado. 
+          Los jefes de carrera no podrán generar exámenes hasta que se inicie.
+        </Alert>
+      )}
 
       {/* Alert de pendientes */}
       {pendientesRevision > 0 && (
@@ -223,6 +287,70 @@ const SecretariaHome = () => {
                         Calendario de exámenes aprobados
                       </Typography>
                     </Box>
+                  </Stack>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <Card 
+                elevation={0} 
+                sx={{ 
+                  border: '1px solid', 
+                  borderColor: 'divider', 
+                  borderRadius: 2,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  '&:hover': {
+                    borderColor: 'success.main',
+                    boxShadow: 2,
+                    transform: 'translateY(-2px)'
+                  }
+                }}
+                onClick={() => navigate('/periodo-academico')}
+              >
+                <CardContent sx={{ p: 3 }}>
+                  <Stack direction="row" alignItems="center" spacing={2}>
+                    <Box 
+                      sx={{ 
+                        p: 1.5, 
+                        bgcolor: periodoActual && periodoActual.estado === 'activo' 
+                          ? 'success.lighter' 
+                          : 'error.lighter', 
+                        borderRadius: 2,
+                        display: 'flex'
+                      }}
+                    >
+                      <MdSettings size={28} color={
+                        periodoActual && periodoActual.estado === 'activo'
+                          ? theme.palette.success.main
+                          : theme.palette.error.main
+                      } />
+                    </Box>
+                    <Box sx={{ flex: 1 }}>
+                      <Typography variant="subtitle1" fontWeight={600}>
+                        Período Académico
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Gestionar períodos de exámenes
+                      </Typography>
+                    </Box>
+                    {periodoActual && (
+                      <Chip 
+                        label={periodoActual.estado === 'activo' ? 'Activo' : 'Planificado'} 
+                        color={periodoActual.estado === 'activo' ? 'success' : 'warning'}
+                        size="small"
+                        sx={{ fontWeight: 600 }}
+                      />
+                    )}
+                    {!periodoActual && (
+                      <Chip 
+                        label="Sin período" 
+                        color="error"
+                        size="small"
+                        sx={{ fontWeight: 600 }}
+                      />
+                    )}
                   </Stack>
                 </CardContent>
               </Card>

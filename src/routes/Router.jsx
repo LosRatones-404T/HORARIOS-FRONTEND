@@ -8,6 +8,7 @@ import Preferencias from '../screens/Preferencias.jsx';
 import Calendario from '../screens/Calendario.jsx';
 import Revision from '../screens/Revision.jsx';
 import Usuarios from '../screens/Usuarios.jsx';
+import PeriodoAcademico from '../screens/PeriodoAcademico.jsx';
 
 const Router = () => {
   return (
@@ -23,6 +24,9 @@ const Router = () => {
         
         {/* Rutas de administrador */}
         <Route path="/usuarios" element={<Usuarios />} />
+        
+        {/* Rutas de secretaría/servicios escolares */}
+        <Route path="/periodo-academico" element={<PeriodoAcademico />} />
         
         {/* Rutas compartidas */}
         <Route path="/generar" element={<Generar />} />

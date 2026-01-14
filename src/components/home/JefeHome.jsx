@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { 
   Box, 
   Typography, 
@@ -17,14 +18,39 @@ import {
   MdSchedule, 
   MdCalendarMonth,
   MdClass,
-  MdEventNote
+  MdEventNote,
+  MdBlock
 } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { ESTADOS, ESTADO_LABELS, ESTADO_COLORS } from '../../constants/estadosExamen';
+import { periodosApi } from '../../services/api';
 
 const JefeHome = ({ estadoExamen, logsRecientes }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+
+  // Estado del período académico
+  const [periodoActivo, setPeriodoActivo] = useState(null);
+  const [loadingPeriodo, setLoadingPeriodo] = useState(true);
+
+  useEffect(() => {
+    validarPeriodoActivo();
+  }, []);
+
+  const validarPeriodoActivo = async () => {
+    try {
+      setLoadingPeriodo(true);
+      const periodo = await periodosApi.obtenerPeriodoActivo();
+      setPeriodoActivo(periodo);
+    } catch (error) {
+      console.error('Error al validar período:', error);
+    } finally {
+      setLoadingPeriodo(false);
+    }
+  };
+
+  // Determinar si se puede generar exámenes
+  const puedeGenerarExamenes = periodoActivo && periodoActivo.estado === 'activo';
 
   return (
     <Box sx={{ py: 4, px: 3, width: '100%', maxWidth: '100%' }}>
@@ -37,6 +63,18 @@ const JefeHome = ({ estadoExamen, logsRecientes }) => {
           Panel de control - Gestión de exámenes
         </Typography>
       </Box>
+
+      {/* Alerta de período inactivo */}
+      {!loadingPeriodo && !puedeGenerarExamenes && (
+        <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }} icon={<MdBlock />}>
+          <AlertTitle sx={{ fontWeight: 600 }}>Generación de Exámenes No Disponible</AlertTitle>
+          {!periodoActivo ? (
+            'No hay un período académico activo. Servicios Escolares debe configurar e iniciar un período académico para habilitar la generación de exámenes.'
+          ) : (
+            `El período académico está en estado "${periodoActivo.estado}". Solo puedes generar exámenes cuando el período esté activo.`
+          )}
+        </Alert>
+      )}
 
       {/* Retroalimentación si fue rechazado */}
       {estadoExamen.existe && estadoExamen.estado === ESTADOS.RECHAZADO && (

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Box, 
   Typography, 
@@ -29,10 +29,12 @@ import {
   MdSettings,
   MdCalendarMonth,
   MdWarning,
+  MdBlock,
 } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../components/layout/MainLayout';
 import Notification from '../components/common/Notification';
+import { periodosApi } from '../services/api';
 
 /**
  * Estados del horario generado
@@ -81,6 +83,38 @@ function Generar() {
     severity: 'success' 
   });
 
+  // Estado del período académico
+  const [periodoActivo, setPeriodoActivo] = useState(null);
+  const [loadingPeriodo, setLoadingPeriodo] = useState(true);
+
+  useEffect(() => {
+    validarPeriodoActivo();
+  }, []);
+
+  const validarPeriodoActivo = async () => {
+    try {
+      setLoadingPeriodo(true);
+      const periodo = await periodosApi.obtenerPeriodoActivo();
+      setPeriodoActivo(periodo);
+      
+      // Si no hay período activo, mostrar notificación
+      if (!periodo || periodo.estado !== 'activo') {
+        setNotification({
+          open: true,
+          message: 'No hay un período académico activo. No puedes generar exámenes.',
+          severity: 'error'
+        });
+      }
+    } catch (error) {
+      console.error('Error al validar período:', error);
+    } finally {
+      setLoadingPeriodo(false);
+    }
+  };
+
+  // Determinar si se puede generar exámenes
+  const puedeGenerarExamenes = periodoActivo && periodoActivo.estado === 'activo';
+
   // Log de cambios (mock data - vendrá del backend)
   const [logCambios] = useState([
     {
@@ -111,15 +145,25 @@ function Generar() {
 
   // Manejar generación de horarios
   const handleConfirmarGeneracion = async () => {
+    if (!puedeGenerarExamenes) {
+      setNotification({
+        open: true,
+        message: 'No hay un período académico activo',
+        severity: 'error'
+      });
+      return;
+    }
+
     setGenerando(true);
     
     // Simular llamada al backend
     setTimeout(() => {
       setHorarioGenerado({
         id: 1,
-        periodo: 'Periodo 1 - 2026',
+        periodo: periodoActivo.descripcion || `Período ${periodoActivo.tipo} - 2026`,
         fecha_generacion: new Date().toISOString(),
         total_examenes: 25,
+        periodo_id: periodoActivo.id,
       });
       setEstadoActual(ESTADOS.BORRADOR);
       setOpenDialogGenerar(false);
@@ -185,6 +229,45 @@ function Generar() {
           </Typography>
         </Box>
 
+        {/* Alerta de período inactivo */}
+        {!loadingPeriodo && !puedeGenerarExamenes && (
+          <Alert 
+            severity="error" 
+            sx={{ mb: 4, borderRadius: 2 }}
+            icon={<MdBlock />}
+          >
+            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+              Generación de Exámenes No Disponible
+            </Typography>
+            {!periodoActivo ? (
+              <Typography variant="body2">
+                No hay un período académico activo. Contacta a Servicios Escolares para que configure e inicie un período académico.
+              </Typography>
+            ) : (
+              <Typography variant="body2">
+                El período académico está en estado &quot;{periodoActivo.estado}&quot;. Solo puedes generar exámenes cuando el período esté activo.
+              </Typography>
+            )}
+          </Alert>
+        )}
+
+        {/* Info del período activo */}
+        {!loadingPeriodo && puedeGenerarExamenes && (
+          <Alert 
+            severity="info" 
+            sx={{ mb: 4, borderRadius: 2 }}
+            icon={<MdCalendarMonth />}
+          >
+            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
+              Período Académico Activo
+            </Typography>
+            <Typography variant="body2">
+              {periodoActivo.descripcion || `Período ${periodoActivo.tipo}`} | 
+              Desde {new Date(periodoActivo.fecha_inicio).toLocaleDateString('es-MX')} hasta {new Date(periodoActivo.fecha_fin).toLocaleDateString('es-MX')}
+            </Typography>
+          </Alert>
+        )}
+
         {/* Acciones rápidas */}
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 4 }}>
           <Button
@@ -192,6 +275,7 @@ function Generar() {
             startIcon={<MdSettings />}
             onClick={() => navigate('/preferencias')}
             sx={{ flex: 1 }}
+            disabled={!puedeGenerarExamenes}
           >
             Configurar Preferencias
           </Button>
@@ -199,7 +283,7 @@ function Generar() {
             variant="contained"
             startIcon={<MdAutorenew />}
             onClick={() => setOpenDialogGenerar(true)}
-            disabled={estadoActual === ESTADOS.APROBADO}
+            disabled={!puedeGenerarExamenes || estadoActual === ESTADOS.APROBADO}
             sx={{ flex: 1 }}
           >
             {horarioGenerado ? 'Regenerar Horarios' : 'Generar Horarios'}
