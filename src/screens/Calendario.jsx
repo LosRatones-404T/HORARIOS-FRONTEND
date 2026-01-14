@@ -11,13 +11,27 @@ import {
   Tabs,
   Tab,
   Chip,
-  Paper
+  Paper,
+  Stack,
+  ButtonGroup,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText
 } from '@mui/material';
-import { MdExpandMore, MdCalendarToday } from 'react-icons/md';
+import { 
+  MdExpandMore, 
+  MdCalendarToday, 
+  MdFileDownload, 
+  MdArrowDropDown,
+  MdDownload,
+  MdAllInclusive
+} from 'react-icons/md';
 import HorarioSemanal from '../components/common/HorarioSemanal';
 import MainLayout from '../components/layout/MainLayout';
 import { Notification } from '../components/common';
 import { getCurrentUser } from '../store/authStore';
+import { exportarCalendarioCarrera, exportarTodasLasCarreras } from '../utils/pdfExport';
 
 /**
  * Pantalla de Calendario
@@ -62,6 +76,10 @@ const Calendario = () => {
 
   // Estado de expansión de accordions (primer semestre expandido por defecto)
   const [expandedSemesters, setExpandedSemesters] = useState({ 1: true });
+
+  // Estado para menú de exportación (solo secretaria)
+  const [anchorElExport, setAnchorElExport] = useState(null);
+  const openExportMenu = Boolean(anchorElExport);
 
   // Horarios de exámenes por semestre - Licenciatura en Informática (solo impares)
   // TODO: Estos datos vendrán del backend filtrados por tipoExamenActual
@@ -162,8 +180,43 @@ const Calendario = () => {
 
   const [semestres, setSemestres] = useState(semestresData);
 
+  // Cargar datos guardados del localStorage al iniciar
+  useEffect(() => {
+    const loadSavedData = () => {
+      try {
+        const key = `calendario_${carreraSeleccionada}_${tipoExamenActual}`;
+        const saved = localStorage.getItem(key);
+        if (saved) {
+          const parsedData = JSON.parse(saved);
+          setSemestres(parsedData);
+          console.log('Datos cargados desde localStorage:', key);
+        } else {
+          // Si no hay datos guardados, usar los datos mock
+          setSemestres(semestresData);
+          console.log('Usando datos mock iniciales');
+        }
+      } catch (error) {
+        console.error('Error al cargar datos guardados:', error);
+        setSemestres(semestresData);
+      }
+    };
+    loadSavedData();
+  }, [tipoExamenActual, carreraSeleccionada, semestresData]);
+
+  // Guardar datos en localStorage cuando cambien los semestres
+  useEffect(() => {
+    try {
+      const key = `calendario_${carreraSeleccionada}_${tipoExamenActual}`;
+      localStorage.setItem(key, JSON.stringify(semestres));
+      console.log('Datos guardados en localStorage:', key);
+    } catch (error) {
+      console.error('Error al guardar datos:', error);
+    }
+  }, [semestres, carreraSeleccionada, tipoExamenActual]);
+
   // Efecto para cargar datos cuando cambia el tipo de examen o carrera
   useEffect(() => {
+    // TODO: Aquí se hará la llamada al backend
     // TODO: Aquí se hará la llamada al backend
     // const fetchHorarios = async () => {
     //   try {
@@ -178,10 +231,7 @@ const Calendario = () => {
     //   }
     // };
     // fetchHorarios();
-    
-    // Por ahora, solo recargamos los datos mock
-    setSemestres(semestresData);
-  }, [tipoExamenActual, carreraSeleccionada, semestresData, isSecretaria]);
+  }, [isSecretaria]);
 
   // Manejar cambios en los eventos de un semestre
   const handleEventsChange = (semestreNumero, newEvents) => {
@@ -252,11 +302,95 @@ const Calendario = () => {
     });
   };
 
+  // Manejar apertura de menú de exportación
+  const handleOpenExportMenu = (event) => {
+    setAnchorElExport(event.currentTarget);
+  };
+
+  // Manejar cierre de menú de exportación
+  const handleCloseExportMenu = () => {
+    setAnchorElExport(null);
+  };
+
+  // Exportar carrera actual
+  const handleExportarCarreraActual = () => {
+    const carreraActual = carreras.find(c => c.id === carreraSeleccionada);
+    const tipoExamenLabel = tiposExamen.find(t => t.id === tipoExamenActual)?.label || 'Sin tipo';
+    
+    console.log('Exportando carrera:', carreraActual?.label);
+    console.log('Semestres a exportar:', semestres);
+    console.log('Total de eventos:', semestres.reduce((acc, sem) => acc + sem.eventos.length, 0));
+    
+    exportarCalendarioCarrera({
+      semestres: semestres,
+      carrera: carreraActual?.label || 'Carrera',
+      tipoExamen: tipoExamenLabel,
+      periodo: 'Enero - Junio 2026',
+    });
+
+    setNotification({
+      open: true,
+      message: `PDF generado: ${semestres.reduce((acc, sem) => acc + sem.eventos.length, 0)} exámenes de ${carreraActual?.label}`,
+      severity: 'success'
+    });
+
+    handleCloseExportMenu();
+  };
+
+  // Exportar todas las carreras
+  const handleExportarTodasCarreras = () => {
+    const tipoExamenLabel = tiposExamen.find(t => t.id === tipoExamenActual)?.label || 'Sin tipo';
+    
+    // Simular datos de todas las carreras
+    // En producción, estos datos vendrían del backend
+    const todasCarreras = carreras.map(carrera => ({
+      nombre: carrera.label,
+      semestres: semestres // Reutilizamos los mismos semestres para el demo
+    }));
+
+    exportarTodasLasCarreras({
+      carreras: todasCarreras,
+      tipoExamen: tipoExamenLabel,
+      periodo: 'Enero - Junio 2026',
+    });
+
+    setNotification({
+      open: true,
+      message: 'Exportando calendarios de todas las carreras...',
+      severity: 'success'
+    });
+
+    handleCloseExportMenu();
+  };
+
+  // Exportar calendario simple (para jefe de carrera)
+  const handleExportarCalendario = () => {
+    const carreraJefe = 'Lic. en Informática'; // En producción vendría del usuario autenticado
+    const tipoExamenLabel = tiposExamen.find(t => t.id === tipoExamenActual)?.label || 'Sin tipo';
+    
+    console.log('Exportando calendario jefe de carrera');
+    console.log('Semestres:', semestres);
+    console.log('Total de eventos:', semestres.reduce((acc, sem) => acc + sem.eventos.length, 0));
+    
+    exportarCalendarioCarrera({
+      semestres: semestres,
+      carrera: carreraJefe,
+      tipoExamen: tipoExamenLabel,
+      periodo: 'Enero - Junio 2026',
+    });
+
+    setNotification({
+      open: true,
+      message: `PDF generado: ${semestres.reduce((acc, sem) => acc + sem.eventos.length, 0)} exámenes de ${tipoExamenLabel}`,
+      severity: 'success'
+    });
+  };
+
   return (
     <MainLayout showSidebar={true}>
       <Container maxWidth="xl" sx={{ py: 4 }}>
         {/* Encabezado */}
-        <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 2 }}>
           <Box>
             <Typography 
               variant="h4" 
@@ -280,10 +414,52 @@ const Calendario = () => {
               }
             </Typography>
           </Box>
-          <Button
-            variant="outlined"
-            onClick={handleToggleAll}
-            sx={{
+          
+          <Stack direction="row" spacing={2}>
+            {/* Botón de exportación para Jefe de Carrera */}
+            {!isSecretaria && (
+              <Button
+                variant="contained"
+                startIcon={<MdFileDownload />}
+                onClick={handleExportarCalendario}
+                sx={{
+                  textTransform: 'none',
+                  fontWeight: 600,
+                }}
+              >
+                Exportar PDF
+              </Button>
+            )}
+
+            {/* Botones de exportación para Secretaria */}
+            {isSecretaria && (
+              <ButtonGroup variant="contained">
+                <Button
+                  startIcon={<MdFileDownload />}
+                  onClick={handleExportarCarreraActual}
+                  sx={{
+                    textTransform: 'none',
+                    fontWeight: 600,
+                  }}
+                >
+                  Exportar Carrera Actual
+                </Button>
+                <Button
+                  size="small"
+                  onClick={handleOpenExportMenu}
+                  sx={{
+                    px: 1,
+                  }}
+                >
+                  <MdArrowDropDown size={20} />
+                </Button>
+              </ButtonGroup>
+            )}
+
+            <Button
+              variant="outlined"
+              onClick={handleToggleAll}
+              sx={{
               borderColor: theme.palette.primary.main,
               color: theme.palette.primary.main,
               '&:hover': {
@@ -294,6 +470,7 @@ const Calendario = () => {
           >
             {semestres.every(sem => expandedSemesters[sem.numero]) ? 'Colapsar Todo' : 'Expandir Todo'}
           </Button>
+          </Stack>
         </Box>
 
         {/* Selector de carrera (solo para secretaria) */}
@@ -414,6 +591,42 @@ const Calendario = () => {
             size="small"
           />
         </Box>
+
+        {/* Menú de opciones de exportación (solo secretaria) */}
+        {isSecretaria && (
+          <Menu
+            anchorEl={anchorElExport}
+            open={openExportMenu}
+            onClose={handleCloseExportMenu}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <MenuItem onClick={handleExportarCarreraActual}>
+              <ListItemIcon>
+                <MdDownload size={20} />
+              </ListItemIcon>
+              <ListItemText 
+                primary="Exportar Carrera Actual" 
+                secondary={carreras.find(c => c.id === carreraSeleccionada)?.label}
+              />
+            </MenuItem>
+            <MenuItem onClick={handleExportarTodasCarreras}>
+              <ListItemIcon>
+                <MdAllInclusive size={20} />
+              </ListItemIcon>
+              <ListItemText 
+                primary="Exportar Todas las Carreras" 
+                secondary="Genera un PDF consolidado"
+              />
+            </MenuItem>
+          </Menu>
+        )}
 
         {/* Accordions por semestre */}
         {semestres.map((semestre) => (
