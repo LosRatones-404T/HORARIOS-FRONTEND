@@ -1,33 +1,29 @@
 import {FiHome} from "react-icons/fi"; //Icono de Home
 import {LuUser} from "react-icons/lu"; //Icono de Usuario
-import { GiBookshelf } from "react-icons/gi"; //Icono de Materias
-import { LuSchool } from "react-icons/lu";  //Icono de Aulas
-import { TbCalendarCheck } from "react-icons/tb"; //Icono de Horarios
-import { LuSettings } from "react-icons/lu"; //Icono de Configuración
 import { LuCalendarCog } from "react-icons/lu"; //Icono de Generar Exámenes
+import { MdOutlineGrade } from "react-icons/md"; //Icono de Preferencias
+import { MdCalendarMonth } from "react-icons/md"; //Icono de Calendario
+import { MdRateReview } from "react-icons/md"; //Icono de Revisión
+import { MdSettings } from "react-icons/md"; //Icono de Período Académico
 
 
 export const menuOptions = {
   admin: [
-    { label: "Dashboard", icon: <FiHome/>, path: "/dashboard" },
-    { label: "Profesores", icon: <LuUser/>, path: "/profesores" },
-    { label: "Materias", icon: <GiBookshelf/>, path: "/materias" },
-    { label: "Aulas", icon: <LuSchool/>, path: "/aulas" },
-    { label: "Horarios", icon: <TbCalendarCheck/>, path: "/horarios" },
-    { label: "Ajustes", icon: <LuSettings/>, path: "/configuracion" },
+    { label: "Home", icon: <FiHome/>, path: "/home" },
+    { label: "Usuarios", icon: <LuUser/>, path: "/usuarios" },
   ],
   
   jefe: [
-    { label: "Dashboard", icon: <FiHome/>, path: "/dashboard" },
+    { label: "Home", icon: <FiHome/>, path: "/home" },
+    { label: "Preferencias", icon: <MdOutlineGrade/>, path: "/preferencias" },
     { label: "Generar", icon: <LuCalendarCog/>, path: "/generar" },
-    { label: "Horarios", icon: <TbCalendarCheck/>, path: "/horarios" },
-    { label: "Ajustes", icon: <LuSettings/>, path: "/configuracion" },
+    { label: "Calendario", icon: <MdCalendarMonth/>, path: "/calendario" },
   ],
   
   secretaria: [
-    { label: "Dashboard", icon: <FiHome/>, path: "/dashboard" },
-    { label: "Generar", icon: <LuCalendarCog/>, path: "/generar" },
-    { label: "Horarios", icon: <TbCalendarCheck/>, path: "/horarios" }, 
-    { label: "Ajustes", icon: <LuSettings/>, path: "/configuracion" },
+    { label: "Home", icon: <FiHome/>, path: "/home" },
+    { label: "Período Académico", icon: <MdSettings/>, path: "/periodo-academico" },
+    { label: "Revisión", icon: <MdRateReview/>, path: "/revision" },
+    { label: "Calendario", icon: <MdCalendarMonth/>, path: "/calendario" },
   ],
 };

@@ -1,24 +1,40 @@
 import { Box } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 import { Sidebar, menuOptions } from './sidebar';
+import { getCurrentUser } from '../../store/authStore';
 
-const MainLayout = ({ children, showSidebar = false, menuType = 'admin' }) => {
+const MainLayout = ({ children, showSidebar = false, menuType = null }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const [sidebarVisible, setSidebarVisible] = useState(true);
+  const [userRole, setUserRole] = useState(null);
+  
+  // Obtener rol del usuario autenticado
+  useEffect(() => {
+    const user = getCurrentUser();
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    setUserRole(menuType || user.role);
+  }, [navigate, menuType]);
   
   // Calcular el ancho del sidebar basado en si está visible
   const sidebarWidth = showSidebar && sidebarVisible
     ? '380px' 
     : '0px';
 
+  if (!userRole) return null;
+
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       {/* Sidebar - opcional y fixed */}
       {showSidebar && (
         <Sidebar 
-          menu={menuOptions[menuType]} 
+          menu={menuOptions[userRole]} 
           visible={sidebarVisible}
         />
       )}
