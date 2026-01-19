@@ -40,7 +40,7 @@ import { exportarCalendarioCarrera, exportarTodasLasCarreras } from '../utils/pd
 const Calendario = () => {
   const theme = useTheme();
   const currentUser = getCurrentUser();
-  const isSecretaria = currentUser?.role === 'secretaria';
+  const isSecretaria = currentUser?.role === 'escolares';
 
   // Carreras disponibles (solo para secretaria)
   const carreras = [

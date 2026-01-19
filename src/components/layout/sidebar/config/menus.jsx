@@ -20,7 +20,7 @@ export const menuOptions = {
     { label: "Calendario", icon: <MdCalendarMonth/>, path: "/calendario" },
   ],
   
-  secretaria: [
+  escolares: [
     { label: "Home", icon: <FiHome/>, path: "/home" },
     { label: "Período Académico", icon: <MdSettings/>, path: "/periodo-academico" },
     { label: "Revisión", icon: <MdRateReview/>, path: "/revision" },

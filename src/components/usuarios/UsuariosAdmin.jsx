@@ -49,7 +49,7 @@ const UsuariosAdmin = () => {
       id: 2,
       nombre: 'María López',
       email: 'maria.lopez@ejemplo.com',
-      rol: 'secretaria',
+      rol: 'escolares',
       estado: 'activo',
       ultimaActividad: '2026-01-12'
     },
@@ -65,7 +65,7 @@ const UsuariosAdmin = () => {
       id: 4,
       nombre: 'Ana Martínez',
       email: 'ana.martinez@ejemplo.com',
-      rol: 'secretaria',
+      rol: 'escolares',
       estado: 'activo',
       ultimaActividad: '2026-01-13'
     }
@@ -401,7 +401,7 @@ const UsuariosAdmin = () => {
                             </Box>
                             <Stack direction="row" spacing={0.5} sx={{ mt: 1 }}>
                               <Chip
-                                label={usuario.rol === 'jefe' ? 'Jefe' : 'Secretaria'}
+                                label={usuario.rol === 'jefe' ? 'Jefe' : 'Escolares'}
                                 size="small"
                                 variant="outlined"
                               />
@@ -515,7 +515,7 @@ const UsuariosAdmin = () => {
                           onChange={(e) => setFormData({ ...formData, rol: e.target.value })}
                         >
                           <MenuItem value="jefe">Jefe de Carrera</MenuItem>
-                          <MenuItem value="secretaria">Servicios Escolares</MenuItem>
+                          <MenuItem value="escolares">Servicios Escolares</MenuItem>
                         </Select>
                       </FormControl>
 

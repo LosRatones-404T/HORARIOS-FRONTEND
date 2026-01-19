@@ -33,7 +33,7 @@ const Header = ({ sidebarWidth = '0px', onToggleSidebar, showSidebar = false }) 
   const getRoleLabel = (role) => {
     const roles = {
       admin: 'Administrador',
-      secretaria: 'Secretaria Académica',
+      escolares: 'Servicios Escolares',
       jefe: 'Jefe de Carrera',
     };
     return roles[role] || role;

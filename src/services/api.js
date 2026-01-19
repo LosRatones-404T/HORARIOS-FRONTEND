@@ -1,6 +1,121 @@
 import { API_BASE_URL } from '../conf/env';
 
 /**
+ * Obtener el token de autenticación del localStorage
+ */
+const getAuthToken = () => {
+  return localStorage.getItem('auth_token');
+};
+
+/**
+ * Servicio de autenticación
+ */
+export const authApi = {
+  /**
+   * Iniciar sesión
+   * @param {string} username - Nombre de usuario
+   * @param {string} password - Contraseña
+   * @returns {Promise<Object>} Token y tipo de token
+   */
+  login: async (username, password) => {
+    try {
+      const formData = new URLSearchParams();
+      formData.append('username', username);
+      formData.append('password', password);
+
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Error al iniciar sesión');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error en login:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Obtener información del usuario autenticado
+   * @returns {Promise<Object>} Información del usuario
+   */
+  me: async () => {
+    try {
+      const token = getAuthToken();
+      if (!token) {
+        throw new Error('No hay token de autenticación');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/auth/me`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          // Token expirado o inválido
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('auth_user');
+          throw new Error('Sesión expirada');
+        }
+        throw new Error('Error al obtener información del usuario');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error en me:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Registrar un nuevo usuario (solo admin)
+   * @param {Object} userData - Datos del usuario
+   * @returns {Promise<Object>} Usuario creado
+   */
+  register: async (userData) => {
+    try {
+      const token = getAuthToken();
+      if (!token) {
+        throw new Error('No hay token de autenticación');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Error al registrar usuario');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error en register:', error);
+      throw error;
+    }
+  },
+};
+
+/**
  * Mock data para desarrollo y demostración
  */
 const mockPeriodosStorage = {

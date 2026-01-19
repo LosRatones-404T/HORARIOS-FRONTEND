@@ -23,6 +23,7 @@ function Login() {
   const theme = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     usuario: '',
     contrasena: '',
@@ -37,23 +38,31 @@ function Login() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
     // Validación básica
     if (!formData.usuario || !formData.contrasena) {
       setError('Por favor completa todos los campos');
+      setLoading(false);
       return;
     }
 
-    // Intentar autenticar
-    const result = login(formData.usuario, formData.contrasena);
-    
-    if (result.success) {
-      navigate('/home');
-    } else {
-      setError(result.error);
+    try {
+      // Intentar autenticar
+      const result = await login(formData.usuario, formData.contrasena);
+      
+      if (result.success) {
+        navigate('/home');
+      } else {
+        setError(result.error);
+      }
+    } catch (error) {
+      setError('Error al conectar con el servidor');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -222,6 +231,7 @@ function Login() {
                 type="submit"
                 fullWidth
                 variant="contained"
+                disabled={loading}
                 sx={{
                   py: { xs: 1, sm: 1.2 },
                   bgcolor: theme.palette.tertiary.main,
@@ -234,7 +244,7 @@ function Login() {
                   fontSize: { xs: '0.8rem', sm: '0.875rem' },
                 }}
               >
-                Iniciar Sesión
+                {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
               </Button>
             </Box>
           </Box>
