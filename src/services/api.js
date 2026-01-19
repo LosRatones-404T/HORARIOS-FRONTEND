@@ -116,6 +116,172 @@ export const authApi = {
 };
 
 /**
+ * Servicio de gestión de usuarios
+ */
+export const usersApi = {
+  /**
+   * Obtener todos los usuarios
+   * @returns {Promise<Array>} Lista de usuarios
+   */
+  getAllUsers: async () => {
+    try {
+      const token = getAuthToken();
+      if (!token) {
+        throw new Error('No hay token de autenticación');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/users/`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al obtener usuarios');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error en getAllUsers:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Actualizar contraseña de un usuario
+   * @param {string} username - Nombre de usuario
+   * @param {string} newPassword - Nueva contraseña
+   * @returns {Promise<Object>} Usuario actualizado
+   */
+  updatePassword: async (username, newPassword) => {
+    try {
+      const token = getAuthToken();
+      if (!token) {
+        throw new Error('No hay token de autenticación');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/users/update-password?username=${encodeURIComponent(username)}&new_password=${encodeURIComponent(newPassword)}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Error al actualizar contraseña');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error en updatePassword:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Cambiar rol de un usuario
+   * @param {string} username - Nombre de usuario
+   * @param {string} newRole - Nuevo rol (ADMIN, JEFE_CARRERA, JEFE_ESCOLARES, SECRETARIA)
+   * @returns {Promise<Object>} Usuario actualizado
+   */
+  changeRole: async (username, newRole) => {
+    try {
+      const token = getAuthToken();
+      if (!token) {
+        throw new Error('No hay token de autenticación');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/users/change-role?username=${encodeURIComponent(username)}&new_role=${encodeURIComponent(newRole)}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Error al cambiar rol');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error en changeRole:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Activar/desactivar un usuario
+   * @param {string} username - Nombre de usuario
+   * @returns {Promise<Object>} Usuario actualizado
+   */
+  toggleActive: async (username) => {
+    try {
+      const token = getAuthToken();
+      if (!token) {
+        throw new Error('No hay token de autenticación');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/users/toggle-active?username=${encodeURIComponent(username)}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Error al cambiar estado');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error en toggleActive:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Cambiar email de un usuario
+   * @param {string} username - Nombre de usuario
+   * @param {string} newEmail - Nuevo email
+   * @returns {Promise<Object>} Usuario actualizado
+   */
+  changeEmail: async (username, newEmail) => {
+    try {
+      const token = getAuthToken();
+      if (!token) {
+        throw new Error('No hay token de autenticación');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/users/change-email?username=${encodeURIComponent(username)}&new_email=${encodeURIComponent(newEmail)}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Error al cambiar email');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error en changeEmail:', error);
+      throw error;
+    }
+  },
+};
+
+/**
  * Mock data para desarrollo y demostración
  */
 const mockPeriodosStorage = {

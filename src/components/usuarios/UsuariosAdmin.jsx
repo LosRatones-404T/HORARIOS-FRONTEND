@@ -32,75 +32,95 @@ import {
   MdSearch
 } from 'react-icons/md';
 import { useState, useEffect } from 'react';
+import { authApi, usersApi } from '../../services/api';
+
+// Mapeo de roles del backend al frontend
+const mapRoleToFrontend = (backendRole) => {
+  const roleMap = {
+    'ADMIN': 'admin',
+    'JEFE_CARRERA': 'jefe',
+    'JEFE_ESCOLARES': 'escolares',
+    'SECRETARIA': 'escolares',
+  };
+  return roleMap[backendRole] || backendRole.toLowerCase();
+};
+
+// Mapeo de roles del frontend al backend
+const mapRoleToBackend = (frontendRole) => {
+  const roleMap = {
+    'admin': 'ADMIN',
+    'jefe': 'JEFE_CARRERA',
+    'escolares': 'SECRETARIA', // Por defecto usamos SECRETARIA para escolares
+  };
+  return roleMap[frontendRole] || 'SECRETARIA';
+};
 
 const UsuariosAdmin = () => {
   const theme = useTheme();
   
-  const [usuarios, setUsuarios] = useState([
-    {
-      id: 1,
-      nombre: 'Juan García',
-      email: 'juan.garcia@ejemplo.com',
-      rol: 'jefe',
-      estado: 'activo',
-      ultimaActividad: '2026-01-13'
-    },
-    {
-      id: 2,
-      nombre: 'María López',
-      email: 'maria.lopez@ejemplo.com',
-      rol: 'escolares',
-      estado: 'activo',
-      ultimaActividad: '2026-01-12'
-    },
-    {
-      id: 3,
-      nombre: 'Carlos Rodríguez',
-      email: 'carlos.rodriguez@ejemplo.com',
-      rol: 'jefe',
-      estado: 'inactivo',
-      ultimaActividad: '2026-01-05'
-    },
-    {
-      id: 4,
-      nombre: 'Ana Martínez',
-      email: 'ana.martinez@ejemplo.com',
-      rol: 'escolares',
-      estado: 'activo',
-      ultimaActividad: '2026-01-13'
-    }
-  ]);
+  const [usuarios, setUsuarios] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Estados principales
   const [selectedUsuario, setSelectedUsuario] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRol, setFilterRol] = useState('todos');
   const [successMessage, setSuccessMessage] = useState('');
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingReset, setLoadingReset] = useState(false);
   const [openResetDialog, setOpenResetDialog] = useState(false);
   const [newPassword, setNewPassword] = useState('');
 
   // Formulario de usuario
-  const [formData, setFormData] = useState({ nombre: '', email: '', rol: 'jefe' });
+  const [formData, setFormData] = useState({ username: '', email: '', rol: 'jefe', password: '' });
   const [isNewUser, setIsNewUser] = useState(false);
 
-  // Pre-seleccionar el primer usuario al cargar
+  // Cargar usuarios al montar el componente
   useEffect(() => {
-    if (usuarios.length > 0 && !selectedUsuario) {
-      const primerUsuario = usuarios[0];
-      setSelectedUsuario(primerUsuario);
-      setFormData({
-        nombre: primerUsuario.nombre,
-        email: primerUsuario.email,
-        rol: primerUsuario.rol
-      });
-    }
+    loadUsers();
   }, []);
 
+  const loadUsers = async () => {
+    try {
+      setLoading(true);
+      const data = await usersApi.getAllUsers();
+      
+      // Mapear usuarios del backend al formato del frontend
+      const mappedUsers = data.map(user => ({
+        id: user.id,
+        username: user.username,
+        email: user.email || '',
+        rol: mapRoleToFrontend(user.role),
+        roleBackend: user.role, // Guardar rol original del backend
+        estado: user.is_active ? 'activo' : 'inactivo',
+        ultimaActividad: new Date().toISOString().split('T')[0] // Por ahora usar fecha actual
+      }));
+      
+      setUsuarios(mappedUsers);
+      
+      // Pre-seleccionar el primer usuario
+      if (mappedUsers.length > 0 && !selectedUsuario) {
+        const primerUsuario = mappedUsers[0];
+        setSelectedUsuario(primerUsuario);
+        setFormData({
+          username: primerUsuario.username,
+          email: primerUsuario.email,
+          rol: primerUsuario.rol,
+          password: ''
+        });
+      }
+    } catch (error) {
+      console.error('Error al cargar usuarios:', error);
+      setErrorMessage('Error al cargar usuarios: ' + error.message);
+      setTimeout(() => setErrorMessage(''), 5000);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const filteredUsuarios = usuarios.filter(u => {
-    const matchSearch = u.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchSearch = u.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
                        u.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchRole = filterRol === 'todos' || u.rol === filterRol;
     return matchSearch && matchRole;
@@ -108,80 +128,104 @@ const UsuariosAdmin = () => {
 
   const handleNewUser = () => {
     setIsNewUser(true);
-    setFormData({ nombre: '', email: '', rol: 'jefe' });
+    setFormData({ username: '', email: '', rol: 'jefe', password: '' });
     setSelectedUsuario(null);
   };
 
   const handleSelectUser = (usuario) => {
     setSelectedUsuario(usuario);
     setFormData({ 
-      nombre: usuario.nombre, 
+      username: usuario.username, 
       email: usuario.email, 
-      rol: usuario.rol 
+      rol: usuario.rol,
+      password: ''
     });
     setIsNewUser(false);
   };
 
   const handleCancelEdit = () => {
     setSelectedUsuario(null);
-    setFormData({ nombre: '', email: '', rol: 'jefe' });
+    setFormData({ username: '', email: '', rol: 'jefe', password: '' });
     setIsNewUser(false);
   };
 
   const handleSaveUser = async () => {
-    if (!formData.nombre.trim() || !formData.email.trim()) {
-      alert('Por favor, completa todos los campos');
+    if (!formData.username.trim() || !formData.email.trim()) {
+      setErrorMessage('Por favor, completa todos los campos');
+      setTimeout(() => setErrorMessage(''), 3000);
+      return;
+    }
+
+    if (isNewUser && !formData.password.trim()) {
+      setErrorMessage('La contraseña es requerida para nuevos usuarios');
+      setTimeout(() => setErrorMessage(''), 3000);
       return;
     }
 
     setLoadingSave(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+    setErrorMessage('');
 
+    try {
       if (isNewUser) {
-        const nuevoUsuario = {
-          id: Math.max(...usuarios.map(u => u.id), 0) + 1,
-          ...formData,
-          estado: 'activo',
-          ultimaActividad: new Date().toISOString().split('T')[0]
+        // Registrar nuevo usuario
+        const userData = {
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          role: mapRoleToBackend(formData.rol)
         };
-        setUsuarios([...usuarios, nuevoUsuario]);
-        setSuccessMessage(`Usuario ${formData.nombre} creado exitosamente`);
+        
+        await authApi.register(userData);
+        setSuccessMessage(`Usuario ${formData.username} creado exitosamente`);
+        
+        // Recargar la lista de usuarios
+        await loadUsers();
+        handleCancelEdit();
       } else {
-        const updatedUsuarios = usuarios.map(u =>
-          u.id === selectedUsuario.id
-            ? { ...u, ...formData }
-            : u
-        );
-        setUsuarios(updatedUsuarios);
-        setSelectedUsuario({ ...selectedUsuario, ...formData });
-        setSuccessMessage(`Usuario ${formData.nombre} actualizado exitosamente`);
+        // Actualizar usuario existente
+        const promises = [];
+        
+        // Cambiar rol si cambió
+        if (mapRoleToBackend(formData.rol) !== selectedUsuario.roleBackend) {
+          promises.push(usersApi.changeRole(selectedUsuario.username, mapRoleToBackend(formData.rol)));
+        }
+        
+        // Cambiar email si cambió
+        if (formData.email !== selectedUsuario.email) {
+          promises.push(usersApi.changeEmail(selectedUsuario.username, formData.email));
+        }
+        
+        await Promise.all(promises);
+        setSuccessMessage(`Usuario ${formData.username} actualizado exitosamente`);
+        
+        // Recargar la lista de usuarios
+        await loadUsers();
       }
 
       setTimeout(() => setSuccessMessage(''), 5000);
-      if (isNewUser) handleCancelEdit();
     } catch (error) {
-      alert('Error al guardar el usuario');
-      console.error(error);
+      console.error('Error al guardar usuario:', error);
+      setErrorMessage('Error al guardar: ' + error.message);
+      setTimeout(() => setErrorMessage(''), 5000);
     } finally {
       setLoadingSave(false);
     }
   };
 
-  const handleOpenDeleteDialog = () => {
-    setOpenDeleteDialog(true);
-  };
+  const handleToggleActive = async () => {
+    if (!selectedUsuario) return;
 
-  const handleConfirmDelete = async () => {
     try {
-      setUsuarios(usuarios.filter(u => u.id !== selectedUsuario.id));
-      setSuccessMessage(`Usuario ${selectedUsuario.nombre} eliminado`);
+      await usersApi.toggleActive(selectedUsuario.username);
+      setSuccessMessage(`Usuario ${selectedUsuario.username} ${selectedUsuario.estado === 'activo' ? 'desactivado' : 'activado'}`);
       setTimeout(() => setSuccessMessage(''), 5000);
-      setOpenDeleteDialog(false);
-      handleCancelEdit();
+      
+      // Recargar usuarios
+      await loadUsers();
     } catch (error) {
-      alert('Error al eliminar el usuario');
-      console.error(error);
+      console.error('Error al cambiar estado:', error);
+      setErrorMessage('Error al cambiar estado: ' + error.message);
+      setTimeout(() => setErrorMessage(''), 5000);
     }
   };
 
@@ -192,20 +236,24 @@ const UsuariosAdmin = () => {
 
   const handleResetPassword = async () => {
     if (!newPassword.trim()) {
-      alert('Por favor, ingresa una contraseña');
+      setErrorMessage('Por favor, ingresa una contraseña');
+      setTimeout(() => setErrorMessage(''), 3000);
       return;
     }
 
     setLoadingReset(true);
+    setErrorMessage('');
+
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setSuccessMessage(`Contraseña restablecida para ${selectedUsuario.nombre}`);
+      await usersApi.updatePassword(selectedUsuario.username, newPassword);
+      setSuccessMessage(`Contraseña actualizada para ${selectedUsuario.username}`);
       setTimeout(() => setSuccessMessage(''), 5000);
       setOpenResetDialog(false);
       setNewPassword('');
     } catch (error) {
-      alert('Error al restablecer la contraseña');
-      console.error(error);
+      console.error('Error al actualizar contraseña:', error);
+      setErrorMessage('Error al actualizar contraseña: ' + error.message);
+      setTimeout(() => setErrorMessage(''), 5000);
     } finally {
       setLoadingReset(false);
     }
@@ -229,15 +277,26 @@ const UsuariosAdmin = () => {
         </Typography>
       </Box>
 
-      {/* Mensaje de éxito */}
+      {/* Mensajes */}
       {successMessage && (
         <Alert severity="success" sx={{ borderRadius: 2, mb: 3 }} onClose={() => setSuccessMessage('')}>
           <AlertTitle sx={{ fontWeight: 600 }}>Éxito</AlertTitle>
           {successMessage}
         </Alert>
       )}
+      
+      {errorMessage && (
+        <Alert severity="error" sx={{ borderRadius: 2, mb: 3 }} onClose={() => setErrorMessage('')}>
+          <AlertTitle sx={{ fontWeight: 600 }}>Error</AlertTitle>
+          {errorMessage}
+        </Alert>
+      )}
 
-      {usuarios.length === 0 ? (
+      {loading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 10 }}>
+          <CircularProgress />
+        </Box>
+      ) : usuarios.length === 0 ? (
         <Alert severity="info" sx={{ borderRadius: 2 }}>
           No hay usuarios en el sistema. Crea uno nuevo usando el botón "Nuevo Usuario".
         </Alert>
@@ -292,7 +351,7 @@ const UsuariosAdmin = () => {
                 <CardContent sx={{ pb: 2, pt: 2 }}>
                   <TextField
                     fullWidth
-                    placeholder="Buscar por nombre o email..."
+                    placeholder="Buscar por usuario o email..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     InputProps={{
@@ -311,7 +370,7 @@ const UsuariosAdmin = () => {
                     >
                       <MenuItem value="todos">Todos</MenuItem>
                       <MenuItem value="jefe">Jefe de Carrera</MenuItem>
-                      <MenuItem value="secretaria">Servicios Escolares</MenuItem>
+                      <MenuItem value="escolares">Servicios Escolares</MenuItem>
                     </Select>
                   </FormControl>
                 </CardContent>
@@ -371,7 +430,7 @@ const UsuariosAdmin = () => {
                                   color: 'white'
                                 }}
                               >
-                                {usuario.nombre.charAt(0).toUpperCase()}
+                                {usuario.username.charAt(0).toUpperCase()}
                               </Box>
                               <Box sx={{ flex: 1, minWidth: 0 }}>
                                 <Typography 
@@ -383,7 +442,7 @@ const UsuariosAdmin = () => {
                                     whiteSpace: 'nowrap'
                                   }}
                                 >
-                                  {usuario.nombre}
+                                  {usuario.username}
                                 </Typography>
                                 <Typography 
                                   variant="caption" 
@@ -430,7 +489,7 @@ const UsuariosAdmin = () => {
                     <CardContent>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography variant="h5" sx={{ fontWeight: 700, color: 'primary.dark' }}>
-                          {isNewUser ? 'Nuevo Usuario' : `Editar: ${selectedUsuario?.nombre}`}
+                          {isNewUser ? 'Nuevo Usuario' : `Editar: ${selectedUsuario?.username}`}
                         </Typography>
                         <IconButton size="small" onClick={handleCancelEdit}>
                           <MdClose size={20} />
@@ -476,12 +535,11 @@ const UsuariosAdmin = () => {
                         <Button
                           fullWidth
                           variant="outlined"
-                          color="error"
-                          onClick={handleOpenDeleteDialog}
-                          startIcon={<MdDelete size={20} />}
+                          color={selectedUsuario?.estado === 'activo' ? 'error' : 'success'}
+                          onClick={handleToggleActive}
                           sx={{ textTransform: 'none', fontWeight: 600 }}
                         >
-                          Eliminar
+                          {selectedUsuario?.estado === 'activo' ? 'Desactivar' : 'Activar'}
                         </Button>
                       </>
                     )}
@@ -492,10 +550,12 @@ const UsuariosAdmin = () => {
                     <Stack spacing={3}>
                       <TextField
                         fullWidth
-                        label="Nombre Completo"
-                        value={formData.nombre}
-                        onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-                        placeholder="Ej: Juan García"
+                        label="Nombre de Usuario"
+                        value={formData.username}
+                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                        placeholder="Ej: juan.garcia"
+                        disabled={!isNewUser}
+                        helperText={!isNewUser ? 'El nombre de usuario no se puede cambiar' : ''}
                       />
 
                       <TextField
@@ -506,6 +566,18 @@ const UsuariosAdmin = () => {
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         placeholder="Ej: juan@ejemplo.com"
                       />
+
+                      {isNewUser && (
+                        <TextField
+                          fullWidth
+                          label="Contraseña"
+                          type="password"
+                          value={formData.password}
+                          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                          placeholder="Ingresa la contraseña"
+                          required
+                        />
+                      )}
 
                       <FormControl fullWidth>
                         <InputLabel>Rol</InputLabel>
@@ -595,29 +667,6 @@ const UsuariosAdmin = () => {
             startIcon={loadingReset ? <CircularProgress size={20} /> : <MdRefresh />}
           >
             {loadingReset ? 'Procesando...' : 'Restablecer'}
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Dialog para confirmar eliminación */}
-      <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ fontWeight: 600 }}>Confirmar Eliminación</DialogTitle>
-        <Divider />
-        <DialogContent sx={{ pt: 3 }}>
-          <Typography>
-            ¿Estás seguro de que deseas eliminar a <strong>{selectedUsuario?.nombre}</strong>?
-          </Typography>
-          <Typography variant="body2" color="error" sx={{ mt: 2 }}>
-            Esta acción no se puede deshacer.
-          </Typography>
-        </DialogContent>
-        <Divider />
-        <DialogActions sx={{ p: 2 }}>
-          <Button onClick={() => setOpenDeleteDialog(false)} variant="outlined">
-            Cancelar
-          </Button>
-          <Button onClick={handleConfirmDelete} variant="contained" color="error">
-            Eliminar Usuario
           </Button>
         </DialogActions>
       </Dialog>

@@ -75,6 +75,164 @@ Authorization: Bearer <token>
 
 ---
 
+## Gestión de Usuarios
+
+### GET `/users/`
+**Estado:** Conectado
+
+Obtiene la lista de todos los usuarios del sistema.
+
+**Headers:**
+```
+Authorization: Bearer <token>
+```
+
+**Respuesta exitosa (200):**
+```json
+[
+  {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@example.com",
+    "role": "ADMIN",
+    "is_active": true
+  }
+]
+```
+
+**Uso en el frontend:**
+- Archivo: `src/services/api.js` - `usersApi.getAllUsers()`
+- Componente: `src/components/usuarios/UsuariosAdmin.jsx`
+
+---
+
+### POST `/users/update-password`
+**Estado:** Conectado
+
+Actualiza la contraseña de un usuario especificado.
+
+**Headers:**
+```
+Authorization: Bearer <token>
+```
+
+**Query Parameters:**
+```
+username: string (requerido)
+new_password: string (requerido)
+```
+
+**Respuesta exitosa (200):**
+```json
+{
+  "id": 1,
+  "username": "usuario",
+  "email": "usuario@example.com",
+  "role": "SECRETARIA",
+  "is_active": true
+}
+```
+
+**Uso en el frontend:**
+- Archivo: `src/services/api.js` - `usersApi.updatePassword()`
+
+---
+
+### PUT `/users/change-role`
+**Estado:** Conectado
+
+Cambia el rol de un usuario especificado.
+
+**Headers:**
+```
+Authorization: Bearer <token>
+```
+
+**Query Parameters:**
+```
+username: string (requerido)
+new_role: string (requerido) - ADMIN | JEFE_CARRERA | JEFE_ESCOLARES | SECRETARIA
+```
+
+**Respuesta exitosa (200):**
+```json
+{
+  "id": 1,
+  "username": "usuario",
+  "email": "usuario@example.com",
+  "role": "JEFE_CARRERA",
+  "is_active": true
+}
+```
+
+**Uso en el frontend:**
+- Archivo: `src/services/api.js` - `usersApi.changeRole()`
+
+---
+
+### PUT `/users/toggle-active`
+**Estado:** Conectado
+
+Activa o desactiva un usuario.
+
+**Headers:**
+```
+Authorization: Bearer <token>
+```
+
+**Query Parameters:**
+```
+username: string (requerido)
+```
+
+**Respuesta exitosa (200):**
+```json
+{
+  "id": 1,
+  "username": "usuario",
+  "email": "usuario@example.com",
+  "role": "SECRETARIA",
+  "is_active": false
+}
+```
+
+**Uso en el frontend:**
+- Archivo: `src/services/api.js` - `usersApi.toggleActive()`
+
+---
+
+### PUT `/users/change-email`
+**Estado:** Conectado
+
+Cambia el email de un usuario especificado.
+
+**Headers:**
+```
+Authorization: Bearer <token>
+```
+
+**Query Parameters:**
+```
+username: string (requerido)
+new_email: string (requerido)
+```
+
+**Respuesta exitosa (200):**
+```json
+{
+  "id": 1,
+  "username": "usuario",
+  "email": "nuevo@example.com",
+  "role": "SECRETARIA",
+  "is_active": true
+}
+```
+
+**Uso en el frontend:**
+- Archivo: `src/services/api.js` - `usersApi.changeEmail()`
+
+---
+
 ### POST `/auth/register`
 **Estado:** Pendiente de integración
 
