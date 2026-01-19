@@ -6,10 +6,10 @@ Este documento registra todas las APIs del backend que están integradas y funci
 
 ---
 
-## 🔐 Autenticación
+## Autenticación
 
 ### POST `/auth/login`
-**Estado:** ✅ Conectado
+**Estado:** Conectado
 
 Obtiene token de acceso JWT para autenticar al usuario.
 
@@ -44,7 +44,7 @@ password: string (requerido)
 ---
 
 ### GET `/auth/me`
-**Estado:** ✅ Conectado
+**Estado:** Conectado
 
 Obtiene la información del perfil del usuario autenticado.
 
@@ -76,7 +76,7 @@ Authorization: Bearer <token>
 ---
 
 ### POST `/auth/register`
-**Estado:** 🔄 Pendiente de integración
+**Estado:** Pendiente de integración
 
 Registra un nuevo usuario en el sistema (solo para administradores).
 
@@ -125,10 +125,10 @@ Authorization: Bearer <token>
 
 ---
 
-## 📋 Exámenes
+## Exámenes
 
 ### GET `/examenes/exams`
-**Estado:** 🔄 Pendiente de integración
+**Estado:** Pendiente de integración
 
 Lista de exámenes programados.
 
@@ -154,7 +154,7 @@ Lista de exámenes programados.
 ---
 
 ### POST `/examenes/seed-pdf-data`
-**Estado:** 🔄 Pendiente de integración
+**Estado:** Pendiente de integración
 
 Carga datos de ejemplo del PDF (grupo 106-A).
 
@@ -170,7 +170,7 @@ Carga datos de ejemplo del PDF (grupo 106-A).
 
 ---
 
-## 📝 Notas de Implementación
+## Notas de Implementación
 
 ### Manejo de Tokens
 - El token JWT se guarda en `localStorage` con la key `auth_token`
@@ -196,19 +196,19 @@ El backend debe permitir peticiones desde `http://localhost:5173` (puerto por de
 
 ---
 
-## 🔄 Estado General
+## Estado General
 
 | Endpoint | Estado | Prioridad | Notas |
 |----------|--------|-----------|-------|
-| POST /auth/login | ✅ Conectado | Alta | Funcionando |
-| GET /auth/me | ✅ Conectado | Alta | Funcionando |
-| POST /auth/register | 🔄 Pendiente | Media | Para admin |
-| GET /examenes/exams | 🔄 Pendiente | Baja | Próxima fase |
-| POST /examenes/seed-pdf-data | 🔄 Pendiente | Baja | Próxima fase |
+| POST /auth/login | Conectado | Alta | Funcionando |
+| GET /auth/me | Conectado | Alta | Funcionando |
+| POST /auth/register | Pendiente | Media | Para admin |
+| GET /examenes/exams | Pendiente | Baja | Próxima fase |
+| POST /examenes/seed-pdf-data | Pendiente | Baja | Próxima fase |
 
 ---
 
-## 🐛 Debugging
+## Debugging
 
 ### Ver peticiones en la consola
 El servicio API registra todas las peticiones y respuestas en la consola del navegador cuando está en modo desarrollo.
