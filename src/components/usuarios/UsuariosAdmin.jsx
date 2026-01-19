@@ -604,14 +604,6 @@ const UsuariosAdmin = () => {
                           </Box>
                         </>
                       )}
-
-                      <Button
-                        fullWidth
-                        variant="text"
-                        onClick={handleCancelEdit}
-                      >
-                        Cancelar
-                      </Button>
                     </Stack>
                   </CardContent>
                 </Card>
