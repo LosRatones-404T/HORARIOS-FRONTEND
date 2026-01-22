@@ -34,8 +34,8 @@ const useRevision = () => {
         const mockHorarios = [
           {
             id: 1,
-            jefe_carrera: 'Dr. Juan Pérez García',
-            carrera: 'Ingeniería en Sistemas Computacionales',
+            jefe_carrera: 'Dr. Alejandro Jarillo Silva',
+            carrera: 'Informática',
             tipo_examen: 'Parcial 1',
             periodo: 'Periodo 1 - 2026',
             fecha_envio: '2026-01-10',
@@ -45,8 +45,8 @@ const useRevision = () => {
             horarios: [
               {
                 semestre: '1°',
-                materia: 'Fundamentos de Programación',
-                profesor: 'Ing. Carlos Ramírez',
+                materia: 'Diseño Estructurado de Algoritmos',
+                profesor: 'Dr. Alejandro Jarillo Silva',
                 aula: 'Lab-301',
                 fecha: '2026-01-20',
                 hora_inicio: '08:00',
@@ -56,8 +56,8 @@ const useRevision = () => {
               },
               {
                 semestre: '1°',
-                materia: 'Cálculo Diferencial',
-                profesor: 'Ing. María López',
+                materia: 'Cálculo I',
+                profesor: 'Dr. Arturo Benítez Hernández',
                 aula: 'Aula-101',
                 fecha: '2026-01-20',
                 hora_inicio: '10:00',
@@ -68,7 +68,7 @@ const useRevision = () => {
               {
                 semestre: '3°',
                 materia: 'Estructuras de Datos',
-                profesor: 'Dr. Ana Torres',
+                profesor: 'Dr. Jesús Cruz Ahuactzil',
                 aula: 'Lab-303',
                 fecha: '2026-01-20',
                 hora_inicio: '10:00',
@@ -79,7 +79,7 @@ const useRevision = () => {
               {
                 semestre: '5°',
                 materia: 'Bases de Datos II',
-                profesor: 'Mtro. Pedro Sánchez',
+                profesor: 'Dr. Alejandro Jarillo Silva',
                 aula: 'Lab-308',
                 fecha: '2026-01-21',
                 hora_inicio: '09:00',
@@ -90,7 +90,7 @@ const useRevision = () => {
               {
                 semestre: '7°',
                 materia: 'Ingeniería de Software II',
-                profesor: 'Dra. Laura Martínez',
+                profesor: 'M.C.A.C. José Alberto Cruz Tolentino',
                 aula: 'Aula-209',
                 fecha: '2026-01-21',
                 hora_inicio: '11:00',
@@ -100,8 +100,8 @@ const useRevision = () => {
               },
               {
                 semestre: '9°',
-                materia: 'Sistemas Distribuidos',
-                profesor: 'Dr. Roberto Silva',
+                materia: 'Inteligencia Artificial',
+                profesor: 'Dr. José J. Hernández Barriga',
                 aula: 'Lab-316',
                 fecha: '2026-01-22',
                 hora_inicio: '11:00',
@@ -113,8 +113,8 @@ const useRevision = () => {
           },
           {
             id: 2,
-            jefe_carrera: 'Dra. María González',
-            carrera: 'Ingeniería Industrial',
+            jefe_carrera: 'Dr. Amando Alejandro Ruiz Figueroa',
+            carrera: 'Medicina',
             tipo_examen: 'Parcial 1',
             periodo: 'Periodo 1 - 2026',
             fecha_envio: '2026-01-11',
@@ -124,8 +124,8 @@ const useRevision = () => {
             horarios: [
               {
                 semestre: '1°',
-                materia: 'Probabilidad y Estadística',
-                profesor: 'Dr. Roberto Méndez',
+                materia: 'Anatomía Humana I',
+                profesor: 'Dr. Arisel Darío Barragán López',
                 aula: 'Aula-201',
                 fecha: '2026-01-22',
                 hora_inicio: '14:00',
@@ -135,8 +135,8 @@ const useRevision = () => {
               },
               {
                 semestre: '3°',
-                materia: 'Ingeniería de Métodos',
-                profesor: 'Ing. Laura Castillo',
+                materia: 'Fisiología Humana',
+                profesor: 'Dra. Aidee Cruz Barragán',
                 aula: 'Aula-202',
                 fecha: '2026-01-22',
                 hora_inicio: '16:00',
@@ -146,8 +146,8 @@ const useRevision = () => {
               },
               {
                 semestre: '5°',
-                materia: 'Planeación y Control de la Producción',
-                profesor: 'Mtro. José Ramírez',
+                materia: 'Farmacología Clínica',
+                profesor: 'Dr. Eric Melecio Castro Leal',
                 aula: 'Aula-203',
                 fecha: '2026-01-23',
                 hora_inicio: '08:00',
@@ -159,8 +159,8 @@ const useRevision = () => {
           },
           {
             id: 3,
-            jefe_carrera: 'Mtro. Carlos Rodríguez',
-            carrera: 'Ingeniería Electrónica',
+            jefe_carrera: 'M.C. Mónica Pérez Meza',
+            carrera: 'Administración Pública',
             tipo_examen: 'Ordinario',
             periodo: 'Periodo 1 - 2026',
             fecha_envio: '2026-01-12',
@@ -170,9 +170,9 @@ const useRevision = () => {
             horarios: [
               {
                 semestre: '1°',
-                materia: 'Análisis de Circuitos Eléctricos',
-                profesor: 'Dr. Jorge Hernández',
-                aula: 'Lab-E01',
+                materia: 'Introducción a la Administración Pública',
+                profesor: 'M.C. Mónica Pérez Meza',
+                aula: 'Aula-AP01',
                 fecha: '2026-01-23',
                 hora_inicio: '08:00',
                 hora_fin: '10:00',
@@ -181,9 +181,9 @@ const useRevision = () => {
               },
               {
                 semestre: '3°',
-                materia: 'Electrónica Analógica',
-                profesor: 'Ing. Patricia Gómez',
-                aula: 'Lab-E02',
+                materia: 'Derecho Administrativo',
+                profesor: 'M.C. Teresita de J. Mijangos Martínez',
+                aula: 'Aula-AP02',
                 fecha: '2026-01-23',
                 hora_inicio: '10:00',
                 hora_fin: '12:00',
@@ -192,9 +192,9 @@ const useRevision = () => {
               },
               {
                 semestre: '5°',
-                materia: 'Microprocesadores',
-                profesor: 'Mtro. Fernando Torres',
-                aula: 'Lab-E03',
+                materia: 'Políticas Públicas',
+                profesor: 'M.C.C. Lirio Ruiz Guerra',
+                aula: 'Aula-AP03',
                 fecha: '2026-01-24',
                 hora_inicio: '08:00',
                 hora_fin: '10:00',
@@ -203,9 +203,9 @@ const useRevision = () => {
               },
               {
                 semestre: '7°',
-                materia: 'Sistemas de Control',
-                profesor: 'Dra. Carmen Ortiz',
-                aula: 'Lab-E04',
+                materia: 'Gestión de Recursos Públicos',
+                profesor: 'M.C.A.C. José Alberto Cruz Tolentino',
+                aula: 'Aula-AP04',
                 fecha: '2026-01-24',
                 hora_inicio: '10:00',
                 hora_fin: '12:00',
