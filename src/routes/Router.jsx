@@ -85,7 +85,7 @@ const Router = () => {
         <Route 
           path="/revision" 
           element={
-            <ProtectedRoute allowedRoles={['admin', 'jefe']}>
+            <ProtectedRoute allowedRoles={['admin', 'escolares']}>
               <Revision />
             </ProtectedRoute>
           } 
