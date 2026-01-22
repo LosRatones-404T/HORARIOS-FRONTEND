@@ -34,7 +34,7 @@ const Preferencias = () => {
           aplicador: '',
           sinodales: ['Dra. María López', 'Mtro. Carlos Ruiz'],
           modalidad: 'Digital',
-          academia: true
+          academia: false
         },
         {
           nombre: 'Administración',
@@ -50,7 +50,7 @@ const Preferencias = () => {
           aplicador: '',
           sinodales: ['Dra. Laura Jiménez', 'Mtro. José Ramírez'],
           modalidad: 'Digital',
-          academia: true
+          academia: false
         },
         {
           nombre: 'Lógica Matemática',
@@ -58,7 +58,7 @@ const Preferencias = () => {
           aplicador: '',
           sinodales: ['Dra. Patricia Morales'],
           modalidad: 'Digital',
-          academia: true
+          academia: false
         },
         {
           nombre: 'Cálculo I',
@@ -66,7 +66,7 @@ const Preferencias = () => {
           aplicador: '',
           sinodales: ['Dr. Ricardo Méndez', 'Mtra. Sofía Herrera'],
           modalidad: 'Digital',
-          academia: true
+          academia: false
         }
       ]
     },
@@ -80,7 +80,7 @@ const Preferencias = () => {
           aplicador: '',
           sinodales: ['Mtro. Javier Cortés', 'Mtra. Beatriz Luna'],
           modalidad: 'Digital',
-          academia: true
+          academia: false
         },
         {
           nombre: 'Electrónica Digital',
@@ -104,7 +104,7 @@ const Preferencias = () => {
           aplicador: '',
           sinodales: ['Dra. Liliana Campos'],
           modalidad: 'Digital',
-          academia: true
+          academia: false
         },
         {
           nombre: 'Álgebra Lineal',
@@ -112,7 +112,7 @@ const Preferencias = () => {
           aplicador: '',
           sinodales: ['Dr. Armando León', 'Mtra. Cecilia Ríos'],
           modalidad: 'Digital',
-          academia: true
+          academia: false
         }
       ]
     },
@@ -126,7 +126,7 @@ const Preferencias = () => {
           aplicador: '',
           sinodales: ['Mtra. Silvia Ortega', 'Mtro. Felipe Márquez'],
           modalidad: 'Digital',
-          academia: true
+          academia: false
         },
         {
           nombre: 'Redes I',
@@ -134,7 +134,7 @@ const Preferencias = () => {
           aplicador: '',
           sinodales: ['Dr. Gerardo Lara'],
           modalidad: 'Tradicional',
-          academia: true
+          academia: false
         },
         {
           nombre: 'Bases de Datos II',
@@ -142,7 +142,7 @@ const Preferencias = () => {
           aplicador: '',
           sinodales: ['Mtro. Hugo Sandoval', 'Dra. Yolanda Cervantes'],
           modalidad: 'Digital',
-          academia: true
+          academia: false
         },
         {
           nombre: 'Fundamentos de Sistemas Operativos',
@@ -150,7 +150,7 @@ const Preferencias = () => {
           aplicador: '',
           sinodales: ['Dra. Karla Miranda'],
           modalidad: 'Digital',
-          academia: true
+          academia: false
         },
         {
           nombre: 'Diseño Web',
@@ -172,7 +172,7 @@ const Preferencias = () => {
           aplicador: '',
           sinodales: ['Mtro. Omar Alvarado', 'Mtra. Regina Santos'],
           modalidad: 'Digital',
-          academia: true
+          academia: false
         },
         {
           nombre: 'Bases de Datos Avanzadas',
@@ -180,7 +180,7 @@ const Preferencias = () => {
           aplicador: '',
           sinodales: ['Dr. Gonzalo Trejo'],
           modalidad: 'Digital',
-          academia: true
+          academia: false
         },
         {
           nombre: 'Ingeniería de Software II',
@@ -188,7 +188,7 @@ const Preferencias = () => {
           aplicador: '',
           sinodales: ['Dra. Leticia Arriaga', 'Mtro. Saúl Hidalgo'],
           modalidad: 'Digital',
-          academia: true
+          academia: false
         },
         {
           nombre: 'Probabilidad y Estadística',
@@ -196,7 +196,7 @@ const Preferencias = () => {
           aplicador: '',
           sinodales: ['Dr. Emilio Zúñiga'],
           modalidad: 'Digital',
-          academia: true
+          academia: false
         },
         {
           nombre: 'Derecho y Legislación en Informática',
@@ -218,7 +218,7 @@ const Preferencias = () => {
           aplicador: '',
           sinodales: ['Dra. Raquel Orozco', 'Mtro. Augusto Parra'],
           modalidad: 'Digital',
-          academia: true
+          academia: false
         },
         {
           nombre: 'Seguridad Informática',
@@ -226,7 +226,7 @@ const Preferencias = () => {
           aplicador: '',
           sinodales: ['Dra. Mireya Galván'],
           modalidad: 'Digital',
-          academia: true
+          academia: false
         },
         {
           nombre: 'Administración de Proyectos',
@@ -242,7 +242,7 @@ const Preferencias = () => {
           aplicador: '',
           sinodales: ['Dr. Octavio Serrano'],
           modalidad: 'Digital',
-          academia: true
+          academia: false
         },
         {
           nombre: 'Auditoría Informática',

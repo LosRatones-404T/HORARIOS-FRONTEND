@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Box, Typography, Select, MenuItem, FormControl, InputLabel, IconButton, Chip, useTheme } from '@mui/material';
+import { Box, Typography, Select, MenuItem, FormControl, InputLabel, IconButton, Chip, useTheme, Switch, FormControlLabel } from '@mui/material';
 import { MdSchool, MdAdd, MdDelete, MdComputer, MdEdit } from 'react-icons/md';
 import { useState } from 'react';
 
@@ -345,23 +345,23 @@ const MateriaCard = ({
         >
           Academia
         </Typography>
-        <Chip
+        <FormControlLabel
+          control={
+            <Switch
+              checked={academia}
+              onChange={(e) => handleFieldChange('academia', e.target.checked)}
+              color="primary"
+            />
+          }
           label={academia ? 'Sí' : 'No'}
-          onClick={() => handleFieldChange('academia', !academia)}
+          labelPlacement="start"
           sx={{
-            bgcolor: academia 
-              ? theme.palette.success.main 
-              : theme.palette.mode === 'light'
-                ? theme.palette.background.secondary
-                : theme.palette.background.tertiary,
-            color: academia 
-              ? '#fff' 
-              : theme.palette.text.primary,
-            fontWeight: 600,
-            cursor: 'pointer',
-            minWidth: 60,
-            '&:hover': {
-              opacity: 0.8,
+            m: 0,
+            gap: 1,
+            '& .MuiFormControlLabel-label': {
+              fontWeight: 600,
+              fontSize: '0.875rem',
+              color: theme.palette.text.secondary,
             }
           }}
         />
