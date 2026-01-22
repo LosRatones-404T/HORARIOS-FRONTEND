@@ -42,12 +42,17 @@ const Calendario = () => {
   const currentUser = getCurrentUser();
   const isSecretaria = currentUser?.role === 'escolares';
 
-  // Carreras disponibles (solo para secretaria)
+  // Licenciaturas disponibles (solo para secretaria)
   const carreras = [
-    { id: 'informatica', label: 'Lic. en Informática' },
-    { id: 'sistemas', label: 'Ing. en Sistemas Computacionales' },
-    { id: 'industrial', label: 'Ing. Industrial' },
-    { id: 'electronica', label: 'Ing. Electrónica' },
+    { id: 'informatica', label: 'Informática' },
+    { id: 'administracion-municipal', label: 'Administración Municipal' },
+    { id: 'administracion-publica', label: 'Administración Pública' },
+    { id: 'ciencias-biomedicas', label: 'Ciencias Biomédicas' },
+    { id: 'ciencias-empresariales', label: 'Ciencias Empresariales' },
+    { id: 'enfermeria', label: 'Enfermería' },
+    { id: 'medicina', label: 'Medicina' },
+    { id: 'nutricion', label: 'Nutrición' },
+    { id: 'odontologia', label: 'Odontología' },
   ];
 
   // Tipos de examen disponibles
@@ -312,12 +317,12 @@ const Calendario = () => {
     setAnchorElExport(null);
   };
 
-  // Exportar carrera actual
+  // Exportar licenciatura actual
   const handleExportarCarreraActual = () => {
     const carreraActual = carreras.find(c => c.id === carreraSeleccionada);
     const tipoExamenLabel = tiposExamen.find(t => t.id === tipoExamenActual)?.label || 'Sin tipo';
     
-    console.log('Exportando carrera:', carreraActual?.label);
+    console.log('Exportando licenciatura:', carreraActual?.label);
     console.log('Semestres a exportar:', semestres);
     console.log('Total de eventos:', semestres.reduce((acc, sem) => acc + sem.eventos.length, 0));
     
@@ -337,11 +342,11 @@ const Calendario = () => {
     handleCloseExportMenu();
   };
 
-  // Exportar todas las carreras
+  // Exportar todas las licenciaturas
   const handleExportarTodasCarreras = () => {
     const tipoExamenLabel = tiposExamen.find(t => t.id === tipoExamenActual)?.label || 'Sin tipo';
     
-    // Simular datos de todas las carreras
+    // Simular datos de todas las licenciaturas
     // En producción, estos datos vendrían del backend
     const todasCarreras = carreras.map(carrera => ({
       nombre: carrera.label,
@@ -356,7 +361,7 @@ const Calendario = () => {
 
     setNotification({
       open: true,
-      message: 'Exportando calendarios de todas las carreras...',
+      message: 'Exportando calendarios de todas las licenciaturas...',
       severity: 'success'
     });
 
@@ -365,7 +370,7 @@ const Calendario = () => {
 
   // Exportar calendario simple (para jefe de carrera)
   const handleExportarCalendario = () => {
-    const carreraJefe = 'Lic. en Informática'; // En producción vendría del usuario autenticado
+    const carreraJefe = 'Informática'; // En producción vendría del usuario autenticado
     const tipoExamenLabel = tiposExamen.find(t => t.id === tipoExamenActual)?.label || 'Sin tipo';
     
     console.log('Exportando calendario jefe de carrera');
@@ -442,7 +447,7 @@ const Calendario = () => {
                     fontWeight: 600,
                   }}
                 >
-                  Exportar Carrera Actual
+                  Exportar Licenciatura Actual
                 </Button>
                 <Button
                   size="small"
@@ -488,7 +493,7 @@ const Calendario = () => {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
               <MdCalendarToday size={20} color={theme.palette.info.main} />
               <Typography variant="subtitle1" fontWeight={600}>
-                Carrera
+                Licenciatura
               </Typography>
             </Box>
             
