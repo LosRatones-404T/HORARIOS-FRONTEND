@@ -21,22 +21,27 @@ const MateriaCard = ({
 
   // Lista simulada de profesores (esto debería venir de una API)
   const profesoresDisponibles = [
-    'Dr. Juan Pérez García',
-    'Dra. María López',
-    'Mtro. Carlos Ruiz',
-    'Mtra. Ana González Martínez',
-    'Lic. Pedro Sánchez',
-    'Dr. Roberto Fernández',
-    'Dra. Laura Jiménez',
-    'Mtro. José Ramírez',
-    'Dr. Miguel Ángel Torres',
-    'Dra. Patricia Morales',
-    'Dr. Fernando Castillo',
-    'Dr. Ricardo Méndez',
-    'Mtra. Sofía Herrera',
-    'Dr. Alberto Gutiérrez',
-    'Mtro. Jorge Vega',
-    'Mtra. Diana Cruz',
+    'Dr. Alejandro Jarillo Silva',
+    'Dr. Amando Alejandro Ruiz Figueroa',
+    'Dr. Arisel Darío Barragán López',
+    'Dr. Arturo Benítez Hernández',
+    'Dr. Jesús Cruz Ahuactzil',
+    'Dr. José J. Hernández Barriga',
+    'Dra. Aidee Cruz Barragán',
+    'M.C. Enrique García Reyes',
+    'M.C. Mónica Pérez Meza',
+    'M.C. Teresita de J. Mijangos Martínez',
+    'M.C.A.C. José Alberto Cruz Tolentino',
+    'Dr. Eric Melecio Castro Leal',
+    'M.C.C. Lirio Ruiz Guerra',
+    'M.C.C. Silviana Juárez Chalini',
+    'M.C.M. Jesús Pacheco Mendoza',
+    'M.C.M. Oscar Cuauhtémoc Esperanza Contreras',
+    'M.I.T.I. Oswaldo Rey Ávila Barrón',
+    'M.T.C.A. Rolando Pedro Gabriel',
+    'M.T.E. Everardo de Jesús Pacheco Antonio',
+    'M.T.I.E. Irving Ulises Hernández Miguel',
+    'M.C.C. Eliezer Alcázar Silva',
   ];
 
   const handleFieldChange = (field, value) => {
@@ -313,13 +318,13 @@ const MateriaCard = ({
             <MenuItem value="Digital">
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <MdComputer size={18} />
-                Digital (Sala de cómputo)
+                Digital en sala de cómputo
               </Box>
             </MenuItem>
             <MenuItem value="Tradicional">
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <MdEdit size={18} />
-                Tradicional (A mano)
+                Tradicional escrito
               </Box>
             </MenuItem>
           </Select>

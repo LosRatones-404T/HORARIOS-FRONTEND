@@ -30,41 +30,41 @@ const Preferencias = () => {
       materias: [
         {
           nombre: 'Diseño Estructurado de Algoritmos',
-          profesor: 'Dr. Juan Pérez García',
+          profesor: 'Dr. Alejandro Jarillo Silva',
           aplicador: '',
-          sinodales: ['Dra. María López', 'Mtro. Carlos Ruiz'],
+          sinodales: ['Dr. Eric Melecio Castro Leal', 'M.C. Enrique García Reyes'],
           modalidad: 'Digital',
           academia: false
         },
         {
           nombre: 'Administración',
-          profesor: 'Mtra. Ana González Martínez',
+          profesor: 'M.C. Mónica Pérez Meza',
           aplicador: '',
-          sinodales: ['Lic. Pedro Sánchez'],
+          sinodales: ['M.C. Teresita de J. Mijangos Martínez'],
           modalidad: 'Tradicional',
           academia: false
         },
         {
           nombre: 'Historia del Pensamiento Filosófico',
-          profesor: 'Dr. Roberto Fernández',
+          profesor: 'Dr. Amando Alejandro Ruiz Figueroa',
           aplicador: '',
-          sinodales: ['Dra. Laura Jiménez', 'Mtro. José Ramírez'],
+          sinodales: ['M.C.C. Lirio Ruiz Guerra', 'M.T.E. Everardo de Jesús Pacheco Antonio'],
           modalidad: 'Digital',
           academia: false
         },
         {
           nombre: 'Lógica Matemática',
-          profesor: 'Dr. Miguel Ángel Torres',
+          profesor: 'Dr. Arisel Darío Barragán López',
           aplicador: '',
-          sinodales: ['Dra. Patricia Morales'],
+          sinodales: ['Dra. Aidee Cruz Barragán'],
           modalidad: 'Digital',
           academia: false
         },
         {
           nombre: 'Cálculo I',
-          profesor: 'Dr. Fernando Castillo',
+          profesor: 'Dr. Arturo Benítez Hernández',
           aplicador: '',
-          sinodales: ['Dr. Ricardo Méndez', 'Mtra. Sofía Herrera'],
+          sinodales: ['Dr. José J. Hernández Barriga', 'M.C.C. Silviana Juárez Chalini'],
           modalidad: 'Digital',
           academia: false
         }
@@ -76,41 +76,41 @@ const Preferencias = () => {
       materias: [
         {
           nombre: 'Estructuras de Datos',
-          profesor: 'Dr. Raúl Domínguez',
+          profesor: 'Dr. Jesús Cruz Ahuactzil',
           aplicador: '',
-          sinodales: ['Mtro. Javier Cortés', 'Mtra. Beatriz Luna'],
+          sinodales: ['M.C.M. Jesús Pacheco Mendoza', 'M.I.T.I. Oswaldo Rey Ávila Barrón'],
           modalidad: 'Digital',
           academia: false
         },
         {
           nombre: 'Electrónica Digital',
-          profesor: 'Ing. Eduardo Castro',
+          profesor: 'M.T.C.A. Rolando Pedro Gabriel',
           aplicador: '',
-          sinodales: ['Dr. Pablo Aguilar'],
+          sinodales: ['M.T.I.E. Irving Ulises Hernández Miguel'],
           modalidad: 'Tradicional',
           academia: false
         },
         {
           nombre: 'Contabilidad y Finanzas',
-          profesor: 'Lic. Mariana Salazar',
+          profesor: 'M.C. Mónica Pérez Meza',
           aplicador: '',
-          sinodales: ['Mtra. Claudia Paredes', 'Lic. Enrique Benítez'],
+          sinodales: ['M.C. Teresita de J. Mijangos Martínez', 'M.C.A.C. José Alberto Cruz Tolentino'],
           modalidad: 'Digital',
           academia: false
         },
         {
           nombre: 'Teoría de Autómatas',
-          profesor: 'Dr. Daniel Ochoa',
+          profesor: 'Dr. Eric Melecio Castro Leal',
           aplicador: '',
-          sinodales: ['Dra. Liliana Campos'],
+          sinodales: ['M.C.C. Eliezer Alcázar Silva'],
           modalidad: 'Digital',
           academia: false
         },
         {
           nombre: 'Álgebra Lineal',
-          profesor: 'Dra. Verónica Ponce',
+          profesor: 'Dr. Arisel Darío Barragán López',
           aplicador: '',
-          sinodales: ['Dr. Armando León', 'Mtra. Cecilia Ríos'],
+          sinodales: ['Dr. Arturo Benítez Hernández', 'Dra. Aidee Cruz Barragán'],
           modalidad: 'Digital',
           academia: false
         }
@@ -122,41 +122,41 @@ const Preferencias = () => {
       materias: [
         {
           nombre: 'Paradigmas de Programación II',
-          profesor: 'Dr. Oscar Montes',
+          profesor: 'M.C.M. Oscar Cuauhtémoc Esperanza Contreras',
           aplicador: '',
-          sinodales: ['Mtra. Silvia Ortega', 'Mtro. Felipe Márquez'],
+          sinodales: ['M.C.C. Silviana Juárez Chalini', 'M.C.M. Jesús Pacheco Mendoza'],
           modalidad: 'Digital',
           academia: false
         },
         {
           nombre: 'Redes I',
-          profesor: 'Ing. Mauricio Acosta',
+          profesor: 'M.T.I.E. Irving Ulises Hernández Miguel',
           aplicador: '',
-          sinodales: ['Dr. Gerardo Lara'],
+          sinodales: ['M.T.C.A. Rolando Pedro Gabriel'],
           modalidad: 'Tradicional',
           academia: false
         },
         {
           nombre: 'Bases de Datos II',
-          profesor: 'Dra. Elena Cordero',
+          profesor: 'Dr. Alejandro Jarillo Silva',
           aplicador: '',
-          sinodales: ['Mtro. Hugo Sandoval', 'Dra. Yolanda Cervantes'],
+          sinodales: ['M.C. Enrique García Reyes', 'Dr. Eric Melecio Castro Leal'],
           modalidad: 'Digital',
           academia: false
         },
         {
           nombre: 'Fundamentos de Sistemas Operativos',
-          profesor: 'Dr. César Espinosa',
+          profesor: 'Dr. Jesús Cruz Ahuactzil',
           aplicador: '',
-          sinodales: ['Dra. Karla Miranda'],
+          sinodales: ['M.C.C. Eliezer Alcázar Silva'],
           modalidad: 'Digital',
           academia: false
         },
         {
           nombre: 'Diseño Web',
-          profesor: 'Mtra. Daniela Rosales',
+          profesor: 'M.C.C. Lirio Ruiz Guerra',
           aplicador: '',
-          sinodales: ['Mtro. Samuel Gallegos', 'Mtra. Fernanda Ugalde'],
+          sinodales: ['M.I.T.I. Oswaldo Rey Ávila Barrón', 'M.T.E. Everardo de Jesús Pacheco Antonio'],
           modalidad: 'Tradicional',
           academia: false
         }
@@ -168,33 +168,33 @@ const Preferencias = () => {
       materias: [
         {
           nombre: 'Tecnologías Web II',
-          profesor: 'Dr. Marcos Arellano',
+          profesor: 'Dr. Amando Alejandro Ruiz Figueroa',
           aplicador: '',
-          sinodales: ['Mtro. Omar Alvarado', 'Mtra. Regina Santos'],
+          sinodales: ['M.C. Enrique García Reyes', 'M.C. Teresita de J. Mijangos Martínez'],
           modalidad: 'Digital',
           academia: false
         },
         {
           nombre: 'Bases de Datos Avanzadas',
-          profesor: 'Dra. Pilar Rangel',
+          profesor: 'Dr. Eric Melecio Castro Leal',
           aplicador: '',
-          sinodales: ['Dr. Gonzalo Trejo'],
+          sinodales: ['Dr. Alejandro Jarillo Silva'],
           modalidad: 'Digital',
           academia: false
         },
         {
           nombre: 'Ingeniería de Software II',
-          profesor: 'Dr. Benjamín Camacho',
+          profesor: 'M.C.A.C. José Alberto Cruz Tolentino',
           aplicador: '',
-          sinodales: ['Dra. Leticia Arriaga', 'Mtro. Saúl Hidalgo'],
+          sinodales: ['M.C.C. Silviana Juárez Chalini', 'M.C.M. Oscar Cuauhtémoc Esperanza Contreras'],
           modalidad: 'Digital',
           academia: false
         },
         {
           nombre: 'Probabilidad y Estadística',
-          profesor: 'Dra. Susana Cárdenas',
+          profesor: 'Dr. Arturo Benítez Hernández',
           aplicador: '',
-          sinodales: ['Dr. Emilio Zúñiga'],
+          sinodales: ['Dr. Arisel Darío Barragán López'],
           modalidad: 'Digital',
           academia: false
         },
@@ -214,41 +214,41 @@ const Preferencias = () => {
       materias: [
         {
           nombre: 'Inteligencia Artificial',
-          profesor: 'Dr. Xavier Montes',
+          profesor: 'Dr. José J. Hernández Barriga',
           aplicador: '',
-          sinodales: ['Dra. Raquel Orozco', 'Mtro. Augusto Parra'],
+          sinodales: ['Dr. Jesús Cruz Ahuactzil', 'M.C.C. Eliezer Alcázar Silva'],
           modalidad: 'Digital',
           academia: false
         },
         {
           nombre: 'Seguridad Informática',
-          profesor: 'Dr. Leonardo Bermúdez',
+          profesor: 'M.C.M. Jesús Pacheco Mendoza',
           aplicador: '',
-          sinodales: ['Dra. Mireya Galván'],
+          sinodales: ['M.I.T.I. Oswaldo Rey Ávila Barrón'],
           modalidad: 'Digital',
           academia: false
         },
         {
           nombre: 'Administración de Proyectos',
-          profesor: 'Mtra. Ximena Salinas',
+          profesor: 'M.C. Mónica Pérez Meza',
           aplicador: '',
-          sinodales: ['Lic. Gustavo Macías', 'Mtra. Liliana Robles'],
+          sinodales: ['M.C. Teresita de J. Mijangos Martínez', 'M.C.C. Lirio Ruiz Guerra'],
           modalidad: 'Tradicional',
           academia: false
         },
         {
           nombre: 'Cómputo en la Nube',
-          profesor: 'Dr. Maximiliano Aranda',
+          profesor: 'M.T.E. Everardo de Jesús Pacheco Antonio',
           aplicador: '',
-          sinodales: ['Dr. Octavio Serrano'],
+          sinodales: ['M.T.I.E. Irving Ulises Hernández Miguel'],
           modalidad: 'Digital',
           academia: false
         },
         {
           nombre: 'Auditoría Informática',
-          profesor: 'Lic. Flor Mariana Cortés',
+          profesor: 'Dra. Aidee Cruz Barragán',
           aplicador: '',
-          sinodales: ['Lic. Salvador Ochoa', 'Mtra. Nadia Suárez'],
+          sinodales: ['M.T.C.A. Rolando Pedro Gabriel', 'M.C.A.C. José Alberto Cruz Tolentino'],
           modalidad: 'Tradicional',
           academia: false
         }
