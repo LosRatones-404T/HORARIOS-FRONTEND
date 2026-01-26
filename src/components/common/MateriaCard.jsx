@@ -14,8 +14,12 @@ const MateriaCard = ({
   sinodales = [],
   modalidad,
   academia = false,
+  grupos = [],
+  selectedGrupoIndex = 0,
   sx = {},
-  onChange
+  onChange,
+  onSelectGrupo,
+  onChangeGrupo
 }) => {
   const theme = useTheme();
 
@@ -50,21 +54,27 @@ const MateriaCard = ({
     }
   };
 
+  const handleGroupFieldChange = (field, value) => {
+    if (onChangeGrupo) {
+      onChangeGrupo(field, value);
+    }
+  };
+
   const handleAddSinodal = () => {
     if (sinodales.length < 3) { // Máximo 3 sinodales
-      handleFieldChange('sinodales', [...sinodales, '']);
+      handleGroupFieldChange('sinodales', [...sinodales, '']);
     }
   };
 
   const handleRemoveSinodal = (index) => {
     const newSinodales = sinodales.filter((_, i) => i !== index);
-    handleFieldChange('sinodales', newSinodales);
+    handleGroupFieldChange('sinodales', newSinodales);
   };
 
   const handleSinodalChange = (index, value) => {
     const newSinodales = [...sinodales];
     newSinodales[index] = value;
-    handleFieldChange('sinodales', newSinodales);
+    handleGroupFieldChange('sinodales', newSinodales);
   };
 
   // Color suave del background para la card
@@ -88,25 +98,82 @@ const MateriaCard = ({
         ...sx,
       }}
     >
-      {/* Nombre de la materia */}
-      <Box sx={{ mb: 2.5, pb: 2, borderBottom: `2px solid ${theme.palette.primary.main}` }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      {/* Encabezado: Nombre + Grupos + Toggles (aplican a todos los grupos) */}
+      <Box sx={{ mb: 2, pb: 2, borderBottom: `2px solid ${theme.palette.primary.main}` }}>
+        {/* Línea 1: Nombre de la materia */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
           <MdSchool size={24} color={theme.palette.primary.main} />
           <Typography 
             variant="h6" 
             sx={{ 
               fontWeight: 600, 
               color: theme.palette.text.primary,
-              flex: 1,
               fontSize: '1rem'
             }}
           >
             {nombre}
           </Typography>
         </Box>
+        
+        {/* Línea 2: Chips de grupos */}
+        {grupos.length > 0 && (
+          <Box sx={{ mb: 1.5, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            {grupos.map((codigo, idx) => {
+              const paletteOrder = ['primary','success','warning','info','secondary','error'];
+              const colorKey = paletteOrder[idx % paletteOrder.length];
+              const selected = idx === selectedGrupoIndex;
+              return (
+                <Chip
+                  key={codigo}
+                  label={codigo}
+                  clickable
+                  onClick={() => onSelectGrupo && onSelectGrupo(idx)}
+                  sx={{
+                    fontWeight: 600,
+                    borderWidth: 2,
+                    borderStyle: 'solid',
+                    borderColor: selected ? theme.palette[colorKey].main : theme.palette.divider,
+                    bgcolor: selected ? theme.palette[colorKey].light + '33' : theme.palette.background.default,
+                    color: selected ? theme.palette[colorKey].dark : theme.palette.text.primary,
+                  }}
+                />
+              );
+            })}
+          </Box>
+        )}
+        
+        {/* Línea 3: Modalidad y Academia toggles */}
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+          {/* Modalidad toggle */}
+          <FormControlLabel
+            control={
+              <Switch
+                checked={modalidad === 'Digital'}
+                onChange={(e) => handleFieldChange('modalidad', e.target.checked ? 'Digital' : 'Tradicional')}
+                color="primary"
+              />
+            }
+            label={modalidad === 'Digital' ? 'Digital' : 'Escrito'}
+            labelPlacement="start"
+            sx={{ m: 0, gap: 1 }}
+          />
+          {/* Academia toggle */}
+          <FormControlLabel
+            control={
+              <Switch
+                checked={academia}
+                onChange={(e) => handleFieldChange('academia', e.target.checked)}
+                color="primary"
+              />
+            }
+            label="Academia"
+            labelPlacement="start"
+            sx={{ m: 0, gap: 1 }}
+          />
+        </Box>
       </Box>
 
-      {/* Profesor */}
+      {/* Titular (por grupo) */}
       <Box sx={{ mb: 2 }}>
         <Typography 
           variant="body2" 
@@ -117,12 +184,12 @@ const MateriaCard = ({
             fontSize: '0.875rem'
           }}
         >
-          Profesor
+          Titular
         </Typography>
         <FormControl fullWidth size="small">
           <Select
             value={profesor}
-            onChange={(e) => handleFieldChange('profesor', e.target.value)}
+            onChange={(e) => handleGroupFieldChange('profesor', e.target.value)}
             displayEmpty
             sx={{
               bgcolor: theme.palette.mode === 'light' 
@@ -164,7 +231,7 @@ const MateriaCard = ({
         <FormControl fullWidth size="small">
           <Select
             value={aplicador}
-            onChange={(e) => handleFieldChange('aplicador', e.target.value)}
+            onChange={(e) => handleGroupFieldChange('aplicador', e.target.value)}
             displayEmpty
             sx={{
               bgcolor: theme.palette.mode === 'light' 
@@ -286,91 +353,9 @@ const MateriaCard = ({
         )}
       </Box>
 
-      {/* Modalidad */}
-      <Box sx={{ mb: 2 }}>
-        <Typography 
-          variant="body2" 
-          sx={{ 
-            fontWeight: 600, 
-            color: theme.palette.text.primary,
-            mb: 1,
-            fontSize: '0.875rem'
-          }}
-        >
-          Modalidad
-        </Typography>
-        <FormControl fullWidth size="small">
-          <Select
-            value={modalidad}
-            onChange={(e) => handleFieldChange('modalidad', e.target.value)}
-            sx={{
-              bgcolor: theme.palette.mode === 'light' 
-                ? theme.palette.background.default 
-                : theme.palette.background.default,
-              '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: theme.palette.divider,
-              },
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: theme.palette.primary.main,
-              },
-            }}
-          >
-            <MenuItem value="Digital">
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <MdComputer size={18} />
-                Digital en sala de cómputo
-              </Box>
-            </MenuItem>
-            <MenuItem value="Tradicional">
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <MdEdit size={18} />
-                Tradicional escrito
-              </Box>
-            </MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
+      
 
-      {/* Academia */}
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        mt: 2,
-        pt: 2,
-        borderTop: `1px solid ${theme.palette.divider}`
-      }}>
-        <Typography 
-          variant="body2" 
-          sx={{ 
-            fontWeight: 600, 
-            color: theme.palette.text.primary,
-            fontSize: '0.875rem'
-          }}
-        >
-          Academia
-        </Typography>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={academia}
-              onChange={(e) => handleFieldChange('academia', e.target.checked)}
-              color="primary"
-            />
-          }
-          label={academia ? 'Sí' : 'No'}
-          labelPlacement="start"
-          sx={{
-            m: 0,
-            gap: 1,
-            '& .MuiFormControlLabel-label': {
-              fontWeight: 600,
-              fontSize: '0.875rem',
-              color: theme.palette.text.secondary,
-            }
-          }}
-        />
-      </Box>
+      
     </Box>
   );
 };
@@ -382,8 +367,12 @@ MateriaCard.propTypes = {
   sinodales: PropTypes.arrayOf(PropTypes.string),
   modalidad: PropTypes.oneOf(['Digital', 'Tradicional']).isRequired,
   academia: PropTypes.bool,
+  grupos: PropTypes.arrayOf(PropTypes.string),
+  selectedGrupoIndex: PropTypes.number,
   sx: PropTypes.object,
   onChange: PropTypes.func,
+  onSelectGrupo: PropTypes.func,
+  onChangeGrupo: PropTypes.func,
 };
 
 export default MateriaCard;
