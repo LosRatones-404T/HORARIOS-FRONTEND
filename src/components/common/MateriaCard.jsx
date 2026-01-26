@@ -153,7 +153,7 @@ const MateriaCard = ({
                 color="primary"
               />
             }
-            label={modalidad === 'Digital' ? 'Digital' : 'Escrito'}
+            label="Digital"
             labelPlacement="start"
             sx={{ m: 0, gap: 1 }}
           />

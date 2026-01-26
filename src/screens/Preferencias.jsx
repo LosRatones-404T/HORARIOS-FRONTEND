@@ -33,7 +33,7 @@ const Preferencias = () => {
           profesor: 'Dr. Alejandro Jarillo Silva',
           aplicador: '',
           sinodales: ['Dr. Eric Melecio Castro Leal', 'M.C. Enrique García Reyes'],
-          modalidad: 'Digital',
+          modalidad: 'Tradicional',
           academia: false
         },
         {
@@ -49,7 +49,7 @@ const Preferencias = () => {
           profesor: 'Dr. Amando Alejandro Ruiz Figueroa',
           aplicador: '',
           sinodales: ['M.C.C. Lirio Ruiz Guerra', 'M.T.E. Everardo de Jesús Pacheco Antonio'],
-          modalidad: 'Digital',
+          modalidad: 'Tradicional',
           academia: false
         },
         {
@@ -57,7 +57,7 @@ const Preferencias = () => {
           profesor: 'Dr. Arisel Darío Barragán López',
           aplicador: '',
           sinodales: ['Dra. Aidee Cruz Barragán'],
-          modalidad: 'Digital',
+          modalidad: 'Tradicional',
           academia: false
         },
         {
@@ -65,7 +65,7 @@ const Preferencias = () => {
           profesor: 'Dr. Arturo Benítez Hernández',
           aplicador: '',
           sinodales: ['Dr. José J. Hernández Barriga', 'M.C.C. Silviana Juárez Chalini'],
-          modalidad: 'Digital',
+          modalidad: 'Tradicional',
           academia: false
         }
       ]
@@ -79,7 +79,7 @@ const Preferencias = () => {
           profesor: 'Dr. Jesús Cruz Ahuactzil',
           aplicador: '',
           sinodales: ['M.C.M. Jesús Pacheco Mendoza', 'M.I.T.I. Oswaldo Rey Ávila Barrón'],
-          modalidad: 'Digital',
+          modalidad: 'Tradicional',
           academia: false
         },
         {
@@ -95,7 +95,7 @@ const Preferencias = () => {
           profesor: 'M.C. Mónica Pérez Meza',
           aplicador: '',
           sinodales: ['M.C. Teresita de J. Mijangos Martínez', 'M.C.A.C. José Alberto Cruz Tolentino'],
-          modalidad: 'Digital',
+          modalidad: 'Tradicional',
           academia: false
         },
         {
@@ -103,7 +103,7 @@ const Preferencias = () => {
           profesor: 'Dr. Eric Melecio Castro Leal',
           aplicador: '',
           sinodales: ['M.C.C. Eliezer Alcázar Silva'],
-          modalidad: 'Digital',
+          modalidad: 'Tradicional',
           academia: false
         },
         {
@@ -111,7 +111,7 @@ const Preferencias = () => {
           profesor: 'Dr. Arisel Darío Barragán López',
           aplicador: '',
           sinodales: ['Dr. Arturo Benítez Hernández', 'Dra. Aidee Cruz Barragán'],
-          modalidad: 'Digital',
+          modalidad: 'Tradicional',
           academia: false
         }
       ]
@@ -125,7 +125,7 @@ const Preferencias = () => {
           profesor: 'M.C.M. Oscar Cuauhtémoc Esperanza Contreras',
           aplicador: '',
           sinodales: ['M.C.C. Silviana Juárez Chalini', 'M.C.M. Jesús Pacheco Mendoza'],
-          modalidad: 'Digital',
+          modalidad: 'Tradicional',
           academia: false
         },
         {
@@ -141,7 +141,7 @@ const Preferencias = () => {
           profesor: 'Dr. Alejandro Jarillo Silva',
           aplicador: '',
           sinodales: ['M.C. Enrique García Reyes', 'Dr. Eric Melecio Castro Leal'],
-          modalidad: 'Digital',
+          modalidad: 'Tradicional',
           academia: false
         },
         {
@@ -149,7 +149,7 @@ const Preferencias = () => {
           profesor: 'Dr. Jesús Cruz Ahuactzil',
           aplicador: '',
           sinodales: ['M.C.C. Eliezer Alcázar Silva'],
-          modalidad: 'Digital',
+          modalidad: 'Tradicional',
           academia: false
         },
         {
@@ -171,7 +171,7 @@ const Preferencias = () => {
           profesor: 'Dr. Amando Alejandro Ruiz Figueroa',
           aplicador: '',
           sinodales: ['M.C. Enrique García Reyes', 'M.C. Teresita de J. Mijangos Martínez'],
-          modalidad: 'Digital',
+          modalidad: 'Tradicional',
           academia: false
         },
         {
@@ -179,7 +179,7 @@ const Preferencias = () => {
           profesor: 'Dr. Eric Melecio Castro Leal',
           aplicador: '',
           sinodales: ['Dr. Alejandro Jarillo Silva'],
-          modalidad: 'Digital',
+          modalidad: 'Tradicional',
           academia: false
         },
         {
@@ -187,7 +187,7 @@ const Preferencias = () => {
           profesor: 'M.C.A.C. José Alberto Cruz Tolentino',
           aplicador: '',
           sinodales: ['M.C.C. Silviana Juárez Chalini', 'M.C.M. Oscar Cuauhtémoc Esperanza Contreras'],
-          modalidad: 'Digital',
+          modalidad: 'Tradicional',
           academia: false
         },
         {
@@ -195,7 +195,7 @@ const Preferencias = () => {
           profesor: 'Dr. Arturo Benítez Hernández',
           aplicador: '',
           sinodales: ['Dr. Arisel Darío Barragán López'],
-          modalidad: 'Digital',
+          modalidad: 'Tradicional',
           academia: false
         },
         {
@@ -217,7 +217,7 @@ const Preferencias = () => {
           profesor: 'Dr. José J. Hernández Barriga',
           aplicador: '',
           sinodales: ['Dr. Jesús Cruz Ahuactzil', 'M.C.C. Eliezer Alcázar Silva'],
-          modalidad: 'Digital',
+          modalidad: 'Tradicional',
           academia: false
         },
         {
@@ -225,7 +225,7 @@ const Preferencias = () => {
           profesor: 'M.C.M. Jesús Pacheco Mendoza',
           aplicador: '',
           sinodales: ['M.I.T.I. Oswaldo Rey Ávila Barrón'],
-          modalidad: 'Digital',
+          modalidad: 'Tradicional',
           academia: false
         },
         {
@@ -241,7 +241,7 @@ const Preferencias = () => {
           profesor: 'M.T.E. Everardo de Jesús Pacheco Antonio',
           aplicador: '',
           sinodales: ['M.T.I.E. Irving Ulises Hernández Miguel'],
-          modalidad: 'Digital',
+          modalidad: 'Tradicional',
           academia: false
         },
         {
