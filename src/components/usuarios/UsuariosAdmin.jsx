@@ -70,6 +70,7 @@ const UsuariosAdmin = () => {
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingReset, setLoadingReset] = useState(false);
   const [openResetDialog, setOpenResetDialog] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
   const [newPassword, setNewPassword] = useState('');
 
   // Formulario de usuario
@@ -98,18 +99,6 @@ const UsuariosAdmin = () => {
       }));
       
       setUsuarios(mappedUsers);
-      
-      // Pre-seleccionar el primer usuario
-      if (mappedUsers.length > 0 && !selectedUsuario) {
-        const primerUsuario = mappedUsers[0];
-        setSelectedUsuario(primerUsuario);
-        setFormData({
-          username: primerUsuario.username,
-          email: primerUsuario.email,
-          rol: primerUsuario.rol,
-          password: ''
-        });
-      }
     } catch (error) {
       console.error('Error al cargar usuarios:', error);
       setErrorMessage('Error al cargar usuarios: ' + error.message);
@@ -126,13 +115,7 @@ const UsuariosAdmin = () => {
     return matchSearch && matchRole;
   });
 
-  const handleNewUser = () => {
-    setIsNewUser(true);
-    setFormData({ username: '', email: '', rol: 'jefe', password: '' });
-    setSelectedUsuario(null);
-  };
-
-  const handleSelectUser = (usuario) => {
+  const handleEditUser = (usuario) => {
     setSelectedUsuario(usuario);
     setFormData({ 
       username: usuario.username, 
@@ -141,12 +124,22 @@ const UsuariosAdmin = () => {
       password: ''
     });
     setIsNewUser(false);
+    setOpenEditDialog(true);
   };
 
-  const handleCancelEdit = () => {
+  const handleNewUser = () => {
+    setIsNewUser(true);
+    setFormData({ username: '', email: '', rol: 'jefe', password: '' });
+    setSelectedUsuario(null);
+    setOpenEditDialog(true);
+  };
+
+  const handleCloseEditDialog = () => {
+    setOpenEditDialog(false);
     setSelectedUsuario(null);
     setFormData({ username: '', email: '', rol: 'jefe', password: '' });
     setIsNewUser(false);
+    setErrorMessage(''); // Limpiar errores al cerrar
   };
 
   const handleSaveUser = async () => {
@@ -180,7 +173,7 @@ const UsuariosAdmin = () => {
         
         // Recargar la lista de usuarios
         await loadUsers();
-        handleCancelEdit();
+        handleCloseEditDialog();
       } else {
         // Actualizar usuario existente
         const promises = [];
@@ -200,6 +193,7 @@ const UsuariosAdmin = () => {
         
         // Recargar la lista de usuarios
         await loadUsers();
+        handleCloseEditDialog();
       }
 
       setTimeout(() => setSuccessMessage(''), 5000);
@@ -222,6 +216,7 @@ const UsuariosAdmin = () => {
       
       // Recargar usuarios
       await loadUsers();
+      handleCloseEditDialog();
     } catch (error) {
       console.error('Error al cambiar estado:', error);
       setErrorMessage('Error al cambiar estado: ' + error.message);
@@ -263,30 +258,56 @@ const UsuariosAdmin = () => {
     <Box sx={{ 
       py: 4, 
       px: { xs: 2, md: 3 },
-      maxWidth: '1400px',
+      maxWidth: '1600px',
       mx: 'auto',
       width: '100%'
     }}>
-      {/* Encabezado */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 1 }}>
-          Gestión de Usuarios
-        </Typography>
-        <Typography variant="body1" sx={{ color: theme.palette.text.secondary }}>
-          Crea, edita, elimina y gestiona usuarios del sistema
-        </Typography>
+      {/* Encabezado con Botón Destacado */}
+      <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
+        <Box>
+          <Typography variant="h4" sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 1 }}>
+            Gestión de Usuarios
+          </Typography>
+          <Typography variant="body1" sx={{ color: theme.palette.text.secondary }}>
+            Crea, edita y gestiona usuarios del sistema
+          </Typography>
+        </Box>
+        
+        {/* Botón Nuevo Usuario - Grande y Destacado */}
+        <Button
+          variant="contained"
+          size="large"
+          startIcon={<MdPersonAdd size={28} />}
+          onClick={handleNewUser}
+          sx={{ 
+            textTransform: 'none', 
+            fontWeight: 700,
+            fontSize: '1.1rem',
+            px: 4,
+            py: 1.5,
+            borderRadius: 3,
+            boxShadow: 3,
+            '&:hover': {
+              boxShadow: 6,
+              transform: 'translateY(-2px)'
+            },
+            transition: 'all 0.3s'
+          }}
+        >
+          Nuevo Usuario
+        </Button>
       </Box>
 
       {/* Mensajes */}
       {successMessage && (
-        <Alert severity="success" sx={{ borderRadius: 2, mb: 3 }} onClose={() => setSuccessMessage('')}>
+        <Alert severity="success" sx={{ borderRadius: 3, mb: 3 }} onClose={() => setSuccessMessage('')}>
           <AlertTitle sx={{ fontWeight: 600 }}>Éxito</AlertTitle>
           {successMessage}
         </Alert>
       )}
       
       {errorMessage && (
-        <Alert severity="error" sx={{ borderRadius: 2, mb: 3 }} onClose={() => setErrorMessage('')}>
+        <Alert severity="error" sx={{ borderRadius: 3, mb: 3 }} onClose={() => setErrorMessage('')}>
           <AlertTitle sx={{ fontWeight: 600 }}>Error</AlertTitle>
           {errorMessage}
         </Alert>
@@ -294,335 +315,628 @@ const UsuariosAdmin = () => {
 
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 10 }}>
-          <CircularProgress />
+          <CircularProgress size={60} />
         </Box>
       ) : usuarios.length === 0 ? (
-        <Alert severity="info" sx={{ borderRadius: 2 }}>
-          No hay usuarios en el sistema. Crea uno nuevo usando el botón "Nuevo Usuario".
-        </Alert>
+        <Paper 
+          elevation={0}
+          sx={{ 
+            border: '2px dashed',
+            borderColor: 'divider',
+            borderRadius: 4,
+            p: 6,
+            textAlign: 'center',
+            bgcolor: 'background.paper'
+          }}
+        >
+          <MdPersonAdd size={64} color={theme.palette.text.secondary} />
+          <Typography variant="h5" sx={{ mt: 2, fontWeight: 600, color: 'text.secondary' }}>
+            No hay usuarios en el sistema
+          </Typography>
+          <Typography variant="body1" sx={{ mt: 1, color: 'text.secondary' }}>
+            Comienza creando un nuevo usuario con el botón de arriba
+          </Typography>
+        </Paper>
       ) : (
         <Paper 
           elevation={0} 
           sx={{ 
             border: '1px solid', 
             borderColor: 'divider', 
-            borderRadius: 2,
-            p: 3,
+            borderRadius: 4,
+            overflow: 'hidden',
             bgcolor: 'background.paper'
           }}
         >
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: { xs: '1fr', md: '1fr 1.6fr' },
-              gap: { xs: 2, md: 3 },
-              alignItems: 'start'
-            }}
-          >
-            {/* COLUMNA IZQUIERDA: Lista de Usuarios */}
-            <Box>
-              <Card 
-                elevation={0} 
-                sx={{ 
-                  border: '1px solid', 
-                  borderColor: 'divider', 
-                  borderRadius: 2,
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column'
+          {/* Barra de Búsqueda y Filtros */}
+          <Box sx={{ p: 3, borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'background.default' }}>
+            <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: 'column', md: 'row' } }}>
+              <TextField
+                fullWidth
+                placeholder="Buscar por usuario o email..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                InputProps={{
+                  startAdornment: <MdSearch size={22} style={{ marginRight: 8, color: theme.palette.text.secondary }} />
                 }}
-              >
-                <CardContent sx={{ pb: 1 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                      Usuarios
-                    </Typography>
-                    <Chip 
-                      label={usuarios.length} 
-                      color="primary" 
-                      size="small"
-                      sx={{ fontWeight: 600 }}
-                    />
-                  </Box>
-                </CardContent>
-                <Divider />
+                sx={{ 
+                  bgcolor: 'background.paper',
+                  '& .MuiOutlinedInput-root': {
+                    '&:hover fieldset': {
+                      borderColor: 'primary.main',
+                    }
+                  }
+                }}
+              />
 
-                {/* Búsqueda y Filtros */}
-                <CardContent sx={{ pb: 2, pt: 2 }}>
-                  <TextField
-                    fullWidth
-                    placeholder="Buscar por usuario o email..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    InputProps={{
-                      startAdornment: <MdSearch size={20} style={{ marginRight: 8 }} />
-                    }}
-                    size="small"
-                    sx={{ mb: 2 }}
-                  />
-
-                  <FormControl fullWidth size="small">
-                    <InputLabel>Rol</InputLabel>
-                    <Select
-                      value={filterRol}
-                      label="Rol"
-                      onChange={(e) => setFilterRol(e.target.value)}
-                    >
-                      <MenuItem value="todos">Todos</MenuItem>
-                      <MenuItem value="jefe">Jefe de Carrera</MenuItem>
-                      <MenuItem value="escolares">Servicios Escolares</MenuItem>
-                    </Select>
-                  </FormControl>
-                </CardContent>
-                <Divider />
-
-                {/* Botón Nuevo Usuario */}
-                <CardContent sx={{ pb: 2, pt: 2 }}>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    startIcon={<MdPersonAdd size={20} />}
-                    onClick={handleNewUser}
-                    sx={{ textTransform: 'none', fontWeight: 600 }}
-                  >
-                    Nuevo Usuario
-                  </Button>
-                </CardContent>
-                <Divider />
-
-                {/* Lista de Usuarios */}
-                <Box sx={{ overflow: 'auto', flex: 1 }}>
-                  <Box sx={{ p: 2 }}>
-                    <Stack spacing={1.5}>
-                      {filteredUsuarios.length === 0 ? (
-                        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 3 }}>
-                          No hay usuarios con los criterios de búsqueda
-                        </Typography>
-                      ) : (
-                        filteredUsuarios.map((usuario) => (
-                          <Paper
-                            key={usuario.id}
-                            onClick={() => handleSelectUser(usuario)}
-                            sx={{
-                              p: 2,
-                              cursor: 'pointer',
-                              border: '2px solid',
-                              borderColor: selectedUsuario?.id === usuario.id ? 'primary.main' : 'divider',
-                              bgcolor: selectedUsuario?.id === usuario.id ? 'primary.lighter' : 'background.paper',
-                              transition: 'all 0.2s',
-                              '&:hover': {
-                                borderColor: 'primary.main',
-                                boxShadow: 1,
-                                transform: 'translateY(-1px)'
-                              }
-                            }}
-                          >
-                            <Box sx={{ display: 'flex', gap: 1.5 }}>
-                              <Box 
-                                sx={{ 
-                                  p: 1, 
-                                  bgcolor: 'primary.main',
-                                  borderRadius: 1.5,
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  flexShrink: 0,
-                                  color: 'white'
-                                }}
-                              >
-                                {usuario.username.charAt(0).toUpperCase()}
-                              </Box>
-                              <Box sx={{ flex: 1, minWidth: 0 }}>
-                                <Typography 
-                                  variant="subtitle2" 
-                                  fontWeight={600}
-                                  sx={{ 
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap'
-                                  }}
-                                >
-                                  {usuario.username}
-                                </Typography>
-                                <Typography 
-                                  variant="caption" 
-                                  color="text.secondary"
-                                  sx={{ 
-                                    display: 'block',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap'
-                                  }}
-                                >
-                                  {usuario.email}
-                                </Typography>
-                              </Box>
-                            </Box>
-                            <Stack direction="row" spacing={0.5} sx={{ mt: 1 }}>
-                              <Chip
-                                label={usuario.rol === 'jefe' ? 'Jefe' : 'Escolares'}
-                                size="small"
-                                variant="outlined"
-                              />
-                              <Chip
-                                label={usuario.estado}
-                                size="small"
-                                color={usuario.estado === 'activo' ? 'success' : 'default'}
-                                variant={usuario.estado === 'activo' ? 'filled' : 'outlined'}
-                              />
-                            </Stack>
-                          </Paper>
-                        ))
-                      )}
-                    </Stack>
-                  </Box>
-                </Box>
-              </Card>
+              <FormControl sx={{ minWidth: 250 }}>
+                <InputLabel>Filtrar por Rol</InputLabel>
+                <Select
+                  value={filterRol}
+                  label="Filtrar por Rol"
+                  onChange={(e) => setFilterRol(e.target.value)}
+                  sx={{ bgcolor: 'background.paper' }}
+                >
+                  <MenuItem value="todos">Todos los Roles</MenuItem>
+                  <MenuItem value="jefe">Jefe de Carrera</MenuItem>
+                  <MenuItem value="escolares">Servicios Escolares</MenuItem>
+                </Select>
+              </FormControl>
             </Box>
-
-            {/* COLUMNA DERECHA: Panel de Edición */}
-            <Box>
-              {selectedUsuario || isNewUser ? (
-                <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
-                  {/* Header del Panel */}
-                  <Box sx={{ bgcolor: 'primary.lighter', borderBottom: '1px solid', borderColor: 'divider' }}>
-                    <CardContent>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Typography variant="h5" sx={{ fontWeight: 700, color: 'primary.dark' }}>
-                          {isNewUser ? 'Nuevo Usuario' : `Editar: ${selectedUsuario?.username}`}
-                        </Typography>
-                        <IconButton size="small" onClick={handleCancelEdit}>
-                          <MdClose size={20} />
-                        </IconButton>
-                      </Box>
-                    </CardContent>
-                  </Box>
-
-                  {/* Botones de Acción */}
-                  <Box sx={{ 
-                    p: 2, 
-                    borderBottom: '1px solid', 
-                    borderColor: 'divider',
-                    bgcolor: 'background.paper',
-                    display: 'flex',
-                    gap: 1,
-                    flexDirection: { xs: 'column', sm: 'row' }
-                  }}>
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      onClick={handleSaveUser}
-                      disabled={loadingSave}
-                      startIcon={loadingSave ? <CircularProgress size={20} /> : <MdEdit />}
-                      sx={{ textTransform: 'none', fontWeight: 600 }}
-                    >
-                      {loadingSave ? 'Guardando...' : (isNewUser ? 'Crear Usuario' : 'Guardar Cambios')}
-                    </Button>
-
-                    {!isNewUser && (
-                      <>
-                        <Button
-                          fullWidth
-                          variant="outlined"
-                          color="warning"
-                          onClick={handleOpenResetDialog}
-                          startIcon={<MdRefresh size={20} />}
-                          sx={{ textTransform: 'none', fontWeight: 600 }}
-                        >
-                          Restablecer Contraseña
-                        </Button>
-
-                        <Button
-                          fullWidth
-                          variant="outlined"
-                          color={selectedUsuario?.estado === 'activo' ? 'error' : 'success'}
-                          onClick={handleToggleActive}
-                          sx={{ textTransform: 'none', fontWeight: 600 }}
-                        >
-                          {selectedUsuario?.estado === 'activo' ? 'Desactivar' : 'Activar'}
-                        </Button>
-                      </>
-                    )}
-                  </Box>
-
-                  <CardContent sx={{ pt: 3 }}>
-                    {/* Formulario */}
-                    <Stack spacing={3}>
-                      <TextField
-                        fullWidth
-                        label="Nombre de Usuario"
-                        value={formData.username}
-                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                        placeholder="Ej: juan.garcia"
-                        disabled={!isNewUser}
-                        helperText={!isNewUser ? 'El nombre de usuario no se puede cambiar' : ''}
-                      />
-
-                      <TextField
-                        fullWidth
-                        label="Email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        placeholder="Ej: juan@ejemplo.com"
-                      />
-
-                      {isNewUser && (
-                        <TextField
-                          fullWidth
-                          label="Contraseña"
-                          type="password"
-                          value={formData.password}
-                          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                          placeholder="Ingresa la contraseña"
-                          required
-                        />
-                      )}
-
-                      <FormControl fullWidth>
-                        <InputLabel>Rol</InputLabel>
-                        <Select
-                          value={formData.rol}
-                          label="Rol"
-                          onChange={(e) => setFormData({ ...formData, rol: e.target.value })}
-                        >
-                          <MenuItem value="jefe">Jefe de Carrera</MenuItem>
-                          <MenuItem value="escolares">Servicios Escolares</MenuItem>
-                        </Select>
-                      </FormControl>
-
-                      {selectedUsuario && (
-                        <>
-                          <Divider />
-                          <Box>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                              Estado: <Chip label={selectedUsuario.estado} size="small" color={selectedUsuario.estado === 'activo' ? 'success' : 'default'} sx={{ ml: 1 }} />
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              Última actividad: {selectedUsuario.ultimaActividad}
-                            </Typography>
-                          </Box>
-                        </>
-                      )}
-                    </Stack>
-                  </CardContent>
-                </Card>
-              ) : (
-                <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
-                  <CardContent sx={{ py: 8, textAlign: 'center' }}>
-                    <Typography variant="h6" color="text.secondary">
-                      Selecciona un usuario o crea uno nuevo
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                      Usa la lista de la izquierda para seleccionar un usuario
-                    </Typography>
-                  </CardContent>
-                </Card>
+            
+            <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Chip 
+                label={`${filteredUsuarios.length} usuario${filteredUsuarios.length !== 1 ? 's' : ''}`}
+                color="primary"
+                sx={{ fontWeight: 600 }}
+              />
+              {searchTerm && (
+                <Chip
+                  label={`Buscando: "${searchTerm}"`}
+                  onDelete={() => setSearchTerm('')}
+                  variant="outlined"
+                />
+              )}
+              {filterRol !== 'todos' && (
+                <Chip
+                  label={`Rol: ${filterRol === 'jefe' ? 'Jefe de Carrera' : 'Servicios Escolares'}`}
+                  onDelete={() => setFilterRol('todos')}
+                  variant="outlined"
+                />
               )}
             </Box>
           </Box>
+
+          {/* Lista de Usuarios - Ancho Completo con Grid */}
+          <Box sx={{ p: 3 }}>
+            {filteredUsuarios.length === 0 ? (
+              <Box sx={{ textAlign: 'center', py: 6 }}>
+                <MdSearch size={48} color={theme.palette.text.secondary} />
+                <Typography variant="h6" sx={{ mt: 2, color: 'text.secondary' }}>
+                  No se encontraron usuarios
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+                  Intenta ajustar los filtros de búsqueda
+                </Typography>
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: { 
+                    xs: '1fr',
+                    sm: 'repeat(2, 1fr)',
+                    lg: 'repeat(3, 1fr)',
+                    xl: 'repeat(4, 1fr)'
+                  },
+                  gap: 2.5
+                }}
+              >
+                {filteredUsuarios.map((usuario) => (
+                  <Card
+                    key={usuario.id}
+                    elevation={0}
+                    sx={{
+                      border: '2px solid',
+                      borderColor: 'divider',
+                      borderRadius: 3,
+                      transition: 'all 0.3s',
+                      cursor: 'pointer',
+                      position: 'relative',
+                      overflow: 'visible',
+                      '&:hover': {
+                        borderColor: 'primary.main',
+                        boxShadow: 4,
+                        transform: 'translateY(-4px)'
+                      }
+                    }}
+                    onClick={() => handleEditUser(usuario)}
+                  >
+                    <CardContent sx={{ p: 2.5 }}>
+                      {/* Avatar y Info Principal */}
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                        <Box 
+                          sx={{ 
+                            width: 56,
+                            height: 56,
+                            bgcolor: 'primary.main',
+                            borderRadius: 3,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0,
+                            color: 'white',
+                            fontSize: '1.5rem',
+                            fontWeight: 700
+                          }}
+                        >
+                          {usuario.username.charAt(0).toUpperCase()}
+                        </Box>
+                        <Box sx={{ flex: 1, minWidth: 0 }}>
+                          <Typography 
+                            variant="h6" 
+                            fontWeight={700}
+                            sx={{ 
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                              mb: 0.5
+                            }}
+                          >
+                            {usuario.username}
+                          </Typography>
+                          <Typography 
+                            variant="body2" 
+                            color="text.secondary"
+                            sx={{ 
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap'
+                            }}
+                          >
+                            {usuario.email}
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      <Divider sx={{ my: 2 }} />
+
+                      {/* Chips de Estado y Rol */}
+                      <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                        <Chip
+                          label={usuario.rol === 'jefe' ? 'Jefe de Carrera' : 'Servicios Escolares'}
+                          size="small"
+                          color="primary"
+                          variant="outlined"
+                          sx={{ fontWeight: 600 }}
+                        />
+                        <Chip
+                          label={usuario.estado === 'activo' ? 'Activo' : 'Inactivo'}
+                          size="small"
+                          color={usuario.estado === 'activo' ? 'success' : 'default'}
+                          sx={{ fontWeight: 600 }}
+                        />
+                      </Stack>
+
+                      {/* Botón de Editar */}
+                      <Button
+                        fullWidth
+                        variant="outlined"
+                        startIcon={<MdEdit />}
+                        sx={{ 
+                          mt: 2,
+                          textTransform: 'none',
+                          fontWeight: 600
+                        }}
+                      >
+                        Editar Usuario
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Box>
+            )}
+          </Box>
         </Paper>
       )}
+
+      {/* Dialog para Editar/Crear Usuario */}
+      <Dialog 
+        open={openEditDialog} 
+        onClose={handleCloseEditDialog}
+        maxWidth="md" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+            maxHeight: '90vh',
+            overflow: 'hidden'
+          }
+        }}
+      >
+        <DialogTitle sx={{ 
+          fontWeight: 700, 
+          fontSize: '1.5rem',
+          bgcolor: 'primary.main',
+          color: 'white',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          py: 2.5,
+          px: 3
+        }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            {isNewUser ? <MdPersonAdd size={30} /> : <MdEdit size={30} />}
+            <Box>
+              <Typography variant="h6" fontWeight={700}>
+                {isNewUser ? 'Crear Nuevo Usuario' : 'Editar Usuario'}
+              </Typography>
+              {!isNewUser && (
+                <Typography variant="body2" sx={{ opacity: 0.9, fontWeight: 500 }}>
+                  {selectedUsuario?.username}
+                </Typography>
+              )}
+            </Box>
+          </Box>
+          <IconButton 
+            onClick={handleCloseEditDialog} 
+            size="small"
+            sx={{ 
+              color: 'white',
+              '&:hover': {
+                bgcolor: 'rgba(255, 255, 255, 0.1)'
+              }
+            }}
+          >
+            <MdClose size={26} />
+          </IconButton>
+        </DialogTitle>
+
+        <DialogContent sx={{ pt: 3, pb: 3, px: 3 }}>
+          {/* Mensajes de Error/Éxito dentro del Dialog */}
+          {errorMessage && (
+            <Alert 
+              severity="error" 
+              sx={{ 
+                borderRadius: 2,
+                mb: 3,
+                mt: 1,
+                border: '1px solid',
+                borderColor: 'error.main'
+              }} 
+              onClose={() => setErrorMessage('')}
+            >
+              <AlertTitle sx={{ fontWeight: 600 }}>Error</AlertTitle>
+              {errorMessage}
+            </Alert>
+          )}
+
+          <Stack spacing={3.5}>
+            {/* Nombre de Usuario */}
+            <Box sx={{ pt: errorMessage ? 0 : 1 }}>
+              <Typography 
+                variant="subtitle2" 
+                sx={{ 
+                  mb: 1, 
+                  fontWeight: 600,
+                  color: 'text.primary',
+                  fontSize: '0.875rem'
+                }}
+              >
+                Nombre de Usuario {!isNewUser && <Chip label="No editable" size="small" sx={{ ml: 1, height: 20 }} />}
+              </Typography>
+              <TextField
+                fullWidth
+                value={formData.username}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                placeholder="Ej: juan.garcia"
+                disabled={!isNewUser}
+                required
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    bgcolor: !isNewUser ? 'action.disabledBackground' : 'background.paper',
+                    '& fieldset': {
+                      borderWidth: 2
+                    },
+                    '&:hover fieldset': {
+                      borderColor: !isNewUser ? 'divider' : 'primary.main',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderWidth: 2
+                    }
+                  }
+                }}
+              />
+              {!isNewUser && (
+                <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+                  El nombre de usuario no se puede cambiar una vez creado
+                </Typography>
+              )}
+            </Box>
+
+            {/* Email */}
+            <Box>
+              <Typography 
+                variant="subtitle2" 
+                sx={{ 
+                  mb: 1, 
+                  fontWeight: 600,
+                  color: 'text.primary',
+                  fontSize: '0.875rem'
+                }}
+              >
+                Correo Electrónico <Box component="span" sx={{ color: 'error.main' }}>*</Box>
+              </Typography>
+              <TextField
+                fullWidth
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                placeholder="Ej: juan@ejemplo.com"
+                required
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    bgcolor: 'background.paper',
+                    '& fieldset': {
+                      borderWidth: 2
+                    },
+                    '&:hover fieldset': {
+                      borderColor: 'primary.main',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderWidth: 2
+                    }
+                  }
+                }}
+              />
+            </Box>
+
+            {/* Contraseña (solo para nuevo usuario) */}
+            {isNewUser && (
+              <Box>
+                <Typography 
+                  variant="subtitle2" 
+                  sx={{ 
+                    mb: 1, 
+                    fontWeight: 600,
+                    color: 'text.primary',
+                    fontSize: '0.875rem'
+                  }}
+                >
+                  Contraseña <Box component="span" sx={{ color: 'error.main' }}>*</Box>
+                </Typography>
+                <TextField
+                  fullWidth
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  placeholder="Ingresa una contraseña segura"
+                  required
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      bgcolor: 'background.paper',
+                      '& fieldset': {
+                        borderWidth: 2
+                      },
+                      '&:hover fieldset': {
+                        borderColor: 'primary.main',
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderWidth: 2
+                      }
+                    }
+                  }}
+                />
+                <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+                  Debe contener al menos 6 caracteres
+                </Typography>
+              </Box>
+            )}
+
+            {/* Rol */}
+            <Box>
+              <Typography 
+                variant="subtitle2" 
+                sx={{ 
+                  mb: 1, 
+                  fontWeight: 600,
+                  color: 'text.primary',
+                  fontSize: '0.875rem'
+                }}
+              >
+                Rol del Usuario <Box component="span" sx={{ color: 'error.main' }}>*</Box>
+              </Typography>
+              <FormControl fullWidth required>
+                <Select
+                  value={formData.rol}
+                  onChange={(e) => setFormData({ ...formData, rol: e.target.value })}
+                  sx={{
+                    bgcolor: 'background.paper',
+                    '& fieldset': {
+                      borderWidth: 2
+                    },
+                    '&:hover fieldset': {
+                      borderColor: 'primary.main',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderWidth: 2
+                    }
+                  }}
+                >
+                  <MenuItem value="jefe">
+                    <Box>
+                      <Typography variant="body2" fontWeight={600}>Jefe de Carrera</Typography>
+                      <Typography variant="caption" color="text.secondary">Gestión académica y coordinación</Typography>
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value="escolares">
+                    <Box>
+                      <Typography variant="body2" fontWeight={600}>Servicios Escolares</Typography>
+                      <Typography variant="caption" color="text.secondary">Administración y soporte</Typography>
+                    </Box>
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+
+            {selectedUsuario && !isNewUser && (
+              <>
+                <Divider sx={{ my: 1 }} />
+                
+                {/* Información del Usuario */}
+                <Box sx={{ 
+                  bgcolor: 'primary.lighter', 
+                  p: 2.5, 
+                  borderRadius: 3,
+                  border: '1px solid',
+                  borderColor: 'primary.light'
+                }}>
+                  <Typography 
+                    variant="subtitle2" 
+                    sx={{ 
+                      mb: 2, 
+                      fontWeight: 700,
+                      color: 'primary.dark',
+                      fontSize: '0.875rem'
+                    }}
+                  >
+                    📊 Información del Usuario
+                  </Typography>
+                  <Stack spacing={1.5}>
+                    <Box sx={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'center',
+                      bgcolor: 'background.paper',
+                      p: 1.5,
+                      borderRadius: 2
+                    }}>
+                      <Typography variant="body2" fontWeight={600} color="text.primary">
+                        Estado:
+                      </Typography>
+                      <Chip 
+                        label={selectedUsuario.estado === 'activo' ? 'Activo' : 'Inactivo'} 
+                        size="small" 
+                        color={selectedUsuario.estado === 'activo' ? 'success' : 'default'}
+                        sx={{ fontWeight: 700 }}
+                      />
+                    </Box>
+                    <Box sx={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between',
+                      bgcolor: 'background.paper',
+                      p: 1.5,
+                      borderRadius: 2
+                    }}>
+                      <Typography variant="body2" fontWeight={600} color="text.primary">
+                        Última actividad:
+                      </Typography>
+                      <Typography variant="body2" fontWeight={700} color="primary.main">
+                        {selectedUsuario.ultimaActividad}
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </Box>
+
+                <Divider sx={{ my: 1 }} />
+                
+                {/* Acciones Adicionales */}
+                <Box>
+                  <Typography 
+                    variant="subtitle2" 
+                    sx={{ 
+                      mb: 2, 
+                      fontWeight: 700,
+                      color: 'text.primary',
+                      fontSize: '0.875rem'
+                    }}
+                  >
+                    ⚙️ Acciones Adicionales
+                  </Typography>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
+                    <Button
+                      fullWidth
+                      variant="outlined"
+                      color="warning"
+                      onClick={() => {
+                        handleCloseEditDialog();
+                        handleOpenResetDialog();
+                      }}
+                      startIcon={<MdRefresh size={20} />}
+                      sx={{ 
+                        textTransform: 'none', 
+                        fontWeight: 600,
+                        borderWidth: 2,
+                        '&:hover': {
+                          borderWidth: 2
+                        }
+                      }}
+                    >
+                      Restablecer Contraseña
+                    </Button>
+
+                    <Button
+                      fullWidth
+                      variant="outlined"
+                      color={selectedUsuario?.estado === 'activo' ? 'error' : 'success'}
+                      onClick={handleToggleActive}
+                      sx={{ 
+                        textTransform: 'none', 
+                        fontWeight: 600,
+                        borderWidth: 2,
+                        '&:hover': {
+                          borderWidth: 2
+                        }
+                      }}
+                    >
+                      {selectedUsuario?.estado === 'activo' ? 'Desactivar Usuario' : 'Activar Usuario'}
+                    </Button>
+                  </Stack>
+                </Box>
+              </>
+            )}
+          </Stack>
+        </DialogContent>
+
+        <Divider />
+
+        <DialogActions sx={{ p: 3, gap: 1.5, bgcolor: 'background.default' }}>
+          <Button 
+            onClick={handleCloseEditDialog}
+            variant="outlined"
+            size="large"
+            sx={{ 
+              textTransform: 'none', 
+              fontWeight: 600, 
+              px: 4,
+              borderWidth: 2,
+              '&:hover': {
+                borderWidth: 2
+              }
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleSaveUser}
+            variant="contained"
+            size="large"
+            disabled={loadingSave}
+            startIcon={loadingSave ? <CircularProgress size={20} color="inherit" /> : (isNewUser ? <MdPersonAdd size={22} /> : <MdEdit size={22} />)}
+            sx={{ 
+              textTransform: 'none', 
+              fontWeight: 700, 
+              px: 4,
+              boxShadow: 2,
+              '&:hover': {
+                boxShadow: 4
+              }
+            }}
+          >
+            {loadingSave ? 'Guardando...' : (isNewUser ? 'Crear Usuario' : 'Guardar Cambios')}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Dialog para resetear contraseña */}
       <Dialog open={openResetDialog} onClose={() => setOpenResetDialog(false)} maxWidth="sm" fullWidth>
