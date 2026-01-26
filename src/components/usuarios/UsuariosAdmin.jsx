@@ -29,7 +29,9 @@ import {
   MdDelete,
   MdEdit,
   MdClose,
-  MdSearch
+  MdSearch,
+  MdInfo,
+  MdSettings
 } from 'react-icons/md';
 import { useState, useEffect } from 'react';
 import { authApi, usersApi } from '../../services/api';
@@ -360,9 +362,16 @@ const UsuariosAdmin = () => {
                   startAdornment: <MdSearch size={22} style={{ marginRight: 8, color: theme.palette.text.secondary }} />
                 }}
                 sx={{ 
-                  bgcolor: 'background.paper',
                   '& .MuiOutlinedInput-root': {
+                    bgcolor: 'background.paper',
+                    borderRadius: 2,
+                    '& fieldset': {
+                      borderRadius: 2
+                    },
                     '&:hover fieldset': {
+                      borderColor: 'primary.main',
+                    },
+                    '&.Mui-focused fieldset': {
                       borderColor: 'primary.main',
                     }
                   }
@@ -375,7 +384,13 @@ const UsuariosAdmin = () => {
                   value={filterRol}
                   label="Filtrar por Rol"
                   onChange={(e) => setFilterRol(e.target.value)}
-                  sx={{ bgcolor: 'background.paper' }}
+                  sx={{ 
+                    bgcolor: 'background.paper',
+                    borderRadius: 2,
+                    '& fieldset': {
+                      borderRadius: 2
+                    }
+                  }}
                 >
                   <MenuItem value="todos">Todos los Roles</MenuItem>
                   <MenuItem value="jefe">Jefe de Carrera</MenuItem>
@@ -647,11 +662,6 @@ const UsuariosAdmin = () => {
                   }
                 }}
               />
-              {!isNewUser && (
-                <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
-                  El nombre de usuario no se puede cambiar una vez creado
-                </Typography>
-              )}
             </Box>
 
             {/* Email */}
@@ -727,9 +737,6 @@ const UsuariosAdmin = () => {
                     }
                   }}
                 />
-                <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
-                  Debe contener al menos 6 caracteres
-                </Typography>
               </Box>
             )}
 
@@ -764,143 +771,67 @@ const UsuariosAdmin = () => {
                   }}
                 >
                   <MenuItem value="jefe">
-                    <Box>
-                      <Typography variant="body2" fontWeight={600}>Jefe de Carrera</Typography>
-                      <Typography variant="caption" color="text.secondary">Gestión académica y coordinación</Typography>
-                    </Box>
+                    <Typography variant="body2" fontWeight={600}>Jefe de Carrera</Typography>
                   </MenuItem>
                   <MenuItem value="escolares">
-                    <Box>
-                      <Typography variant="body2" fontWeight={600}>Servicios Escolares</Typography>
-                      <Typography variant="caption" color="text.secondary">Administración y soporte</Typography>
-                    </Box>
+                    <Typography variant="body2" fontWeight={600}>Servicios Escolares</Typography>
                   </MenuItem>
                 </Select>
               </FormControl>
             </Box>
-
-            {selectedUsuario && !isNewUser && (
-              <>
-                <Divider sx={{ my: 1 }} />
-                
-                {/* Información del Usuario */}
-                <Box sx={{ 
-                  bgcolor: 'primary.lighter', 
-                  p: 2.5, 
-                  borderRadius: 3,
-                  border: '1px solid',
-                  borderColor: 'primary.light'
-                }}>
-                  <Typography 
-                    variant="subtitle2" 
-                    sx={{ 
-                      mb: 2, 
-                      fontWeight: 700,
-                      color: 'primary.dark',
-                      fontSize: '0.875rem'
-                    }}
-                  >
-                    📊 Información del Usuario
-                  </Typography>
-                  <Stack spacing={1.5}>
-                    <Box sx={{ 
-                      display: 'flex', 
-                      justifyContent: 'space-between', 
-                      alignItems: 'center',
-                      bgcolor: 'background.paper',
-                      p: 1.5,
-                      borderRadius: 2
-                    }}>
-                      <Typography variant="body2" fontWeight={600} color="text.primary">
-                        Estado:
-                      </Typography>
-                      <Chip 
-                        label={selectedUsuario.estado === 'activo' ? 'Activo' : 'Inactivo'} 
-                        size="small" 
-                        color={selectedUsuario.estado === 'activo' ? 'success' : 'default'}
-                        sx={{ fontWeight: 700 }}
-                      />
-                    </Box>
-                    <Box sx={{ 
-                      display: 'flex', 
-                      justifyContent: 'space-between',
-                      bgcolor: 'background.paper',
-                      p: 1.5,
-                      borderRadius: 2
-                    }}>
-                      <Typography variant="body2" fontWeight={600} color="text.primary">
-                        Última actividad:
-                      </Typography>
-                      <Typography variant="body2" fontWeight={700} color="primary.main">
-                        {selectedUsuario.ultimaActividad}
-                      </Typography>
-                    </Box>
-                  </Stack>
-                </Box>
-
-                <Divider sx={{ my: 1 }} />
-                
-                {/* Acciones Adicionales */}
-                <Box>
-                  <Typography 
-                    variant="subtitle2" 
-                    sx={{ 
-                      mb: 2, 
-                      fontWeight: 700,
-                      color: 'text.primary',
-                      fontSize: '0.875rem'
-                    }}
-                  >
-                    ⚙️ Acciones Adicionales
-                  </Typography>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
-                    <Button
-                      fullWidth
-                      variant="outlined"
-                      color="warning"
-                      onClick={() => {
-                        handleCloseEditDialog();
-                        handleOpenResetDialog();
-                      }}
-                      startIcon={<MdRefresh size={20} />}
-                      sx={{ 
-                        textTransform: 'none', 
-                        fontWeight: 600,
-                        borderWidth: 2,
-                        '&:hover': {
-                          borderWidth: 2
-                        }
-                      }}
-                    >
-                      Restablecer Contraseña
-                    </Button>
-
-                    <Button
-                      fullWidth
-                      variant="outlined"
-                      color={selectedUsuario?.estado === 'activo' ? 'error' : 'success'}
-                      onClick={handleToggleActive}
-                      sx={{ 
-                        textTransform: 'none', 
-                        fontWeight: 600,
-                        borderWidth: 2,
-                        '&:hover': {
-                          borderWidth: 2
-                        }
-                      }}
-                    >
-                      {selectedUsuario?.estado === 'activo' ? 'Desactivar Usuario' : 'Activar Usuario'}
-                    </Button>
-                  </Stack>
-                </Box>
-              </>
-            )}
           </Stack>
         </DialogContent>
 
         <Divider />
 
-        <DialogActions sx={{ p: 3, gap: 1.5, bgcolor: 'background.default' }}>
+        <DialogActions sx={{ p: 3, gap: 1.5, bgcolor: 'background.default', flexWrap: 'wrap' }}>
+          {/* Botones de acciones adicionales (solo para editar) */}
+          {selectedUsuario && !isNewUser && (
+            <>
+              <Button
+                variant="outlined"
+                color="warning"
+                onClick={() => {
+                  handleCloseEditDialog();
+                  handleOpenResetDialog();
+                }}
+                startIcon={<MdRefresh size={20} />}
+                sx={{ 
+                  textTransform: 'none', 
+                  fontWeight: 600,
+                  px: 3,
+                  borderWidth: 2,
+                  '&:hover': {
+                    borderWidth: 2
+                  }
+                }}
+              >
+                Restablecer Contraseña
+              </Button>
+
+              <Button
+                variant="outlined"
+                color={selectedUsuario?.estado === 'activo' ? 'error' : 'success'}
+                onClick={handleToggleActive}
+                sx={{ 
+                  textTransform: 'none', 
+                  fontWeight: 600,
+                  px: 3,
+                  borderWidth: 2,
+                  '&:hover': {
+                    borderWidth: 2
+                  }
+                }}
+              >
+                {selectedUsuario?.estado === 'activo' ? 'Desactivar' : 'Activar'}
+              </Button>
+            </>
+          )}
+          
+          {/* Espaciador para empujar los botones principales a la derecha */}
+          <Box sx={{ flex: '1 1 auto' }} />
+          
+          {/* Botones principales */}
           <Button 
             onClick={handleCloseEditDialog}
             variant="outlined"
