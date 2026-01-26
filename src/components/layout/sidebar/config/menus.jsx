@@ -15,9 +15,9 @@ export const menuOptions = {
   
   jefe: [
     { label: "Home", icon: <FiHome/>, path: "/home" },
-    { label: "Preferencias", icon: <MdOutlineGrade/>, path: "/preferencias" },
     { label: "Generar", icon: <LuCalendarCog/>, path: "/generar" },
     { label: "Calendario", icon: <MdCalendarMonth/>, path: "/calendario" },
+    { label: "Preferencias", icon: <MdOutlineGrade/>, path: "/preferencias" },
   ],
   
   escolares: [
