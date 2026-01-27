@@ -143,7 +143,7 @@ function Generar() {
     },
   ]);
 
-  // Manejar generación de horarios
+  // Manejar generación de calendarios
   const handleConfirmarGeneracion = async () => {
     if (!puedeGenerarExamenes) {
       setNotification({
@@ -217,7 +217,7 @@ function Generar() {
               mb: 1
             }}
           >
-            Generar Horarios de Exámenes
+            Generar Calendarios de Exámenes
           </Typography>
           <Typography 
             variant="body1" 
@@ -225,7 +225,7 @@ function Generar() {
               color: theme.palette.text.secondary 
             }}
           >
-            Administra la generación y revisión de horarios de exámenes del periodo actual
+            Administra la generación y revisión de calendarios de exámenes del periodo actual
           </Typography>
         </Box>
 
@@ -342,7 +342,7 @@ function Generar() {
                   )}
                 >
                   <Typography sx={{ fontWeight: window.location.pathname === '/generar' ? 700 : 500, mt: 1 }}>
-                    Generar Horarios
+                    Generar Calendarios
                   </Typography>
                 </StepLabel>
               </Step>
@@ -378,7 +378,7 @@ function Generar() {
                     mt: 1,
                     opacity: horarioGenerado ? 1 : 0.5
                   }}>
-                    Ver Calendario
+                    Ver Calendarios
                   </Typography>
                 </StepLabel>
               </Step>
@@ -527,10 +527,10 @@ function Generar() {
                 <MdSchedule size={64} color={theme.palette.text.secondary} />
               </Box>
               <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
-                No hay horarios generados
+                No hay calendarios generados
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Configura tus preferencias de exámenes y genera el horario para el periodo actual
+                Configura tus preferencias de exámenes y genera el calendario para el periodo actual
               </Typography>
             </CardContent>
           </Card>
@@ -549,12 +549,12 @@ function Generar() {
           <DialogTitle>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <MdWarning size={24} color={theme.palette.warning.main} />
-              Confirmar Generación de Horarios
+              Confirmar Generación de Calendarios
             </Box>
           </DialogTitle>
           <DialogContent>
             <Alert severity="warning" sx={{ mb: 2 }}>
-              Este proceso utilizará las preferencias configuradas para generar automáticamente los horarios de exámenes.
+              Este proceso utilizará las preferencias configuradas para generar automáticamente los calendarios de exámenes.
             </Alert>
             <Typography variant="body2" paragraph>
               Antes de generar, asegúrate de que:
@@ -577,7 +577,7 @@ function Generar() {
               </li>
             </ul>
             <Typography variant="body2" sx={{ mt: 2 }}>
-              ¿Estás seguro de que deseas generar los horarios?
+              ¿Estás seguro de que deseas generar los calendarios?
             </Typography>
           </DialogContent>
           <DialogActions sx={{ px: 3, pb: 2.5 }}>
