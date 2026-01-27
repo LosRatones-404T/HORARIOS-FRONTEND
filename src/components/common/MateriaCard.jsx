@@ -19,7 +19,8 @@ const MateriaCard = ({
   sx = {},
   onChange,
   onSelectGrupo,
-  onChangeGrupo
+  onChangeGrupo,
+  disabledProfesor = false
 }) => {
   const theme = useTheme();
 
@@ -179,27 +180,26 @@ const MateriaCard = ({
           variant="body2" 
           sx={{ 
             fontWeight: 600, 
-            color: theme.palette.text.primary,
+            color: disabledProfesor ? theme.palette.text.disabled : theme.palette.text.primary,
             mb: 1,
             fontSize: '0.875rem'
           }}
         >
           Titular
         </Typography>
-        <FormControl fullWidth size="small">
+        <FormControl fullWidth size="small" disabled={disabledProfesor}>
           <Select
             value={profesor}
             onChange={(e) => handleGroupFieldChange('profesor', e.target.value)}
             displayEmpty
+            disabled={disabledProfesor}
             sx={{
-              bgcolor: theme.palette.mode === 'light' 
-                ? theme.palette.background.default 
-                : theme.palette.background.default,
+              bgcolor: disabledProfesor ? theme.palette.action.disabledBackground : theme.palette.background.default,
               '& .MuiOutlinedInput-notchedOutline': {
                 borderColor: theme.palette.divider,
               },
               '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: theme.palette.primary.main,
+                borderColor: disabledProfesor ? theme.palette.divider : theme.palette.primary.main,
               },
             }}
           >

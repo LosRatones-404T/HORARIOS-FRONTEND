@@ -549,35 +549,15 @@ function Generar() {
           <DialogTitle>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <MdWarning size={24} color={theme.palette.warning.main} />
-              Confirmar Generación de Calendarios
+              Confirmar Generación
             </Box>
           </DialogTitle>
           <DialogContent>
-            <Alert severity="warning" sx={{ mb: 2 }}>
-              Este proceso utilizará las preferencias configuradas para generar automáticamente los calendarios de exámenes.
-            </Alert>
             <Typography variant="body2" paragraph>
-              Antes de generar, asegúrate de que:
+              Se generará automáticamente el calendario de exámenes basado en tus preferencias configuradas.
             </Typography>
-            <ul style={{ marginTop: 0 }}>
-              <li>
-                <Typography variant="body2">
-                  Has configurado todas las preferencias de materias
-                </Typography>
-              </li>
-              <li>
-                <Typography variant="body2">
-                  Los datos de profesores, aplicadores y sinodales son correctos
-                </Typography>
-              </li>
-              <li>
-                <Typography variant="body2">
-                  Las modalidades de examen están actualizadas
-                </Typography>
-              </li>
-            </ul>
-            <Typography variant="body2" sx={{ mt: 2 }}>
-              ¿Estás seguro de que deseas generar los calendarios?
+            <Typography variant="body2">
+              ¿Deseas continuar?
             </Typography>
           </DialogContent>
           <DialogActions sx={{ px: 3, pb: 2.5 }}>

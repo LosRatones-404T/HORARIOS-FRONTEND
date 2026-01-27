@@ -14,6 +14,7 @@ import { MdSave, MdExpandMore } from 'react-icons/md';
 import MateriaCard from '../components/common/MateriaCard';
 import Notification from '../components/common/Notification';
 import MainLayout from '../components/layout/MainLayout';
+import { getCurrentUser } from '../store/authStore';
 
 /**
  * Pantalla de Preferencias de Materias
@@ -21,6 +22,8 @@ import MainLayout from '../components/layout/MainLayout';
  */
 const Preferencias = () => {
   const theme = useTheme();
+  const currentUser = getCurrentUser();
+  const isJefe = currentUser?.role === 'jefe';
 
   // Datos de materias por semestre para la carrera de Informática (memoizado)
   const semestresIniciales = useMemo(() => [
@@ -499,6 +502,7 @@ const Preferencias = () => {
                       aplicador={grupoActual.aplicador}
                       sinodales={grupoActual.sinodales}
                       onChangeGrupo={(field, value) => handleMateriaGroupChange(semestreIndex, materiaIndex, materia.selectedGrupoIndex, field, value)}
+                      disabledProfesor={isJefe}
                     />
                   );
                 })}
