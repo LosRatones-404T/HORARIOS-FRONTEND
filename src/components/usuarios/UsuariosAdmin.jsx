@@ -34,7 +34,7 @@ import {
   MdSettings
 } from 'react-icons/md';
 import { useState, useEffect } from 'react';
-import { authApi, usersApi } from '../../services/api';
+import { authApi, usersApi } from '../../services';
 
 // Mapeo de roles del backend al frontend
 const mapRoleToFrontend = (backendRole) => {
@@ -71,8 +71,10 @@ const UsuariosAdmin = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingReset, setLoadingReset] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
   const [openResetDialog, setOpenResetDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [newPassword, setNewPassword] = useState('');
 
   // Formulario de usuario
@@ -253,6 +255,34 @@ const UsuariosAdmin = () => {
       setTimeout(() => setErrorMessage(''), 5000);
     } finally {
       setLoadingReset(false);
+    }
+  };
+
+  const handleOpenDeleteDialog = () => {
+    setOpenDeleteDialog(true);
+  };
+
+  const handleDeleteUser = async () => {
+    if (!selectedUsuario) return;
+
+    setLoadingDelete(true);
+    setErrorMessage('');
+
+    try {
+      await usersApi.deleteUser(selectedUsuario.username);
+      setSuccessMessage(`Usuario ${selectedUsuario.username} eliminado exitosamente`);
+      setTimeout(() => setSuccessMessage(''), 5000);
+      setOpenDeleteDialog(false);
+      
+      // Recargar usuarios
+      await loadUsers();
+      handleCloseEditDialog();
+    } catch (error) {
+      console.error('Error al eliminar usuario:', error);
+      setErrorMessage('Error al eliminar usuario: ' + error.message);
+      setTimeout(() => setErrorMessage(''), 5000);
+    } finally {
+      setLoadingDelete(false);
     }
   };
 
@@ -825,6 +855,25 @@ const UsuariosAdmin = () => {
               >
                 {selectedUsuario?.estado === 'activo' ? 'Desactivar' : 'Activar'}
               </Button>
+
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={handleOpenDeleteDialog}
+                startIcon={<MdDelete size={20} />}
+                sx={{ 
+                  textTransform: 'none', 
+                  fontWeight: 600,
+                  px: 3,
+                  borderWidth: 2,
+                  '&:hover': {
+                    borderWidth: 2,
+                    bgcolor: 'error.lighter'
+                  }
+                }}
+              >
+                Eliminar Usuario
+              </Button>
             </>
           )}
           
@@ -904,6 +953,115 @@ const UsuariosAdmin = () => {
             startIcon={loadingReset ? <CircularProgress size={20} /> : <MdRefresh />}
           >
             {loadingReset ? 'Procesando...' : 'Restablecer'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog de confirmación para eliminar usuario */}
+      <Dialog 
+        open={openDeleteDialog} 
+        onClose={() => setOpenDeleteDialog(false)} 
+        maxWidth="sm" 
+        fullWidth
+      >
+        <DialogTitle sx={{ 
+          fontWeight: 700, 
+          fontSize: '1.3rem',
+          bgcolor: 'error.main',
+          color: 'white',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1.5
+        }}>
+          <MdDelete size={28} />
+          Eliminar Usuario
+        </DialogTitle>
+        <Divider />
+        <DialogContent sx={{ pt: 3 }}>
+          <Stack spacing={2.5}>
+            <Alert 
+              severity="error" 
+              sx={{ 
+                borderRadius: 2,
+                border: '2px solid',
+                borderColor: 'error.main'
+              }}
+            >
+              <AlertTitle sx={{ fontWeight: 700, fontSize: '1rem' }}>
+                ⚠️ Acción Irreversible
+              </AlertTitle>
+              Esta acción no se puede deshacer. Se eliminará completamente el usuario del sistema.
+            </Alert>
+
+            <Box sx={{ 
+              bgcolor: 'action.hover',
+              border: '1px solid',
+              borderColor: 'divider',
+              borderRadius: 2,
+              p: 2.5
+            }}>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5, fontWeight: 600 }}>
+                Usuario a eliminar:
+              </Typography>
+              <Box sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 2,
+                bgcolor: 'background.paper',
+                p: 1.5,
+                borderRadius: 1,
+                border: '1px solid',
+                borderColor: 'divider'
+              }}>
+                <Box 
+                  sx={{ 
+                    width: 40,
+                    height: 40,
+                    bgcolor: 'error.main',
+                    borderRadius: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontWeight: 700,
+                    fontSize: '1.1rem'
+                  }}
+                >
+                  {selectedUsuario?.username?.charAt(0).toUpperCase()}
+                </Box>
+                <Box>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                    {selectedUsuario?.username}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {selectedUsuario?.email}
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+
+            <Typography variant="body2" color="text.secondary">
+              Si deseas conservar el historial de este usuario, considera <strong>desactivarlo</strong> en lugar de eliminarlo.
+            </Typography>
+          </Stack>
+        </DialogContent>
+        <Divider />
+        <DialogActions sx={{ p: 2, gap: 1.5 }}>
+          <Button 
+            onClick={() => setOpenDeleteDialog(false)} 
+            variant="outlined"
+            disabled={loadingDelete}
+          >
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleDeleteUser}
+            variant="contained"
+            color="error"
+            disabled={loadingDelete}
+            startIcon={loadingDelete ? <CircularProgress size={20} color="inherit" /> : <MdDelete size={22} />}
+          >
+            {loadingDelete ? 'Eliminando...' : 'Eliminar Definitivamente'}
           </Button>
         </DialogActions>
       </Dialog>

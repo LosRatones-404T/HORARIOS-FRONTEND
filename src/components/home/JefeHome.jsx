@@ -24,7 +24,7 @@ import {
 } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { ESTADOS, ESTADO_LABELS, ESTADO_COLORS } from '../../constants/estadosExamen';
-import { periodosApi } from '../../services/api';
+import { periodosApi } from '../../services';
 
 const JefeHome = ({ estadoExamen, logsRecientes }) => {
   const theme = useTheme();

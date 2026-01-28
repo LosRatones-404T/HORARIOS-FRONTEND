@@ -1,4 +1,4 @@
-import { authApi } from '../services/api';
+import { authApi } from '../services';
 
 // Keys para localStorage
 const STORAGE_KEY_USER = 'auth_user';

@@ -34,7 +34,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../components/layout/MainLayout';
 import Notification from '../components/common/Notification';
-import { periodosApi } from '../services/api';
+import { periodosApi } from '../services';
 
 /**
  * Estados del horario generado

@@ -55,8 +55,25 @@ HORARIOS-FRONTEND/
 │   │   ├── Calendario.jsx
 │   │   ├── Preferencias.jsx
 │   │   └── NotFound.jsx
-│   ├── services/            # Servicios API
-│   │   └── api.js
+│   ├── services/            # 🆕 SERVICIOS MODULARIZADOS
+│   │   ├── api.js           # (DEPRECADO) Compatibilidad hacia atrás
+│   │   ├── index.js         # Índice centralizado - IMPORTAR DESDE AQUÍ
+│   │   ├── README.md        # Documentación de servicios
+│   │   ├── QUICK_REFERENCE.md # Referencia rápida
+│   │   ├── auth/
+│   │   │   └── authService.js       # Login, registro
+│   │   ├── users/
+│   │   │   └── usersService.js      # Gestión de usuarios
+│   │   ├── periodos/
+│   │   │   └── periodosService.js   # Períodos académicos
+│   │   ├── calendario/
+│   │   │   └── calendarioService.js # Horarios
+│   │   ├── examenes/
+│   │   │   └── examenesService.js   # Generación de exámenes
+│   │   ├── preferencias/
+│   │   │   └── preferenciasService.js # Preferencias de usuarios
+│   │   └── utils/
+│   │       └── helpers.js           # Funciones auxiliares
 │   ├── store/               # Estado global
 │   │   └── authStore.js
 │   ├── theme/               # Configuración del tema
@@ -66,7 +83,7 @@ HORARIOS-FRONTEND/
 │   ├── main.jsx             # Punto de entrada
 │   └── index.css
 ├── docs/                    # Documentación
-│   ├── ARQUITECTURA.md
+│   ├── ARQUITECTURA.md      # Este archivo
 │   ├── COMPONENTES_MUI.md
 │   ├── NOTIFICACIONES.md
 │   ├── TEMA.md

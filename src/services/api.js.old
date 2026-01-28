@@ -1,0 +1,44 @@
+/**
+ * Archivo de compatibilidad hacia atrás (DEPRECADO)
+ * 
+ * ⚠️ ADVERTENCIA: Este archivo está DEPRECADO
+ * 
+ * Por favor, usa los servicios modularizados en su lugar:
+ * import { authService, usersService, periodosService } from '@/services';
+ * 
+ * O importa desde el índice centralizado:
+ * import { authApi, usersApi, periodosApi } from '@/services';
+ * 
+ * Este archivo solo mantiene compatibilidad hacia atrás con código antiguo.
+ * Será eliminado en versiones futuras.
+ */
+
+// Re-exportar servicios desde los módulos nuevos
+export { authService as authApi } from './auth/authService';
+export { usersService as usersApi } from './users/usersService';
+export { periodosService as periodosApi } from './periodos/periodosService';
+export { calendarioService as calendarioApi } from './calendario/calendarioService';
+export { examenesService as examenesApi } from './examenes/examenesService';
+export { preferenciasService as preferenciasApi } from './preferencias/preferenciasService';
+
+// Re-exportar utilidades
+export { getAuthToken } from './utils/helpers';
+
+// API genérica (mantener para compatibilidad)
+export const api = {
+  // Aquí irán otros servicios API si es necesario
+};
+
+export default api;
+
+/**
+ * MIGRACIÓN DE CÓDIGO ANTIGUO:
+ * 
+ * Antes:
+ *   import { authApi, usersApi } from '@/services/api';
+ * 
+ * Ahora:
+ *   import { authService as authApi, usersService as usersApi } from '@/services';
+ *   O simplemente:
+ *   import { authApi, usersApi } from '@/services';
+ */
