@@ -15,12 +15,12 @@ export const menuOptions = {
   
   jefe: [
     { label: "Home", icon: <FiHome/>, path: "/home" },
-    { label: "Preferencias", icon: <MdOutlineGrade/>, path: "/preferencias" },
     { label: "Generar", icon: <LuCalendarCog/>, path: "/generar" },
     { label: "Calendario", icon: <MdCalendarMonth/>, path: "/calendario" },
+    { label: "Preferencias", icon: <MdOutlineGrade/>, path: "/preferencias" },
   ],
   
-  secretaria: [
+  escolares: [
     { label: "Home", icon: <FiHome/>, path: "/home" },
     { label: "Período Académico", icon: <MdSettings/>, path: "/periodo-academico" },
     { label: "Revisión", icon: <MdRateReview/>, path: "/revision" },

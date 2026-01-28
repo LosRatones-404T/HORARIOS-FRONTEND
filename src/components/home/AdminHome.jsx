@@ -172,7 +172,7 @@ const AdminHome = () => {
               >
                 <MenuItem value="todos">Todos</MenuItem>
                 <MenuItem value="jefe">Jefe de Carrera</MenuItem>
-                <MenuItem value="secretaria">Servicios Escolares</MenuItem>
+                <MenuItem value="escolares">Servicios Escolares</MenuItem>
               </Select>
             </FormControl>
           </Box>

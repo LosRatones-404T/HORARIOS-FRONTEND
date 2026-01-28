@@ -34,7 +34,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../components/layout/MainLayout';
 import Notification from '../components/common/Notification';
-import { periodosApi } from '../services/api';
+import { periodosApi } from '../services';
 
 /**
  * Estados del horario generado
@@ -143,7 +143,7 @@ function Generar() {
     },
   ]);
 
-  // Manejar generación de horarios
+  // Manejar generación de calendarios
   const handleConfirmarGeneracion = async () => {
     if (!puedeGenerarExamenes) {
       setNotification({
@@ -217,7 +217,7 @@ function Generar() {
               mb: 1
             }}
           >
-            Generar Horarios de Exámenes
+            Generar Calendarios de Exámenes
           </Typography>
           <Typography 
             variant="body1" 
@@ -225,7 +225,7 @@ function Generar() {
               color: theme.palette.text.secondary 
             }}
           >
-            Administra la generación y revisión de horarios de exámenes del periodo actual
+            Administra la generación y revisión de calendarios de exámenes del periodo actual
           </Typography>
         </Box>
 
@@ -268,36 +268,123 @@ function Generar() {
           </Alert>
         )}
 
-        {/* Acciones rápidas */}
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 4 }}>
-          <Button
-            variant="outlined"
-            startIcon={<MdSettings />}
-            onClick={() => navigate('/preferencias')}
-            sx={{ flex: 1 }}
-            disabled={!puedeGenerarExamenes}
-          >
-            Configurar Preferencias
-          </Button>
-          <Button
-            variant="contained"
-            startIcon={<MdAutorenew />}
-            onClick={() => setOpenDialogGenerar(true)}
-            disabled={!puedeGenerarExamenes || estadoActual === ESTADOS.APROBADO}
-            sx={{ flex: 1 }}
-          >
-            {horarioGenerado ? 'Regenerar Horarios' : 'Generar Horarios'}
-          </Button>
-          <Button
-            variant="outlined"
-            startIcon={<MdCalendarMonth />}
-            onClick={() => navigate('/calendario')}
-            disabled={!horarioGenerado}
-            sx={{ flex: 1 }}
-          >
-            Ver Calendario
-          </Button>
-        </Stack>
+        {/* Navegación por pasos (Breadcrumbs) */}
+        <Card elevation={0} sx={{ mb: 4, border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+          <CardContent>
+            <Stepper 
+              activeStep={1}
+              alternativeLabel
+              sx={{ 
+                '& .MuiStep-root': {
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  p: 1.5,
+                  borderRadius: 2,
+                  '&:hover': {
+                    bgcolor: 'action.hover',
+                    transform: 'translateY(-2px)',
+                  }
+                },
+                '& .MuiStepLabel-root': {
+                  cursor: 'pointer'
+                }
+              }}
+            >
+              <Step onClick={() => navigate('/preferencias')} sx={{ cursor: 'pointer' }}>
+                <StepLabel 
+                  StepIconComponent={() => (
+                    <Box sx={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      width: 48,
+                      height: 48,
+                      borderRadius: '50%',
+                      bgcolor: window.location.pathname === '/preferencias' ? 'primary.main' : 'grey.300',
+                      color: 'white',
+                      transition: 'all 0.2s',
+                      boxShadow: window.location.pathname === '/preferencias' ? 2 : 0,
+                      '&:hover': {
+                        boxShadow: 3,
+                        transform: 'scale(1.1)',
+                      }
+                    }}>
+                      <MdSettings size={26} />
+                    </Box>
+                  )}
+                >
+                  <Typography sx={{ fontWeight: window.location.pathname === '/preferencias' ? 700 : 500, mt: 1 }}>
+                    Configurar Preferencias
+                  </Typography>
+                </StepLabel>
+              </Step>
+              <Step onClick={() => setOpenDialogGenerar(true)} sx={{ cursor: 'pointer' }}>
+                <StepLabel
+                  StepIconComponent={() => (
+                    <Box sx={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      width: 48,
+                      height: 48,
+                      borderRadius: '50%',
+                      bgcolor: window.location.pathname === '/generar' ? 'primary.main' : 'grey.300',
+                      color: 'white',
+                      transition: 'all 0.2s',
+                      boxShadow: window.location.pathname === '/generar' ? 2 : 0,
+                      '&:hover': {
+                        boxShadow: 3,
+                        transform: 'scale(1.1)',
+                      }
+                    }}>
+                      <MdAutorenew size={26} />
+                    </Box>
+                  )}
+                >
+                  <Typography sx={{ fontWeight: window.location.pathname === '/generar' ? 700 : 500, mt: 1 }}>
+                    Generar Calendarios
+                  </Typography>
+                </StepLabel>
+              </Step>
+              <Step 
+                onClick={() => horarioGenerado && navigate('/calendario')} 
+                sx={{ cursor: horarioGenerado ? 'pointer' : 'not-allowed' }}
+              >
+                <StepLabel
+                  StepIconComponent={() => (
+                    <Box sx={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      width: 48,
+                      height: 48,
+                      borderRadius: '50%',
+                      bgcolor: window.location.pathname === '/calendario' ? 'primary.main' : 'grey.300',
+                      color: 'white',
+                      opacity: horarioGenerado ? 1 : 0.5,
+                      transition: 'all 0.2s',
+                      boxShadow: window.location.pathname === '/calendario' ? 2 : 0,
+                      '&:hover': horarioGenerado ? {
+                        boxShadow: 3,
+                        transform: 'scale(1.1)',
+                      } : {}
+                    }}>
+                      <MdCalendarMonth size={26} />
+                    </Box>
+                  )}
+                >
+                  <Typography sx={{ 
+                    fontWeight: window.location.pathname === '/calendario' ? 700 : 500, 
+                    mt: 1,
+                    opacity: horarioGenerado ? 1 : 0.5
+                  }}>
+                    Ver Calendarios
+                  </Typography>
+                </StepLabel>
+              </Step>
+            </Stepper>
+          </CardContent>
+        </Card>
 
         {/* Estado actual */}
         {horarioGenerado && (
@@ -436,29 +523,15 @@ function Generar() {
         {!horarioGenerado && (
           <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
             <CardContent sx={{ textAlign: 'center', py: 6 }}>
-              <MdSchedule size={64} color={theme.palette.text.secondary} />
+              <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+                <MdSchedule size={64} color={theme.palette.text.secondary} />
+              </Box>
               <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
-                No hay horarios generados
+                No hay calendarios generados
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                Configura tus preferencias de exámenes y genera el horario para el periodo actual
+              <Typography variant="body2" color="text.secondary">
+                Configura tus preferencias de exámenes y genera el calendario para el periodo actual
               </Typography>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
-                <Button
-                  variant="outlined"
-                  startIcon={<MdSettings />}
-                  onClick={() => navigate('/preferencias')}
-                >
-                  Ir a Preferencias
-                </Button>
-                <Button
-                  variant="contained"
-                  startIcon={<MdAutorenew />}
-                  onClick={() => setOpenDialogGenerar(true)}
-                >
-                  Generar Horarios
-                </Button>
-              </Stack>
             </CardContent>
           </Card>
         )}
@@ -476,35 +549,15 @@ function Generar() {
           <DialogTitle>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <MdWarning size={24} color={theme.palette.warning.main} />
-              Confirmar Generación de Horarios
+              Confirmar Generación
             </Box>
           </DialogTitle>
           <DialogContent>
-            <Alert severity="warning" sx={{ mb: 2 }}>
-              Este proceso utilizará las preferencias configuradas para generar automáticamente los horarios de exámenes.
-            </Alert>
             <Typography variant="body2" paragraph>
-              Antes de generar, asegúrate de que:
+              Se generará automáticamente el calendario de exámenes basado en tus preferencias configuradas.
             </Typography>
-            <ul style={{ marginTop: 0 }}>
-              <li>
-                <Typography variant="body2">
-                  Has configurado todas las preferencias de materias
-                </Typography>
-              </li>
-              <li>
-                <Typography variant="body2">
-                  Los datos de profesores, aplicadores y sinodales son correctos
-                </Typography>
-              </li>
-              <li>
-                <Typography variant="body2">
-                  Las modalidades de examen están actualizadas
-                </Typography>
-              </li>
-            </ul>
-            <Typography variant="body2" sx={{ mt: 2 }}>
-              ¿Estás seguro de que deseas generar los horarios?
+            <Typography variant="body2">
+              ¿Deseas continuar?
             </Typography>
           </DialogContent>
           <DialogActions sx={{ px: 3, pb: 2.5 }}>

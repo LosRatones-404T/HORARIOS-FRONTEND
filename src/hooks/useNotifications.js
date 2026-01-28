@@ -56,7 +56,7 @@ export const useNotifications = () => {
           leido: true,
         },
       ],
-      secretaria: [
+      escolares: [
         {
           id: 1,
           tipo: 'nuevo',

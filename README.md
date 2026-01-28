@@ -21,11 +21,20 @@ npm run build
 
 La documentación completa del proyecto está en la carpeta `/docs`:
 
+### Arquitectura y Desarrollo
 - **[ARQUITECTURA.md](docs/ARQUITECTURA.md)** - Estructura del proyecto, patrones y convenciones
 - **[COMPONENTES_MUI.md](docs/COMPONENTES_MUI.md)** - Guía de componentes Material-UI
 - **[TEMA.md](docs/TEMA.md)** - Sistema de theming y paleta de colores
 - **[NOTIFICACIONES.md](docs/NOTIFICACIONES.md)** - Sistema de notificaciones
+
+### Integración Backend
+- **[API.md](docs/API.md)** - Documentación de APIs conectadas
+- **[LOGIN_IMPLEMENTATION.md](docs/LOGIN_IMPLEMENTATION.md)** - Guía de implementación del login
 - **[INTEGRACION_BACKEND.md](docs/INTEGRACION_BACKEND.md)** - Guía de integración con API
+
+### Funcionalidades
+- **[PERIODO_ACADEMICO.md](docs/PERIODO_ACADEMICO.md)** - Gestión de períodos académicos
+- **[EXPORTACION_PDF.md](docs/EXPORTACION_PDF.md)** - Exportación de documentos
 
 ---
 

@@ -18,7 +18,7 @@ function Home() {
         return <JefeHome estadoExamen={estadoExamen} logsRecientes={logsRecientes} />;
       case 'admin':
         return <AdminHome />;
-      case 'secretaria':
+      case 'escolares':
         return <SecretariaHome />;
       default:
         return <JefeHome estadoExamen={estadoExamen} logsRecientes={logsRecientes} />;

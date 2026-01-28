@@ -19,14 +19,18 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  Stack,
+  FormControlLabel,
+  Switch
 } from '@mui/material';
-import { MdAccessTime, MdSave } from 'react-icons/md';
+import { MdAccessTime, MdSave, MdWarning } from 'react-icons/md';
 import { useState } from 'react';
 
 /**
  * Componente de horario semanal
- * Muestra una tabla de lunes a viernes con franjas horarias de 8am a 7pm
+ * Muestra una tabla de fechas con franjas horarias de 8am a 7pm
+ * Agrupa exámenes que ocurren a la misma hora (apilados)
  * 
  * @param {Object} props
  * @param {Array} props.events - Array de eventos/exámenes a mostrar en el horario
@@ -35,6 +39,8 @@ import { useState } from 'react';
  * @param {Function} props.onSave - Función a ejecutar al guardar cambios
  * @param {boolean} props.showHeader - Mostrar encabezado del componente
  * @param {boolean} props.readOnly - Modo solo lectura (deshabilita edición)
+ * @param {Object} props.coloresGrupos - Mapeo de grupos a colores (para pintar materias)
+ * @param {Date} props.fechaInicio - Fecha de inicio del calendario
  */
 const HorarioSemanal = ({ 
   events = [], 
@@ -42,26 +48,48 @@ const HorarioSemanal = ({
   onEventsChange = null,
   onSave = null,
   showHeader = true,
-  readOnly = false 
+  readOnly = false,
+  coloresGrupos = {},
+  fechaInicio = null
 }) => {
   const theme = useTheme();
   
   // Estados locales
-  const [draggedEvent, setDraggedEvent] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [selectedSlot, setSelectedSlot] = useState(null);
-  const [selectedMateria, setSelectedMateria] = useState('');
-  const [eventToDelete, setEventToDelete] = useState(null);
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [eventsAtSlot, setEventsAtSlot] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [conflictoToggle, setConflictoToggle] = useState(false);
 
-  // Días de la semana
-  const dias = [
-    { id: 1, nombre: 'Lunes', abrev: 'Lun' },
-    { id: 2, nombre: 'Martes', abrev: 'Mar' },
-    { id: 3, nombre: 'Miércoles', abrev: 'Mié' },
-    { id: 4, nombre: 'Jueves', abrev: 'Jue' },
-    { id: 5, nombre: 'Viernes', abrev: 'Vie' }
-  ];
+  // Generar fechas dinámicas (solo lunes a viernes, saltando fines de semana)
+  const generateDates = () => {
+    const start = fechaInicio ? new Date(fechaInicio) : new Date(2026, 0, 26); // 26 enero 2026
+    const dates = [];
+    let currentDate = new Date(start);
+    let diaId = 0;
+    
+    // Asegurar que iniciamos en lunes (si no es lunes, ir al próximo lunes)
+    const dayOfWeek = currentDate.getDay();
+    if (dayOfWeek !== 1) { // 1 = lunes
+      const daysToMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek;
+      currentDate.setDate(currentDate.getDate() + daysToMonday);
+    }
+    
+    // Generar 5 días (lunes a viernes)
+    for (let i = 0; i < 5; i++) {
+      dates.push({
+        id: diaId,
+        fecha: new Date(currentDate),
+        nombre: currentDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+        abrev: currentDate.toLocaleDateString('es-ES', { weekday: 'short', month: 'numeric', day: 'numeric' })
+      });
+      currentDate.setDate(currentDate.getDate() + 1);
+      diaId++;
+    }
+    return dates;
+  };
+
+  const dias = generateDates();
 
   // Franjas horarias (8am a 7pm)
   const horas = [
@@ -70,90 +98,51 @@ const HorarioSemanal = ({
     '18:00', '19:00'
   ];
 
-  // Función para verificar si hay un evento en una celda específica
-  const getEventForSlot = (dia, hora) => {
-    return events.find(event => 
-      event.dia === dia.id && 
+  // Obtener todos los eventos en una celda específica (pueden ser múltiples grupos)
+  const getEventsForSlot = (diaId, hora) => {
+    return events.filter(event => 
+      event.diaId === diaId && 
       event.horaInicio === hora
     );
   };
 
-  // Abrir modal para asignar materia o eliminar evento
-  const handleCellClick = (dia, hora) => {
-    if (readOnly) return; // No hacer nada si está en modo solo lectura
-    
-    const existingEvent = getEventForSlot(dia, hora);
-    if (existingEvent) {
-      // Si hay un evento, abrir dialog de eliminación
-      setEventToDelete(existingEvent);
-      setOpenDeleteDialog(true);
-    } else if (materias.length > 0) {
-      // Si está vacío, abrir dialog de asignación
-      setSelectedSlot({ dia, hora });
-      setSelectedMateria('');
-      setOpenDialog(true);
-    }
-  };
-
-  // Asignar materia a una celda
-  const handleAssignMateria = () => {
-    if (selectedMateria && selectedSlot && onEventsChange) {
-      const newEvent = {
-        dia: selectedSlot.dia.id,
-        horaInicio: selectedSlot.hora,
-        materia: selectedMateria,
-        aula: 'Por asignar'
-      };
-      onEventsChange([...events, newEvent]);
-      setOpenDialog(false);
-      setSelectedMateria('');
-      setSelectedSlot(null);
-    }
-  };
-
-  // Drag & Drop handlers
-  const handleDragStart = (event, eventData) => {
-    setDraggedEvent(eventData);
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (dia, hora) => {
-    if (draggedEvent && onEventsChange) {
-      const existingEvent = getEventForSlot(dia, hora);
-      
-      // Solo permitir drop si la celda está vacía
-      if (!existingEvent) {
-        // Remover el evento de su posición anterior
-        const updatedEvents = events.filter(e => 
-          !(e.dia === draggedEvent.dia && e.horaInicio === draggedEvent.horaInicio)
-        );
-        
-        // Agregar el evento en la nueva posición
-        const movedEvent = {
-          ...draggedEvent,
-          dia: dia.id,
-          horaInicio: hora
-        };
-        
-        onEventsChange([...updatedEvents, movedEvent]);
+  // Agrupar eventos por (día, hora) cuando hay múltiples
+  const getGroupedEventsForSlot = (diaId, hora) => {
+    const slotEvents = getEventsForSlot(diaId, hora);
+    // Agrupar por materia
+    const grouped = {};
+    slotEvents.forEach(event => {
+      if (!grouped[event.materia]) {
+        grouped[event.materia] = [];
       }
-    }
-    setDraggedEvent(null);
+      grouped[event.materia].push(event);
+    });
+    return grouped;
   };
 
-  // Eliminar evento
-  const handleDeleteEvent = () => {
-    if (eventToDelete && onEventsChange) {
-      const updatedEvents = events.filter(e => 
-        !(e.dia === eventToDelete.dia && e.horaInicio === eventToDelete.horaInicio && e.materia === eventToDelete.materia)
+  // Abrir detalles del evento (modal con detalles)
+  const handleEventClick = (event) => {
+    if (readOnly) return;
+    setSelectedEvent(event);
+    const slotEvents = getEventsForSlot(event.diaId, event.horaInicio);
+    setEventsAtSlot(slotEvents);
+    setSelectedGroup(event.grupo);
+    setConflictoToggle(event.conflicto || false);
+    setOpenDetailsDialog(true);
+  };
+
+  // Cerrar detalles y guardar conflicto toggle
+  const handleCloseDetails = () => {
+    if (selectedEvent && selectedEvent.conflicto !== conflictoToggle && onEventsChange) {
+      const updatedEvents = events.map(e => 
+        e === selectedEvent ? { ...e, conflicto: conflictoToggle } : e
       );
       onEventsChange(updatedEvents);
-      setOpenDeleteDialog(false);
-      setEventToDelete(null);
     }
+    setOpenDetailsDialog(false);
+    setSelectedEvent(null);
+    setEventsAtSlot([]);
+    setSelectedGroup(null);
   };
 
   return (
@@ -170,7 +159,7 @@ const HorarioSemanal = ({
                 color: theme.palette.text.primary 
               }}
             >
-              Horario Semanal
+              Calendario de Exámenes
             </Typography>
           </Box>
           <Typography 
@@ -179,7 +168,7 @@ const HorarioSemanal = ({
               color: theme.palette.text.secondary 
             }}
           >
-            Lunes a Viernes • 8:00 AM - 7:00 PM
+            {dias[0]?.fecha.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })} al {dias[dias.length - 1]?.fecha.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })} • 8:00 AM - 7:00 PM
           </Typography>
         </Box>
       )}
@@ -192,7 +181,7 @@ const HorarioSemanal = ({
           borderRadius: 2,
           border: `1px solid ${theme.palette.divider}`,
           overflow: 'auto',
-          maxHeight: 600
+          maxHeight: 700
         }}
       >
         <Table stickyHeader sx={{ minWidth: 650 }}>
@@ -223,11 +212,16 @@ const HorarioSemanal = ({
                     color: theme.palette.primary.contrastText,
                     fontWeight: 700,
                     fontSize: '0.75rem',
-                    minWidth: 100
+                    minWidth: 110,
+                    maxWidth: 110
                   }}
                 >
                   <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
                     {dia.nombre}
+                    <br />
+                    <Typography variant="caption" sx={{ fontSize: '0.65rem', fontWeight: 600 }}>
+                      {dia.fecha.toLocaleDateString('es-ES', { month: '2-digit', day: '2-digit' })}
+                    </Typography>
                   </Box>
                   <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
                     {dia.abrev}
@@ -274,77 +268,96 @@ const HorarioSemanal = ({
 
                 {/* Celdas de cada día */}
                 {dias.map((dia) => {
-                  const event = getEventForSlot(dia, hora);
+                  const groupedEvents = getGroupedEventsForSlot(dia.id, hora);
+                  const eventCount = Object.keys(groupedEvents).length;
 
                   return (
                     <TableCell 
                       key={`${dia.id}-${hora}`}
                       align="center"
-                      onClick={() => !readOnly && handleCellClick(dia, hora)}
-                      onDragOver={!readOnly ? handleDragOver : undefined}
-                      onDrop={!readOnly ? () => handleDrop(dia, hora) : undefined}
                       sx={{ 
-                        cursor: readOnly ? 'default' : (event ? 'move' : 'pointer'),
-                        bgcolor: event 
-                          ? theme.palette.primary.light + '40'
+                        cursor: 'default',
+                        bgcolor: eventCount > 0 
+                          ? theme.palette.action.hover
                           : 'transparent',
                         borderLeft: `1px solid ${theme.palette.divider}`,
-                        p: 1,
-                        minHeight: 60,
+                        p: 0.5,
+                        minHeight: 80,
+                        maxWidth: 110,
                         position: 'relative',
-                        '&:hover': readOnly ? {} : {
-                          bgcolor: event 
-                            ? theme.palette.primary.light + '60'
-                            : theme.palette.primary.light + '20',
-                        }
+                        verticalAlign: 'flex-start',
+                        overflow: 'hidden'
                       }}
                     >
-                      {event && (
-                        <Box
-                          draggable={!readOnly}
-                          onDragStart={!readOnly ? (e) => handleDragStart(e, event) : undefined}
-                          sx={{
-                            bgcolor: theme.palette.primary.main,
-                            borderRadius: 1,
-                            p: 0.5,
-                            minHeight: 40,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            gap: 0.5,
-                            boxShadow: 1,
-                            cursor: readOnly ? 'default' : 'move',
-                            userSelect: 'none'
-                          }}
-                        >
-                          <Typography 
-                            variant="caption" 
-                            sx={{ 
-                              fontWeight: 600,
-                              color: theme.palette.primary.contrastText,
-                              fontSize: '0.65rem',
-                              lineHeight: 1.1
-                            }}
-                          >
-                            {event.materia}
-                          </Typography>
-                          {event.aula && (
-                            <Chip
-                              label={event.aula}
-                              size="small"
+                      {eventCount > 0 ? (
+                        <Stack spacing={0.5} sx={{ width: '100%', p: 0.5 }}>
+                          {Object.entries(groupedEvents).map(([materia, gruposDeMateria], idx) => (
+                            <Box 
+                              key={`${materia}-${idx}`}
                               sx={{
-                                height: 16,
-                                fontSize: '0.6rem',
-                                bgcolor: theme.palette.mode === 'light'
-                                  ? 'rgba(255, 255, 255, 0.3)'
-                                  : 'rgba(0, 0, 0, 0.3)',
-                                color: theme.palette.primary.contrastText,
-                                fontWeight: 500
+                                cursor: readOnly ? 'default' : 'pointer',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 0.25,
+                                width: '100%'
+                              }}
+                            >
+                              {gruposDeMateria.map((event, grpIdx) => {
+                                const colorKey = coloresGrupos[event.grupo] || theme.palette.primary.main;
+                                return (
+                                  <Paper
+                                    key={`${materia}-${grpIdx}`}
+                                    onClick={() => !readOnly && handleEventClick(event)}
+                                    sx={{
+                                      bgcolor: colorKey,
+                                      borderRadius: 0.75,
+                                      p: 0.5,
+                                      minHeight: 30,
+                                      display: 'flex',
+                                      flexDirection: 'column',
+                                      justifyContent: 'center',
+                                      boxShadow: event.conflicto ? `0 0 8px ${theme.palette.warning.main}` : 1,
+                                      border: event.conflicto ? `2px solid ${theme.palette.warning.main}` : 'none',
+                                      transition: 'all 0.2s',
+                                      '&:hover': !readOnly ? {
+                                        transform: 'scale(1.05)',
+                                        boxShadow: 3,
+                                      } : {},
+                                      position: 'relative'
+                                    }}
+                                  >
+                                    <Typography 
+                                      variant="caption" 
+                                      sx={{ 
+                                        fontWeight: 700,
+                                        color: '#fff',
+                                        fontSize: '0.6rem',
+                                        lineHeight: 1,
+                                        wordBreak: 'break-word',
+                                        textAlign: 'center'
+                                      }}
+                                    >
+                                      {event.grupo}
+                                    </Typography>
+                                  </Paper>
+                                );
+                              })}
+                            </Box>
+                          ))}
+                          {eventCount > 1 && (
+                            <Chip
+                              label={`${eventCount} grupos`}
+                              size="small"
+                              variant="outlined"
+                              sx={{
+                                height: 18,
+                                fontSize: '0.65rem',
+                                fontWeight: 600
                               }}
                             />
                           )}
-                        </Box>
-                      )}
+                        </Stack>
+                      ) : null}
                     </TableCell>
                   );
                 })}
@@ -374,53 +387,127 @@ const HorarioSemanal = ({
         </Box>
       )}
 
-      {/* Dialog para asignar materia */}
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="xs" fullWidth>
-        <DialogTitle>Asignar Examen</DialogTitle>
+      {/* Dialog para ver detalles del evento */}
+      <Dialog open={openDetailsDialog} onClose={handleCloseDetails} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <MdAccessTime size={20} />
+          Detalles del Examen
+        </DialogTitle>
         <DialogContent>
-          <FormControl fullWidth sx={{ mt: 2 }}>
-            <InputLabel>Seleccionar Materia</InputLabel>
-            <Select
-              value={selectedMateria}
-              label="Seleccionar Materia"
-              onChange={(e) => setSelectedMateria(e.target.value)}
-            >
-              {materias.map((materia) => (
-                <MenuItem key={materia} value={materia}>
-                  {materia}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
-          <Button 
-            onClick={handleAssignMateria} 
-            variant="contained" 
-            disabled={!selectedMateria}
-          >
-            Asignar
-          </Button>
-        </DialogActions>
-      </Dialog>
+          {selectedEvent && (
+            <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Box>
+                <Typography variant="subtitle2" fontWeight={600} color="text.secondary">
+                  Materia
+                </Typography>
+                <Typography variant="body1" sx={{ mt: 0.5 }}>
+                  {selectedEvent.materia}
+                </Typography>
+              </Box>
 
-      {/* Dialog para eliminar examen */}
-      <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)} maxWidth="xs" fullWidth>
-        <DialogTitle>Eliminar Examen</DialogTitle>
-        <DialogContent>
-          <Typography>
-            ¿Estás seguro de que deseas eliminar el examen de <strong>{eventToDelete?.materia}</strong>?
-          </Typography>
+              <Box>
+                <Typography variant="subtitle2" fontWeight={600} color="text.secondary">
+                  Grupo
+                </Typography>
+                <Chip label={selectedEvent.grupo} size="small" variant="filled" sx={{ mt: 0.5 }} />
+              </Box>
+
+              {eventsAtSlot.length > 1 && (
+                <Box>
+                  <Typography variant="subtitle2" fontWeight={600} color="text.secondary" sx={{ mb: 1 }}>
+                    Otros grupos en esta hora
+                  </Typography>
+                  <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
+                    {eventsAtSlot.map((event) => (
+                      <Chip
+                        key={`${event.materia}-${event.grupo}`}
+                        label={event.grupo}
+                        onClick={() => {
+                          setSelectedEvent(event);
+                          setSelectedGroup(event.grupo);
+                          setConflictoToggle(event.conflicto || false);
+                        }}
+                        variant={selectedEvent.grupo === event.grupo ? 'filled' : 'outlined'}
+                        size="small"
+                      />
+                    ))}
+                  </Stack>
+                </Box>
+              )}
+
+              <Box>
+                <Typography variant="subtitle2" fontWeight={600} color="text.secondary">
+                  Aplicador
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 0.5, color: 'text.primary' }}>
+                  {selectedEvent.aplicador || 'Sin especificar'}
+                </Typography>
+              </Box>
+
+              <Box>
+                <Typography variant="subtitle2" fontWeight={600} color="text.secondary">
+                  Fecha y Hora
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 0.5, color: 'text.primary' }}>
+                  {selectedEvent.fecha || `Día ${selectedEvent.diaId}`} • {selectedEvent.horaInicio}
+                </Typography>
+              </Box>
+
+              <Box>
+                <Typography variant="subtitle2" fontWeight={600} color="text.secondary">
+                  Duración
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 0.5, color: 'text.primary' }}>
+                  {selectedEvent.duracion || 'Sin especificar'}
+                </Typography>
+              </Box>
+
+              <Box>
+                <Typography variant="subtitle2" fontWeight={600} color="text.secondary">
+                  Aula
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 0.5, color: 'text.primary' }}>
+                  {selectedEvent.aula || 'Por asignar'}
+                </Typography>
+              </Box>
+
+              {!readOnly && (
+                <Box sx={{ 
+                  p: 2, 
+                  bgcolor: theme.palette.warning.light + '30',
+                  borderRadius: 1,
+                  border: `1px solid ${theme.palette.warning.light}`
+                }}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={conflictoToggle}
+                        onChange={(e) => setConflictoToggle(e.target.checked)}
+                        color="warning"
+                      />
+                    }
+                    label={
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <MdWarning size={18} color={theme.palette.warning.main} />
+                        <Box>
+                          <Typography variant="subtitle2" fontWeight={600}>
+                            Marcar como Conflicto
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {conflictoToggle ? 'Tiene observaciones o conflictos' : 'Sin conflictos'}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    }
+                  />
+                </Box>
+              )}
+            </Box>
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDeleteDialog(false)}>Cancelar</Button>
-          <Button 
-            onClick={handleDeleteEvent} 
-            variant="contained" 
-            color="error"
-          >
-            Eliminar
+          <Button onClick={handleCloseDetails}>
+            {readOnly ? 'Cerrar' : 'Listo'}
           </Button>
         </DialogActions>
       </Dialog>
@@ -431,11 +518,15 @@ const HorarioSemanal = ({
 HorarioSemanal.propTypes = {
   events: PropTypes.arrayOf(
     PropTypes.shape({
-      dia: PropTypes.number.isRequired, // 1: Lunes, 2: Martes, etc.
+      diaId: PropTypes.number.isRequired, // 0-6 (7 días)
       horaInicio: PropTypes.string.isRequired, // Formato: "08:00"
       materia: PropTypes.string.isRequired,
+      grupo: PropTypes.string.isRequired,
+      aplicador: PropTypes.string,
       aula: PropTypes.string,
-      profesor: PropTypes.string,
+      duracion: PropTypes.string,
+      fecha: PropTypes.string,
+      conflicto: PropTypes.bool,
     })
   ),
   materias: PropTypes.arrayOf(PropTypes.string),
@@ -443,6 +534,8 @@ HorarioSemanal.propTypes = {
   onSave: PropTypes.func,
   showHeader: PropTypes.bool,
   readOnly: PropTypes.bool,
+  coloresGrupos: PropTypes.object,
+  fechaInicio: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
 };
 
 export default HorarioSemanal;

@@ -38,7 +38,7 @@ import {
 } from 'react-icons/md';
 import MainLayout from '../components/layout/MainLayout';
 import Notification from '../components/common/Notification';
-import { periodosApi } from '../services/api';
+import { periodosApi } from '../services';
 
 /**
  * Estados del período académico

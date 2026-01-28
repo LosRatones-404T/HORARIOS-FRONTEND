@@ -55,8 +55,25 @@ HORARIOS-FRONTEND/
 │   │   ├── Calendario.jsx
 │   │   ├── Preferencias.jsx
 │   │   └── NotFound.jsx
-│   ├── services/            # Servicios API
-│   │   └── api.js
+│   ├── services/            # 🆕 SERVICIOS MODULARIZADOS
+│   │   ├── api.js           # (DEPRECADO) Compatibilidad hacia atrás
+│   │   ├── index.js         # Índice centralizado - IMPORTAR DESDE AQUÍ
+│   │   ├── README.md        # Documentación de servicios
+│   │   ├── QUICK_REFERENCE.md # Referencia rápida
+│   │   ├── auth/
+│   │   │   └── authService.js       # Login, registro
+│   │   ├── users/
+│   │   │   └── usersService.js      # Gestión de usuarios
+│   │   ├── periodos/
+│   │   │   └── periodosService.js   # Períodos académicos
+│   │   ├── calendario/
+│   │   │   └── calendarioService.js # Horarios
+│   │   ├── examenes/
+│   │   │   └── examenesService.js   # Generación de exámenes
+│   │   ├── preferencias/
+│   │   │   └── preferenciasService.js # Preferencias de usuarios
+│   │   └── utils/
+│   │       └── helpers.js           # Funciones auxiliares
 │   ├── store/               # Estado global
 │   │   └── authStore.js
 │   ├── theme/               # Configuración del tema
@@ -66,7 +83,7 @@ HORARIOS-FRONTEND/
 │   ├── main.jsx             # Punto de entrada
 │   └── index.css
 ├── docs/                    # Documentación
-│   ├── ARQUITECTURA.md
+│   ├── ARQUITECTURA.md      # Este archivo
 │   ├── COMPONENTES_MUI.md
 │   ├── NOTIFICACIONES.md
 │   ├── TEMA.md
@@ -88,195 +105,6 @@ HORARIOS-FRONTEND/
 - **Utilidades**: camelCase (`authStore.js`, `api.js`)
 - **Constantes**: camelCase con sufijo descriptivo (`estadosExamen.js`, `menus.jsx`)
 - **Carpetas**: camelCase (`components/`, `screens/`)
-
-### Variables y Funciones
-```javascript
-// Componentes
-const MyComponent = () => {}
-
-// Funciones
-const handleSubmit = () => {}
-const fetchData = async () => {}
-
-// Constantes
-const API_URL = 'https://...'
-const ESTADOS = { ... }
-
-// State
-const [isOpen, setIsOpen] = useState(false)
-const [userData, setUserData] = useState(null)
-```
-
-## Patrones de Diseño
-
-### Componentes Funcionales
-Todos los componentes usan React Hooks (no clases):
-
-```jsx
-import { useState, useEffect } from 'react';
-
-const MyComponent = ({ prop1, prop2 }) => {
-  const [state, setState] = useState(initialValue);
-  
-  useEffect(() => {
-    // Side effects
-  }, [dependencies]);
-  
-  return (
-    // JSX
-  );
-};
-
-export default MyComponent;
-```
-
-### Custom Hooks
-Extraer lógica reutilizable en hooks personalizados:
-
-```javascript
-// hooks/useMyFeature.js
-export const useMyFeature = () => {
-  const [data, setData] = useState(null);
-  
-  const fetchData = async () => {
-    // Logic
-  };
-  
-  return { data, fetchData };
-};
-```
-
-### Context API
-Para estado global (tema, auth):
-
-```jsx
-// contexts/MyContext.jsx
-export const MyContext = createContext();
-
-export const MyProvider = ({ children }) => {
-  const [state, setState] = useState(initialState);
-  
-  return (
-    <MyContext.Provider value={{ state, setState }}>
-      {children}
-    </MyContext.Provider>
-  );
-};
-```
-
-## Flujo de Datos
-
-### Autenticación
-```
-Login → authStore.login() → localStorage 
-     → Navigate to /home
-     
-Protected Route → getCurrentUser() → Redirect if null
-```
-
-### Notificaciones
-```
-User Login → useNotifications() → loadNotifications(role)
-          → setState(notifications)
-          
-Click Notification → markAsRead(id) → navigate(route)
-```
-
-### Generación de Horarios
-```
-Generar Screen → ESTADOS (constants)
-              → Mock data (later: API)
-              → State management
-              → Stepper workflow
-```
-
-## Componentes Clave
-
-### Layout Components
-
-**MainLayout** - Wrapper principal con sidebar
-```jsx
-<MainLayout showSidebar={true}>
-  {children}
-</MainLayout>
-```
-
-**Header** - Barra superior con búsqueda, notificaciones, usuario
-**Sidebar** - Menú lateral de navegación
-
-### Common Components
-
-**NotificationMenu** - Sistema de notificaciones completo  
-**NotificationItem** - Item individual de notificación  
-**MateriaCard** - Card para materias en Preferencias  
-**HorarioSemanal** - Tabla de horarios semanal  
-**Notification** - Toast/Snackbar de notificaciones
-
-### Home Components
-
-**JefeHome** - Dashboard del Jefe de Carrera  
-**AdminHome** - Dashboard del Administrador  
-**SecretariaHome** - Dashboard de Secretaria
-
-## Estado y Hooks
-
-### useState
-Para estado local de componentes:
-```javascript
-const [open, setOpen] = useState(false);
-const [data, setData] = useState([]);
-```
-
-### useEffect
-Para side effects (API calls, subscriptions):
-```javascript
-useEffect(() => {
-  fetchData();
-}, [dependency]);
-```
-
-### Custom Hooks
-- `useTheme()` - Manejo del tema claro/oscuro
-- `useNotifications()` - Sistema de notificaciones
-- `useHomeData()` - Datos del dashboard Home
-
-## Routing
-
-### Rutas Públicas
-- `/login` - Login
-- `/forgot-password` - Recuperar contraseña
-
-### Rutas Protegidas
-- `/home` - Dashboard principal
-- `/generar` - Generar horarios/exámenes
-- `/calendario` - Gestión de calendario
-- `/preferencias` - Preferencias de materias
-
-### Protección de Rutas
-Todas las rutas protegidas verifican autenticación:
-```jsx
-if (!user) {
-  return <Navigate to="/login" replace />;
-}
-```
-
-## Estilos
-
-### Material-UI sx prop
-Prioridad para estilos:
-```jsx
-<Box sx={{ 
-  bgcolor: 'background.paper',
-  p: 2,
-  borderRadius: 2 
-}}>
-```
-
-### CSS Modules
-No se usan, se prefiere sx prop de MUI.
-
-### Tailwind CSS
-Configurado pero se prioriza Material-UI.
 
 ## Build y Deploy
 
@@ -302,22 +130,3 @@ npm run preview
 - **Material-UI v5** - Componentes UI
 - **Vite** - Build tool
 - **React Icons** - Iconografía
-
-## Mejores Prácticas
-
-1. **Modularización**: Separar lógica en componentes pequeños y reutilizables
-2. **Custom Hooks**: Extraer lógica compleja a hooks personalizados
-3. **Constants**: Centralizar constantes en carpeta `constants/`
-4. **Props Destructuring**: Destructurar props en parámetros de función
-5. **Naming**: Nombres descriptivos y consistentes
-6. **Comments**: Documentar funciones y componentes complejos
-7. **Error Handling**: Manejar errores en async operations
-8. **Accessibility**: Usar ARIA labels donde sea necesario
-
-## Próximos Pasos
-
-- [ ] Integración con backend (ver INTEGRACION_BACKEND.md)
-- [ ] Testing (Jest + React Testing Library)
-- [ ] Optimización de bundle size
-- [ ] PWA capabilities
-- [ ] Internacionalización (i18n)

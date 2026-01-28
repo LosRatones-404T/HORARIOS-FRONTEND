@@ -21,7 +21,7 @@ import {
   MdSettings 
 } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
-import { periodosApi } from '../../services/api';
+import { periodosApi } from '../../services';
 
 const SecretariaHome = () => {
   const theme = useTheme();

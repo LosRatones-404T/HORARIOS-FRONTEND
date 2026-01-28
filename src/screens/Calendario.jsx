@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { 
   Box, 
   Typography, 
@@ -11,13 +11,27 @@ import {
   Tabs,
   Tab,
   Chip,
-  Paper
+  Paper,
+  Stack,
+  ButtonGroup,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText
 } from '@mui/material';
-import { MdExpandMore, MdCalendarToday } from 'react-icons/md';
+import { 
+  MdExpandMore, 
+  MdCalendarToday, 
+  MdFileDownload, 
+  MdArrowDropDown,
+  MdDownload,
+  MdAllInclusive
+} from 'react-icons/md';
 import HorarioSemanal from '../components/common/HorarioSemanal';
 import MainLayout from '../components/layout/MainLayout';
 import { Notification } from '../components/common';
 import { getCurrentUser } from '../store/authStore';
+import { exportarCalendarioCarrera, exportarTodasLasCarreras } from '../utils/pdfExport';
 
 /**
  * Pantalla de Calendario
@@ -26,14 +40,19 @@ import { getCurrentUser } from '../store/authStore';
 const Calendario = () => {
   const theme = useTheme();
   const currentUser = getCurrentUser();
-  const isSecretaria = currentUser?.role === 'secretaria';
+  const isSecretaria = currentUser?.role === 'escolares';
 
-  // Carreras disponibles (solo para secretaria)
+  // Licenciaturas disponibles (solo para secretaria)
   const carreras = [
-    { id: 'informatica', label: 'Lic. en Informática' },
-    { id: 'sistemas', label: 'Ing. en Sistemas Computacionales' },
-    { id: 'industrial', label: 'Ing. Industrial' },
-    { id: 'electronica', label: 'Ing. Electrónica' },
+    { id: 'informatica', label: 'Informática' },
+    { id: 'administracion-municipal', label: 'Administración Municipal' },
+    { id: 'administracion-publica', label: 'Administración Pública' },
+    { id: 'ciencias-biomedicas', label: 'Ciencias Biomédicas' },
+    { id: 'ciencias-empresariales', label: 'Ciencias Empresariales' },
+    { id: 'enfermeria', label: 'Enfermería' },
+    { id: 'medicina', label: 'Medicina' },
+    { id: 'nutricion', label: 'Nutrición' },
+    { id: 'odontologia', label: 'Odontología' },
   ];
 
   // Tipos de examen disponibles
@@ -60,8 +79,15 @@ const Calendario = () => {
     severity: 'success'
   });
 
-  // Estado de expansión de accordions (primer semestre expandido por defecto)
-  const [expandedSemesters, setExpandedSemesters] = useState({ 1: true });
+  // Estado de expansión de accordions (solo uno a la vez - por índice)
+  const [expandedSemesterIndex, setExpandedSemesterIndex] = useState(0);
+  
+  // Refs para cada acordeón para hacer scroll
+  const accordionRefs = useRef({});
+
+  // Estado para menú de exportación (solo secretaria)
+  const [anchorElExport, setAnchorElExport] = useState(null);
+  const openExportMenu = Boolean(anchorElExport);
 
   // Horarios de exámenes por semestre - Licenciatura en Informática (solo impares)
   // TODO: Estos datos vendrán del backend filtrados por tipoExamenActual
@@ -79,11 +105,12 @@ const Calendario = () => {
         'Cálculo I'
       ],
       eventos: [
-        { dia: 1, horaInicio: '08:00', materia: 'Diseño Estructurado de Algoritmos', aula: 'Lab-301' },
-        { dia: 1, horaInicio: '10:00', materia: 'Administración', aula: 'Aula-102' },
-        { dia: 2, horaInicio: '09:00', materia: 'Historia del Pensamiento Filosófico', aula: 'Aula-205' },
-        { dia: 3, horaInicio: '11:00', materia: 'Lógica Matemática', aula: 'Aula-303' },
-        { dia: 4, horaInicio: '08:00', materia: 'Cálculo I', aula: 'Aula-101' },
+        { diaId: 0, horaInicio: '08:00', materia: 'Diseño Estructurado de Algoritmos', grupo: '106-A', aplicador: 'Dr. Alejandro', aula: 'Lab-301', duracion: '2 horas', conflicto: false },
+        { diaId: 0, horaInicio: '08:00', materia: 'Diseño Estructurado de Algoritmos', grupo: '106-B', aplicador: 'Dr. Alejandro', aula: 'Lab-302', duracion: '2 horas', conflicto: false },
+        { diaId: 0, horaInicio: '10:00', materia: 'Administración', grupo: '106-A', aplicador: 'M.C. Mónica', aula: 'Aula-102', duracion: '1.5 horas', conflicto: false },
+        { diaId: 1, horaInicio: '09:00', materia: 'Historia del Pensamiento Filosófico', grupo: '106-A', aplicador: 'Dr. Amando', aula: 'Aula-205', duracion: '2 horas', conflicto: false },
+        { diaId: 2, horaInicio: '11:00', materia: 'Lógica Matemática', grupo: '106-A', aplicador: '', aula: 'Aula-303', duracion: '2 horas', conflicto: false },
+        { diaId: 3, horaInicio: '08:00', materia: 'Cálculo I', grupo: '106-A', aplicador: '', aula: 'Aula-101', duracion: '2 horas', conflicto: false },
       ]
     },
     {
@@ -97,11 +124,11 @@ const Calendario = () => {
         'Álgebra Lineal'
       ],
       eventos: [
-        { dia: 1, horaInicio: '10:00', materia: 'Estructuras de Datos', aula: 'Lab-303' },
-        { dia: 1, horaInicio: '15:00', materia: 'Electrónica Digital', aula: 'Lab-402' },
-        { dia: 2, horaInicio: '11:00', materia: 'Contabilidad y Finanzas', aula: 'Aula-207' },
-        { dia: 3, horaInicio: '09:00', materia: 'Teoría de Autómatas', aula: 'Aula-305' },
-        { dia: 4, horaInicio: '08:00', materia: 'Álgebra Lineal', aula: 'Aula-103' },
+        { diaId: 0, horaInicio: '10:00', materia: 'Estructuras de Datos', grupo: '306-A', aplicador: '', aula: 'Lab-303', duracion: '2 horas', conflicto: false },
+        { diaId: 0, horaInicio: '15:00', materia: 'Electrónica Digital', grupo: '306-A', aplicador: '', aula: 'Lab-402', duracion: '2 horas', conflicto: false },
+        { diaId: 1, horaInicio: '11:00', materia: 'Contabilidad y Finanzas', grupo: '306-A', aplicador: '', aula: 'Aula-207', duracion: '1.5 horas', conflicto: false },
+        { diaId: 2, horaInicio: '09:00', materia: 'Teoría de Autómatas', grupo: '306-A', aplicador: '', aula: 'Aula-305', duracion: '2 horas', conflicto: false },
+        { diaId: 3, horaInicio: '08:00', materia: 'Álgebra Lineal', grupo: '306-A', aplicador: '', aula: 'Aula-103', duracion: '2 horas', conflicto: false },
       ]
     },
     {
@@ -115,11 +142,11 @@ const Calendario = () => {
         'Diseño Web'
       ],
       eventos: [
-        { dia: 1, horaInicio: '08:00', materia: 'Paradigmas de Programación II', aula: 'Lab-307' },
-        { dia: 1, horaInicio: '13:00', materia: 'Redes I', aula: 'Lab-404' },
-        { dia: 2, horaInicio: '09:00', materia: 'Bases de Datos II', aula: 'Lab-308' },
-        { dia: 3, horaInicio: '11:00', materia: 'Fundamentos de Sistemas Operativos', aula: 'Lab-309' },
-        { dia: 4, horaInicio: '15:00', materia: 'Diseño Web', aula: 'Lab-310' },
+        { diaId: 0, horaInicio: '08:00', materia: 'Paradigmas de Programación II', grupo: '506-A', aplicador: '', aula: 'Lab-307', duracion: '2 horas', conflicto: false },
+        { diaId: 0, horaInicio: '13:00', materia: 'Redes I', grupo: '506-A', aplicador: '', aula: 'Lab-404', duracion: '2 horas', conflicto: false },
+        { diaId: 1, horaInicio: '09:00', materia: 'Bases de Datos II', grupo: '506-A', aplicador: '', aula: 'Lab-308', duracion: '2 horas', conflicto: false },
+        { diaId: 2, horaInicio: '11:00', materia: 'Fundamentos de Sistemas Operativos', grupo: '506-A', aplicador: '', aula: 'Lab-309', duracion: '2 horas', conflicto: false },
+        { diaId: 3, horaInicio: '15:00', materia: 'Diseño Web', grupo: '506-A', aplicador: '', aula: 'Lab-310', duracion: '2 horas', conflicto: false },
       ]
     },
     {
@@ -133,11 +160,11 @@ const Calendario = () => {
         'Derecho y Legislación en Informática'
       ],
       eventos: [
-        { dia: 1, horaInicio: '10:00', materia: 'Tecnologías Web II', aula: 'Lab-314' },
-        { dia: 1, horaInicio: '15:00', materia: 'Bases de Datos Avanzadas', aula: 'Lab-315' },
-        { dia: 2, horaInicio: '11:00', materia: 'Ingeniería de Software II', aula: 'Aula-209' },
-        { dia: 3, horaInicio: '09:00', materia: 'Probabilidad y Estadística', aula: 'Aula-306' },
-        { dia: 4, horaInicio: '13:00', materia: 'Derecho y Legislación en Informática', aula: 'Aula-105' },
+        { diaId: 0, horaInicio: '10:00', materia: 'Tecnologías Web II', grupo: 'Único', aplicador: '', aula: 'Lab-314', duracion: '2 horas', conflicto: false },
+        { diaId: 0, horaInicio: '15:00', materia: 'Bases de Datos Avanzadas', grupo: 'Único', aplicador: '', aula: 'Lab-315', duracion: '2 horas', conflicto: false },
+        { diaId: 1, horaInicio: '11:00', materia: 'Ingeniería de Software II', grupo: 'Único', aplicador: '', aula: 'Aula-209', duracion: '2 horas', conflicto: false },
+        { diaId: 2, horaInicio: '09:00', materia: 'Probabilidad y Estadística', grupo: 'Único', aplicador: '', aula: 'Aula-306', duracion: '2 horas', conflicto: false },
+        { diaId: 3, horaInicio: '13:00', materia: 'Derecho y Legislación en Informática', grupo: 'Único', aplicador: '', aula: 'Aula-105', duracion: '1.5 horas', conflicto: false },
       ]
     },
     {
@@ -151,19 +178,64 @@ const Calendario = () => {
         'Investigación de Operaciones'
       ],
       eventos: [
-        { dia: 1, horaInicio: '11:00', materia: 'Sistemas Distribuidos', aula: 'Lab-316' },
-        { dia: 1, horaInicio: '16:00', materia: 'Calidad de Software', aula: 'Aula-210' },
-        { dia: 2, horaInicio: '08:00', materia: 'Interacción Humano-Computadora', aula: 'Lab-317' },
-        { dia: 3, horaInicio: '10:00', materia: 'Inteligencia de Negocios', aula: 'Lab-318' },
-        { dia: 4, horaInicio: '14:00', materia: 'Investigación de Operaciones', aula: 'Aula-106' },
+        { diaId: 0, horaInicio: '11:00', materia: 'Sistemas Distribuidos', grupo: 'Único', aplicador: '', aula: 'Lab-316', duracion: '2 horas', conflicto: false },
+        { diaId: 0, horaInicio: '16:00', materia: 'Calidad de Software', grupo: 'Único', aplicador: '', aula: 'Aula-210', duracion: '2 horas', conflicto: false },
+        { diaId: 1, horaInicio: '08:00', materia: 'Interacción Humano-Computadora', grupo: 'Único', aplicador: '', aula: 'Lab-317', duracion: '2 horas', conflicto: false },
+        { diaId: 2, horaInicio: '10:00', materia: 'Inteligencia de Negocios', grupo: 'Único', aplicador: '', aula: 'Lab-318', duracion: '2 horas', conflicto: false },
+        { diaId: 3, horaInicio: '14:00', materia: 'Investigación de Operaciones', grupo: 'Único', aplicador: '', aula: 'Aula-106', duracion: '2 horas', conflicto: false },
       ]
     }
   ], []);
 
   const [semestres, setSemestres] = useState(semestresData);
 
+  // Mapeo de colores para grupos (basado en preferencias)
+  const coloresGrupos = {
+    '106-A': theme.palette.primary.main,
+    '106-B': theme.palette.success.main,
+    '106-C': theme.palette.warning.main,
+    '306-A': theme.palette.info.main,
+    '506-A': theme.palette.error.main,
+    'Único': theme.palette.secondary.main,
+  };
+
+  // Cargar datos guardados del localStorage al iniciar
+  useEffect(() => {
+    const loadSavedData = () => {
+      try {
+        const key = `calendario_${carreraSeleccionada}_${tipoExamenActual}`;
+        const saved = localStorage.getItem(key);
+        if (saved) {
+          const parsedData = JSON.parse(saved);
+          setSemestres(parsedData);
+          console.log('Datos cargados desde localStorage:', key);
+        } else {
+          // Si no hay datos guardados, usar los datos mock
+          setSemestres(semestresData);
+          console.log('Usando datos mock iniciales');
+        }
+      } catch (error) {
+        console.error('Error al cargar datos guardados:', error);
+        setSemestres(semestresData);
+      }
+    };
+    loadSavedData();
+  }, [tipoExamenActual, carreraSeleccionada, semestresData]);
+
+  // Guardar datos en localStorage cuando cambien los semestres
+  useEffect(() => {
+    try {
+      const key = `calendario_${carreraSeleccionada}_${tipoExamenActual}`;
+      localStorage.setItem(key, JSON.stringify(semestres));
+      console.log('Datos guardados en localStorage:', key);
+    } catch (error) {
+      console.error('Error al guardar datos:', error);
+    }
+  }, [semestres, carreraSeleccionada, tipoExamenActual]);
+
   // Efecto para cargar datos cuando cambia el tipo de examen o carrera
   useEffect(() => {
+    // TODO: Aquí se hará la llamada al backend
     // TODO: Aquí se hará la llamada al backend
     // const fetchHorarios = async () => {
     //   try {
@@ -178,10 +250,7 @@ const Calendario = () => {
     //   }
     // };
     // fetchHorarios();
-    
-    // Por ahora, solo recargamos los datos mock
-    setSemestres(semestresData);
-  }, [tipoExamenActual, carreraSeleccionada, semestresData, isSecretaria]);
+  }, [isSecretaria]);
 
   // Manejar cambios en los eventos de un semestre
   const handleEventsChange = (semestreNumero, newEvents) => {
@@ -208,27 +277,32 @@ const Calendario = () => {
     setNotification({ ...notification, open: false });
   };
 
-  // Manejar expansión de accordions
-  const handleAccordionChange = (semestreNumero) => (event, isExpanded) => {
-    setExpandedSemesters(prev => ({
-      ...prev,
-      [semestreNumero]: isExpanded
-    }));
+  // Manejar expansión/colapso de semestre (solo uno a la vez)
+  const handleAccordionChange = (index) => {
+    setExpandedSemesterIndex(expandedSemesterIndex === index ? -1 : index);
   };
 
-  // Expandir/Colapsar todos
+  // Effect para hacer scroll al semestre expandido (enfocando en el título)
+  useEffect(() => {
+    if (expandedSemesterIndex >= 0 && accordionRefs.current[expandedSemesterIndex]) {
+      // Esperar a que la animación del Accordion termine (350ms según TransitionProps)
+      setTimeout(() => {
+        accordionRefs.current[expandedSemesterIndex]?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 350);
+    }
+  }, [expandedSemesterIndex]);
+
+  // Expandir/Colapsar todos (cambiar a solo expandir el primero)
   const handleToggleAll = () => {
-    const allExpanded = semestres.every(sem => expandedSemesters[sem.numero]);
-    if (allExpanded) {
-      // Colapsar todos
-      setExpandedSemesters({});
+    if (expandedSemesterIndex >= 0) {
+      // Si hay un semestre expandido, colapsarlo
+      setExpandedSemesterIndex(-1);
     } else {
-      // Expandir todos
-      const newState = {};
-      semestres.forEach(sem => {
-        newState[sem.numero] = true;
-      });
-      setExpandedSemesters(newState);
+      // Expandir el primero
+      setExpandedSemesterIndex(0);
     }
   };
 
@@ -252,11 +326,95 @@ const Calendario = () => {
     });
   };
 
+  // Manejar apertura de menú de exportación
+  const handleOpenExportMenu = (event) => {
+    setAnchorElExport(event.currentTarget);
+  };
+
+  // Manejar cierre de menú de exportación
+  const handleCloseExportMenu = () => {
+    setAnchorElExport(null);
+  };
+
+  // Exportar licenciatura actual
+  const handleExportarCarreraActual = () => {
+    const carreraActual = carreras.find(c => c.id === carreraSeleccionada);
+    const tipoExamenLabel = tiposExamen.find(t => t.id === tipoExamenActual)?.label || 'Sin tipo';
+    
+    console.log('Exportando licenciatura:', carreraActual?.label);
+    console.log('Semestres a exportar:', semestres);
+    console.log('Total de eventos:', semestres.reduce((acc, sem) => acc + sem.eventos.length, 0));
+    
+    exportarCalendarioCarrera({
+      semestres: semestres,
+      carrera: carreraActual?.label || 'Carrera',
+      tipoExamen: tipoExamenLabel,
+      periodo: 'Enero - Junio 2026',
+    });
+
+    setNotification({
+      open: true,
+      message: `PDF generado: ${semestres.reduce((acc, sem) => acc + sem.eventos.length, 0)} exámenes de ${carreraActual?.label}`,
+      severity: 'success'
+    });
+
+    handleCloseExportMenu();
+  };
+
+  // Exportar todas las licenciaturas
+  const handleExportarTodasCarreras = () => {
+    const tipoExamenLabel = tiposExamen.find(t => t.id === tipoExamenActual)?.label || 'Sin tipo';
+    
+    // Simular datos de todas las licenciaturas
+    // En producción, estos datos vendrían del backend
+    const todasCarreras = carreras.map(carrera => ({
+      nombre: carrera.label,
+      semestres: semestres // Reutilizamos los mismos semestres para el demo
+    }));
+
+    exportarTodasLasCarreras({
+      carreras: todasCarreras,
+      tipoExamen: tipoExamenLabel,
+      periodo: 'Enero - Junio 2026',
+    });
+
+    setNotification({
+      open: true,
+      message: 'Exportando calendarios de todas las licenciaturas...',
+      severity: 'success'
+    });
+
+    handleCloseExportMenu();
+  };
+
+  // Exportar calendario simple (para jefe de carrera)
+  const handleExportarCalendario = () => {
+    const carreraJefe = 'Informática'; // En producción vendría del usuario autenticado
+    const tipoExamenLabel = tiposExamen.find(t => t.id === tipoExamenActual)?.label || 'Sin tipo';
+    
+    console.log('Exportando calendario jefe de carrera');
+    console.log('Semestres:', semestres);
+    console.log('Total de eventos:', semestres.reduce((acc, sem) => acc + sem.eventos.length, 0));
+    
+    exportarCalendarioCarrera({
+      semestres: semestres,
+      carrera: carreraJefe,
+      tipoExamen: tipoExamenLabel,
+      periodo: 'Enero - Junio 2026',
+    });
+
+    setNotification({
+      open: true,
+      message: `PDF generado: ${semestres.reduce((acc, sem) => acc + sem.eventos.length, 0)} exámenes de ${tipoExamenLabel}`,
+      severity: 'success'
+    });
+  };
+
   return (
     <MainLayout showSidebar={true}>
       <Container maxWidth="xl" sx={{ py: 4 }}>
         {/* Encabezado */}
-        <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 2 }}>
           <Box>
             <Typography 
               variant="h4" 
@@ -280,10 +438,52 @@ const Calendario = () => {
               }
             </Typography>
           </Box>
-          <Button
-            variant="outlined"
-            onClick={handleToggleAll}
-            sx={{
+          
+          <Stack direction="row" spacing={2}>
+            {/* Botón de exportación para Jefe de Carrera */}
+            {!isSecretaria && (
+              <Button
+                variant="contained"
+                startIcon={<MdFileDownload />}
+                onClick={handleExportarCalendario}
+                sx={{
+                  textTransform: 'none',
+                  fontWeight: 600,
+                }}
+              >
+                Exportar PDF
+              </Button>
+            )}
+
+            {/* Botones de exportación para Secretaria */}
+            {isSecretaria && (
+              <ButtonGroup variant="contained">
+                <Button
+                  startIcon={<MdFileDownload />}
+                  onClick={handleExportarCarreraActual}
+                  sx={{
+                    textTransform: 'none',
+                    fontWeight: 600,
+                  }}
+                >
+                  Exportar Licenciatura Actual
+                </Button>
+                <Button
+                  size="small"
+                  onClick={handleOpenExportMenu}
+                  sx={{
+                    px: 1,
+                  }}
+                >
+                  <MdArrowDropDown size={20} />
+                </Button>
+              </ButtonGroup>
+            )}
+
+            <Button
+              variant="outlined"
+              onClick={handleToggleAll}
+              sx={{
               borderColor: theme.palette.primary.main,
               color: theme.palette.primary.main,
               '&:hover': {
@@ -292,8 +492,9 @@ const Calendario = () => {
               },
             }}
           >
-            {semestres.every(sem => expandedSemesters[sem.numero]) ? 'Colapsar Todo' : 'Expandir Todo'}
+            {expandedSemesterIndex >= 0 ? 'Colapsar Todo' : 'Expandir Primero'}
           </Button>
+          </Stack>
         </Box>
 
         {/* Selector de carrera (solo para secretaria) */}
@@ -311,7 +512,7 @@ const Calendario = () => {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
               <MdCalendarToday size={20} color={theme.palette.info.main} />
               <Typography variant="subtitle1" fontWeight={600}>
-                Carrera
+                Licenciatura
               </Typography>
             </Box>
             
@@ -415,12 +616,51 @@ const Calendario = () => {
           />
         </Box>
 
+        {/* Menú de opciones de exportación (solo secretaria) */}
+        {isSecretaria && (
+          <Menu
+            anchorEl={anchorElExport}
+            open={openExportMenu}
+            onClose={handleCloseExportMenu}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <MenuItem onClick={handleExportarCarreraActual}>
+              <ListItemIcon>
+                <MdDownload size={20} />
+              </ListItemIcon>
+              <ListItemText 
+                primary="Exportar Carrera Actual" 
+                secondary={carreras.find(c => c.id === carreraSeleccionada)?.label}
+              />
+            </MenuItem>
+            <MenuItem onClick={handleExportarTodasCarreras}>
+              <ListItemIcon>
+                <MdAllInclusive size={20} />
+              </ListItemIcon>
+              <ListItemText 
+                primary="Exportar Todas las Carreras" 
+                secondary="Genera un PDF consolidado"
+              />
+            </MenuItem>
+          </Menu>
+        )}
+
         {/* Accordions por semestre */}
-        {semestres.map((semestre) => (
+        {semestres.map((semestre, semestreIndex) => (
           <Accordion
             key={semestre.numero}
-            expanded={expandedSemesters[semestre.numero] || false}
-            onChange={handleAccordionChange(semestre.numero)}
+            ref={(el) => {
+              if (el) accordionRefs.current[semestreIndex] = el;
+            }}
+            expanded={expandedSemesterIndex === semestreIndex}
+            onChange={() => handleAccordionChange(semestreIndex)}
             elevation={0}
             sx={{
               mb: 2,
@@ -430,7 +670,7 @@ const Calendario = () => {
               '&:before': { display: 'none' },
               overflow: 'hidden',
             }}
-            TransitionProps={{ timeout: 300 }}
+            TransitionProps={{ timeout: 350 }}
           >
             <AccordionSummary
               expandIcon={<MdExpandMore size={24} color="#fff" />}
@@ -463,6 +703,8 @@ const Calendario = () => {
                 onSave={() => handleSaveSemestre(semestre.numero)}
                 showHeader={false}
                 readOnly={isSecretaria}
+                coloresGrupos={coloresGrupos}
+                fechaInicio={new Date(2026, 0, 26)} // 26 enero 2026
               />
             </AccordionDetails>
           </Accordion>

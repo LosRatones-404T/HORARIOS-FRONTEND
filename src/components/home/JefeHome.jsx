@@ -19,11 +19,12 @@ import {
   MdCalendarMonth,
   MdClass,
   MdEventNote,
-  MdBlock
+  MdBlock,
+  MdAutoAwesome
 } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { ESTADOS, ESTADO_LABELS, ESTADO_COLORS } from '../../constants/estadosExamen';
-import { periodosApi } from '../../services/api';
+import { periodosApi } from '../../services';
 
 const JefeHome = ({ estadoExamen, logsRecientes }) => {
   const theme = useTheme();
@@ -90,6 +91,34 @@ const JefeHome = ({ estadoExamen, logsRecientes }) => {
             </Box>
           )}
         </Alert>
+      )}
+
+      {/* Botón Grande de Acceso Rápido - Generar */}
+      {puedeGenerarExamenes && (
+        <Box sx={{ mb: 4 }}>
+          <Button
+            variant="contained"
+            size="large"
+            onClick={() => navigate('/generar')}
+            startIcon={<MdAutoAwesome size={28} />}
+            sx={{
+              py: 3,
+              px: 5,
+              fontSize: '1.1rem',
+              fontWeight: 600,
+              borderRadius: 3,
+              background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+              boxShadow: 4,
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                boxShadow: 8,
+                transform: 'translateY(-2px)',
+              },
+            }}
+          >
+            Generar Calendario de Exámenes
+          </Button>
+        </Box>
       )}
 
       {/* Tarjetas de Estadísticas */}

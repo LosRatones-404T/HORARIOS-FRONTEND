@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { 
   Box, 
   Typography, 
@@ -14,6 +14,7 @@ import { MdSave, MdExpandMore } from 'react-icons/md';
 import MateriaCard from '../components/common/MateriaCard';
 import Notification from '../components/common/Notification';
 import MainLayout from '../components/layout/MainLayout';
+import { getCurrentUser } from '../store/authStore';
 
 /**
  * Pantalla de Preferencias de Materias
@@ -21,6 +22,8 @@ import MainLayout from '../components/layout/MainLayout';
  */
 const Preferencias = () => {
   const theme = useTheme();
+  const currentUser = getCurrentUser();
+  const isJefe = currentUser?.role === 'jefe';
 
   // Datos de materias por semestre para la carrera de Informática (memoizado)
   const semestresIniciales = useMemo(() => [
@@ -30,43 +33,43 @@ const Preferencias = () => {
       materias: [
         {
           nombre: 'Diseño Estructurado de Algoritmos',
-          profesor: 'Dr. Juan Pérez García',
+          profesor: 'Dr. Alejandro Jarillo Silva',
           aplicador: '',
-          sinodales: ['Dra. María López', 'Mtro. Carlos Ruiz'],
-          modalidad: 'Digital',
-          academia: true
+          sinodales: ['Dr. Eric Melecio Castro Leal', 'M.C. Enrique García Reyes'],
+          modalidad: 'Tradicional',
+          academia: false
         },
         {
           nombre: 'Administración',
-          profesor: 'Mtra. Ana González Martínez',
+          profesor: 'M.C. Mónica Pérez Meza',
           aplicador: '',
-          sinodales: ['Lic. Pedro Sánchez'],
+          sinodales: ['M.C. Teresita de J. Mijangos Martínez'],
           modalidad: 'Tradicional',
           academia: false
         },
         {
           nombre: 'Historia del Pensamiento Filosófico',
-          profesor: 'Dr. Roberto Fernández',
+          profesor: 'Dr. Amando Alejandro Ruiz Figueroa',
           aplicador: '',
-          sinodales: ['Dra. Laura Jiménez', 'Mtro. José Ramírez'],
-          modalidad: 'Digital',
-          academia: true
+          sinodales: ['M.C.C. Lirio Ruiz Guerra', 'M.T.E. Everardo de Jesús Pacheco Antonio'],
+          modalidad: 'Tradicional',
+          academia: false
         },
         {
           nombre: 'Lógica Matemática',
-          profesor: 'Dr. Miguel Ángel Torres',
+          profesor: 'Dr. Arisel Darío Barragán López',
           aplicador: '',
-          sinodales: ['Dra. Patricia Morales'],
-          modalidad: 'Digital',
-          academia: true
+          sinodales: ['Dra. Aidee Cruz Barragán'],
+          modalidad: 'Tradicional',
+          academia: false
         },
         {
           nombre: 'Cálculo I',
-          profesor: 'Dr. Fernando Castillo',
+          profesor: 'Dr. Arturo Benítez Hernández',
           aplicador: '',
-          sinodales: ['Dr. Ricardo Méndez', 'Mtra. Sofía Herrera'],
-          modalidad: 'Digital',
-          academia: true
+          sinodales: ['Dr. José J. Hernández Barriga', 'M.C.C. Silviana Juárez Chalini'],
+          modalidad: 'Tradicional',
+          academia: false
         }
       ]
     },
@@ -76,43 +79,43 @@ const Preferencias = () => {
       materias: [
         {
           nombre: 'Estructuras de Datos',
-          profesor: 'Dr. Raúl Domínguez',
+          profesor: 'Dr. Jesús Cruz Ahuactzil',
           aplicador: '',
-          sinodales: ['Mtro. Javier Cortés', 'Mtra. Beatriz Luna'],
-          modalidad: 'Digital',
-          academia: true
+          sinodales: ['M.C.M. Jesús Pacheco Mendoza', 'M.I.T.I. Oswaldo Rey Ávila Barrón'],
+          modalidad: 'Tradicional',
+          academia: false
         },
         {
           nombre: 'Electrónica Digital',
-          profesor: 'Ing. Eduardo Castro',
+          profesor: 'M.T.C.A. Rolando Pedro Gabriel',
           aplicador: '',
-          sinodales: ['Dr. Pablo Aguilar'],
+          sinodales: ['M.T.I.E. Irving Ulises Hernández Miguel'],
           modalidad: 'Tradicional',
           academia: false
         },
         {
           nombre: 'Contabilidad y Finanzas',
-          profesor: 'Lic. Mariana Salazar',
+          profesor: 'M.C. Mónica Pérez Meza',
           aplicador: '',
-          sinodales: ['Mtra. Claudia Paredes', 'Lic. Enrique Benítez'],
-          modalidad: 'Digital',
+          sinodales: ['M.C. Teresita de J. Mijangos Martínez', 'M.C.A.C. José Alberto Cruz Tolentino'],
+          modalidad: 'Tradicional',
           academia: false
         },
         {
           nombre: 'Teoría de Autómatas',
-          profesor: 'Dr. Daniel Ochoa',
+          profesor: 'Dr. Eric Melecio Castro Leal',
           aplicador: '',
-          sinodales: ['Dra. Liliana Campos'],
-          modalidad: 'Digital',
-          academia: true
+          sinodales: ['M.C.C. Eliezer Alcázar Silva'],
+          modalidad: 'Tradicional',
+          academia: false
         },
         {
           nombre: 'Álgebra Lineal',
-          profesor: 'Dra. Verónica Ponce',
+          profesor: 'Dr. Arisel Darío Barragán López',
           aplicador: '',
-          sinodales: ['Dr. Armando León', 'Mtra. Cecilia Ríos'],
-          modalidad: 'Digital',
-          academia: true
+          sinodales: ['Dr. Arturo Benítez Hernández', 'Dra. Aidee Cruz Barragán'],
+          modalidad: 'Tradicional',
+          academia: false
         }
       ]
     },
@@ -122,41 +125,41 @@ const Preferencias = () => {
       materias: [
         {
           nombre: 'Paradigmas de Programación II',
-          profesor: 'Dr. Oscar Montes',
+          profesor: 'M.C.M. Oscar Cuauhtémoc Esperanza Contreras',
           aplicador: '',
-          sinodales: ['Mtra. Silvia Ortega', 'Mtro. Felipe Márquez'],
-          modalidad: 'Digital',
-          academia: true
+          sinodales: ['M.C.C. Silviana Juárez Chalini', 'M.C.M. Jesús Pacheco Mendoza'],
+          modalidad: 'Tradicional',
+          academia: false
         },
         {
           nombre: 'Redes I',
-          profesor: 'Ing. Mauricio Acosta',
+          profesor: 'M.T.I.E. Irving Ulises Hernández Miguel',
           aplicador: '',
-          sinodales: ['Dr. Gerardo Lara'],
+          sinodales: ['M.T.C.A. Rolando Pedro Gabriel'],
           modalidad: 'Tradicional',
-          academia: true
+          academia: false
         },
         {
           nombre: 'Bases de Datos II',
-          profesor: 'Dra. Elena Cordero',
+          profesor: 'Dr. Alejandro Jarillo Silva',
           aplicador: '',
-          sinodales: ['Mtro. Hugo Sandoval', 'Dra. Yolanda Cervantes'],
-          modalidad: 'Digital',
-          academia: true
+          sinodales: ['M.C. Enrique García Reyes', 'Dr. Eric Melecio Castro Leal'],
+          modalidad: 'Tradicional',
+          academia: false
         },
         {
           nombre: 'Fundamentos de Sistemas Operativos',
-          profesor: 'Dr. César Espinosa',
+          profesor: 'Dr. Jesús Cruz Ahuactzil',
           aplicador: '',
-          sinodales: ['Dra. Karla Miranda'],
-          modalidad: 'Digital',
-          academia: true
+          sinodales: ['M.C.C. Eliezer Alcázar Silva'],
+          modalidad: 'Tradicional',
+          academia: false
         },
         {
           nombre: 'Diseño Web',
-          profesor: 'Mtra. Daniela Rosales',
+          profesor: 'M.C.C. Lirio Ruiz Guerra',
           aplicador: '',
-          sinodales: ['Mtro. Samuel Gallegos', 'Mtra. Fernanda Ugalde'],
+          sinodales: ['M.I.T.I. Oswaldo Rey Ávila Barrón', 'M.T.E. Everardo de Jesús Pacheco Antonio'],
           modalidad: 'Tradicional',
           academia: false
         }
@@ -168,35 +171,35 @@ const Preferencias = () => {
       materias: [
         {
           nombre: 'Tecnologías Web II',
-          profesor: 'Dr. Marcos Arellano',
+          profesor: 'Dr. Amando Alejandro Ruiz Figueroa',
           aplicador: '',
-          sinodales: ['Mtro. Omar Alvarado', 'Mtra. Regina Santos'],
-          modalidad: 'Digital',
-          academia: true
+          sinodales: ['M.C. Enrique García Reyes', 'M.C. Teresita de J. Mijangos Martínez'],
+          modalidad: 'Tradicional',
+          academia: false
         },
         {
           nombre: 'Bases de Datos Avanzadas',
-          profesor: 'Dra. Pilar Rangel',
+          profesor: 'Dr. Eric Melecio Castro Leal',
           aplicador: '',
-          sinodales: ['Dr. Gonzalo Trejo'],
-          modalidad: 'Digital',
-          academia: true
+          sinodales: ['Dr. Alejandro Jarillo Silva'],
+          modalidad: 'Tradicional',
+          academia: false
         },
         {
           nombre: 'Ingeniería de Software II',
-          profesor: 'Dr. Benjamín Camacho',
+          profesor: 'M.C.A.C. José Alberto Cruz Tolentino',
           aplicador: '',
-          sinodales: ['Dra. Leticia Arriaga', 'Mtro. Saúl Hidalgo'],
-          modalidad: 'Digital',
-          academia: true
+          sinodales: ['M.C.C. Silviana Juárez Chalini', 'M.C.M. Oscar Cuauhtémoc Esperanza Contreras'],
+          modalidad: 'Tradicional',
+          academia: false
         },
         {
           nombre: 'Probabilidad y Estadística',
-          profesor: 'Dra. Susana Cárdenas',
+          profesor: 'Dr. Arturo Benítez Hernández',
           aplicador: '',
-          sinodales: ['Dr. Emilio Zúñiga'],
-          modalidad: 'Digital',
-          academia: true
+          sinodales: ['Dr. Arisel Darío Barragán López'],
+          modalidad: 'Tradicional',
+          academia: false
         },
         {
           nombre: 'Derecho y Legislación en Informática',
@@ -214,41 +217,41 @@ const Preferencias = () => {
       materias: [
         {
           nombre: 'Inteligencia Artificial',
-          profesor: 'Dr. Xavier Montes',
+          profesor: 'Dr. José J. Hernández Barriga',
           aplicador: '',
-          sinodales: ['Dra. Raquel Orozco', 'Mtro. Augusto Parra'],
-          modalidad: 'Digital',
-          academia: true
+          sinodales: ['Dr. Jesús Cruz Ahuactzil', 'M.C.C. Eliezer Alcázar Silva'],
+          modalidad: 'Tradicional',
+          academia: false
         },
         {
           nombre: 'Seguridad Informática',
-          profesor: 'Dr. Leonardo Bermúdez',
+          profesor: 'M.C.M. Jesús Pacheco Mendoza',
           aplicador: '',
-          sinodales: ['Dra. Mireya Galván'],
-          modalidad: 'Digital',
-          academia: true
+          sinodales: ['M.I.T.I. Oswaldo Rey Ávila Barrón'],
+          modalidad: 'Tradicional',
+          academia: false
         },
         {
           nombre: 'Administración de Proyectos',
-          profesor: 'Mtra. Ximena Salinas',
+          profesor: 'M.C. Mónica Pérez Meza',
           aplicador: '',
-          sinodales: ['Lic. Gustavo Macías', 'Mtra. Liliana Robles'],
+          sinodales: ['M.C. Teresita de J. Mijangos Martínez', 'M.C.C. Lirio Ruiz Guerra'],
           modalidad: 'Tradicional',
           academia: false
         },
         {
           nombre: 'Cómputo en la Nube',
-          profesor: 'Dr. Maximiliano Aranda',
+          profesor: 'M.T.E. Everardo de Jesús Pacheco Antonio',
           aplicador: '',
-          sinodales: ['Dr. Octavio Serrano'],
-          modalidad: 'Digital',
-          academia: true
+          sinodales: ['M.T.I.E. Irving Ulises Hernández Miguel'],
+          modalidad: 'Tradicional',
+          academia: false
         },
         {
           nombre: 'Auditoría Informática',
-          profesor: 'Lic. Flor Mariana Cortés',
+          profesor: 'Dra. Aidee Cruz Barragán',
           aplicador: '',
-          sinodales: ['Lic. Salvador Ochoa', 'Mtra. Nadia Suárez'],
+          sinodales: ['M.T.C.A. Rolando Pedro Gabriel', 'M.C.A.C. José Alberto Cruz Tolentino'],
           modalidad: 'Tradicional',
           academia: false
         }
@@ -256,11 +259,46 @@ const Preferencias = () => {
     }
   ], []);
 
-  // Estado editable de las materias
-  const [semestres, setSemestres] = useState(semestresIniciales);
+  // Estado editable de las materias con grupos por materia
+  const [semestres, setSemestres] = useState(() => {
+    return semestresIniciales.map(sem => ({
+      ...sem,
+      materias: sem.materias.map(m => {
+        // Asignar grupos según el semestre
+        let gruposCodigos;
+        if (sem.numero === 1) {
+          gruposCodigos = ['106-A', '106-B', '106-C'];
+        } else if (sem.numero === 3) {
+          gruposCodigos = ['306-A', '306-B', '306-C'];
+        } else if (sem.numero === 5) {
+          gruposCodigos = ['506-A', '506-B'];
+        } else {
+          gruposCodigos = ['Único'];
+        }
+        
+        return {
+          ...m,
+          // Materia-level (aplica a todos los grupos)
+          modalidad: m.modalidad || 'Tradicional',
+          academia: !!m.academia,
+          // Grupos
+          selectedGrupoIndex: 0,
+          gruposData: gruposCodigos.map(codigo => ({
+            codigo,
+            profesor: m.profesor,
+            aplicador: m.aplicador || '',
+            sinodales: (m.sinodales && m.sinodales.length > 0) ? [m.sinodales[0]] : [''],
+          })),
+        };
+      })
+    }));
+  });
   
-  // Estado para manejar qué semestres están expandidos (solo el primero al inicio)
-  const [expandedSemesters, setExpandedSemesters] = useState([0]);
+  // Estado para manejar qué semestre está expandido (solo uno a la vez)
+  const [expandedSemesterIndex, setExpandedSemesterIndex] = useState(0);
+  
+  // Refs para cada acordeón para hacer scroll
+  const accordionRefs = useRef({});
   
   // Estado para notificaciones
   const [notification, setNotification] = useState({ 
@@ -269,7 +307,7 @@ const Preferencias = () => {
     severity: 'success' 
   });
 
-  // Función para manejar cambios en las materias
+  // Función para manejar cambios en las materias (nivel materia: aplica a todos los grupos)
   const handleMateriaChange = (semestreIndex, materiaIndex, field, value) => {
     setSemestres(prevSemestres => {
       const newSemestres = [...prevSemestres];
@@ -278,6 +316,27 @@ const Preferencias = () => {
         [field]: value
       };
       return newSemestres;
+    });
+  };
+
+  // Seleccionar grupo activo en una materia
+  const handleSelectGrupo = (semestreIndex, materiaIndex, grupoIndex) => {
+    setSemestres(prev => {
+      const next = [...prev];
+      next[semestreIndex].materias[materiaIndex].selectedGrupoIndex = grupoIndex;
+      return next;
+    });
+  };
+
+  // Cambiar campo específico de un grupo
+  const handleMateriaGroupChange = (semestreIndex, materiaIndex, grupoIndex, field, value) => {
+    setSemestres(prev => {
+      const next = [...prev];
+      const materia = next[semestreIndex].materias[materiaIndex];
+      const gruposData = [...materia.gruposData];
+      gruposData[grupoIndex] = { ...gruposData[grupoIndex], [field]: value };
+      materia.gruposData = gruposData;
+      return next;
     });
   };
 
@@ -293,23 +352,32 @@ const Preferencias = () => {
     });
   };
 
-  // Manejar expansión/colapso de semestre
+  // Manejar expansión/colapso de semestre (solo uno a la vez)
   const handleAccordionChange = (index) => {
-    setExpandedSemesters(prev => 
-      prev.includes(index) 
-        ? prev.filter(i => i !== index)
-        : [...prev, index]
-    );
+    setExpandedSemesterIndex(expandedSemesterIndex === index ? -1 : index);
   };
+
+  // Effect para hacer scroll al semestre expandido (enfocando en el título)
+  useEffect(() => {
+    if (expandedSemesterIndex >= 0 && accordionRefs.current[expandedSemesterIndex]) {
+      // Esperar a que la animación del Accordion termine (350ms según TransitionProps)
+      setTimeout(() => {
+        accordionRefs.current[expandedSemesterIndex]?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 350);
+    }
+  }, [expandedSemesterIndex]);
 
   // Expandir o colapsar todos los semestres
   const handleToggleAll = () => {
-    if (expandedSemesters.length === semestres.length) {
-      // Si todos están expandidos, colapsar todos
-      setExpandedSemesters([]);
+    if (expandedSemesterIndex >= 0) {
+      // Si hay un semestre expandido, colapsarlo
+      setExpandedSemesterIndex(-1);
     } else {
-      // Expandir todos
-      setExpandedSemesters(semestres.map((_, index) => index));
+      // Expandir el primero
+      setExpandedSemesterIndex(0);
     }
   };
 
@@ -350,7 +418,7 @@ const Preferencias = () => {
               },
             }}
           >
-            {expandedSemesters.length === semestres.length ? 'Colapsar Todo' : 'Expandir Todo'}
+            {expandedSemesterIndex >= 0 ? 'Colapsar Todo' : 'Expandir Todo'}
           </Button>
         </Box>
 
@@ -358,7 +426,8 @@ const Preferencias = () => {
         {semestres.map((semestre, semestreIndex) => (
           <Accordion 
             key={semestre.numero}
-            expanded={expandedSemesters.includes(semestreIndex)}
+            ref={(el) => accordionRefs.current[semestreIndex] = el}
+            expanded={expandedSemesterIndex === semestreIndex}
             onChange={() => handleAccordionChange(semestreIndex)}
             TransitionProps={{ timeout: 300 }}
             sx={{
@@ -414,18 +483,29 @@ const Preferencias = () => {
                   mb: 3,
                 }}
               >
-                {semestre.materias.map((materia, materiaIndex) => (
-                  <MateriaCard
-                    key={materiaIndex}
-                    nombre={materia.nombre}
-                    profesor={materia.profesor}
-                    aplicador={materia.aplicador}
-                    sinodales={materia.sinodales}
-                    modalidad={materia.modalidad}
-                    academia={materia.academia}
-                    onChange={(field, value) => handleMateriaChange(semestreIndex, materiaIndex, field, value)}
-                  />
-                ))}
+                {semestre.materias.map((materia, materiaIndex) => {
+                  const grupoActual = materia.gruposData[materia.selectedGrupoIndex];
+                  return (
+                    <MateriaCard
+                      key={materiaIndex}
+                      nombre={materia.nombre}
+                      // Nivel materia (aplica a todos los grupos)
+                      modalidad={materia.modalidad}
+                      academia={materia.academia}
+                      onChange={(field, value) => handleMateriaChange(semestreIndex, materiaIndex, field, value)}
+                      // Grupos
+                      grupos={materia.gruposData.map(g => g.codigo)}
+                      selectedGrupoIndex={materia.selectedGrupoIndex}
+                      onSelectGrupo={(idx) => handleSelectGrupo(semestreIndex, materiaIndex, idx)}
+                      // Datos del grupo actual
+                      profesor={grupoActual.profesor}
+                      aplicador={grupoActual.aplicador}
+                      sinodales={grupoActual.sinodales}
+                      onChangeGrupo={(field, value) => handleMateriaGroupChange(semestreIndex, materiaIndex, materia.selectedGrupoIndex, field, value)}
+                      disabledProfesor={isJefe}
+                    />
+                  );
+                })}
               </Box>
 
               {/* Botón Guardar del Semestre */}
