@@ -1,0 +1,36 @@
+# --- Dependencias ---
+# CRÍTICO: Nunca copiar node_modules. Se deben instalar limpio dentro del contenedor.
+node_modules
+npm-debug.log
+yarn-error.log
+pnpm-lock.yaml
+yarn.lock
+
+# --- Builds anteriores ---
+# Ignoramos carpetas generadas para que no ensucien el build nuevo
+dist
+build
+.next
+out
+coverage
+
+# --- Variables de Entorno ---
+# IMPORTANTE: Ignoramos los .env locales para no sobrescribir 
+# la configuración que pasamos desde el docker-compose.
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# --- IDE y Git ---
+.git
+.gitignore
+.vscode
+.idea
+*.swp
+*.swo
+
+# --- Sistema Operativo ---
+.DS_Store
+Thumbs.db
