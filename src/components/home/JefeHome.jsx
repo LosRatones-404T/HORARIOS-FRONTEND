@@ -25,10 +25,12 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { ESTADOS, ESTADO_LABELS, ESTADO_COLORS } from '../../constants/estadosExamen';
 import { periodosApi } from '../../services';
+import { getCurrentUser } from '../../store/authStore';
 
 const JefeHome = ({ estadoExamen, logsRecientes }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const currentUser = getCurrentUser();
 
   // Estado del período académico
   const [periodoActivo, setPeriodoActivo] = useState(null);
@@ -58,7 +60,7 @@ const JefeHome = ({ estadoExamen, logsRecientes }) => {
       {/* Encabezado */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 1 }}>
-          Bienvenido, Jefe de Carrera
+          Bienvenido, {currentUser?.name || currentUser?.username || 'Jefe de Carrera'}
         </Typography>
         <Typography variant="body1" sx={{ color: theme.palette.text.secondary }}>
           Panel de control - Gestión de exámenes

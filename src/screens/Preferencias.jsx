@@ -9,6 +9,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Alert
 } from '@mui/material';
 import { MdSave, MdExpandMore } from 'react-icons/md';
 import MateriaCard from '../components/common/MateriaCard';
@@ -24,6 +25,14 @@ const Preferencias = () => {
   const theme = useTheme();
   const currentUser = getCurrentUser();
   const isJefe = currentUser?.role === 'jefe';
+  
+  // Verificar si el calendario ya fue generado (bloquea edición)
+  const [calendarioGenerado, setCalendarioGenerado] = useState(false);
+  
+  useEffect(() => {
+    const generado = localStorage.getItem('calendarioGenerado') === 'true';
+    setCalendarioGenerado(generado);
+  }, []);
 
   // Datos de materias por semestre para la carrera de Informática (memoizado)
   const semestresIniciales = useMemo(() => [
@@ -264,17 +273,8 @@ const Preferencias = () => {
     return semestresIniciales.map(sem => ({
       ...sem,
       materias: sem.materias.map(m => {
-        // Asignar grupos según el semestre
-        let gruposCodigos;
-        if (sem.numero === 1) {
-          gruposCodigos = ['106-A', '106-B', '106-C'];
-        } else if (sem.numero === 3) {
-          gruposCodigos = ['306-A', '306-B', '306-C'];
-        } else if (sem.numero === 5) {
-          gruposCodigos = ['506-A', '506-B'];
-        } else {
-          gruposCodigos = ['Único'];
-        }
+        // Asignar 3 grupos para todos los semestres
+        const gruposCodigos = [`${sem.numero}06-A`, `${sem.numero}06-B`, `${sem.numero}06-C`];
         
         return {
           ...m,
@@ -422,6 +422,21 @@ const Preferencias = () => {
           </Button>
         </Box>
 
+        {/* Alerta de calendario generado */}
+        {calendarioGenerado && (
+          <Alert 
+            severity="warning" 
+            sx={{ mb: 3, borderRadius: 2 }}
+          >
+            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
+              Preferencias Bloqueadas
+            </Typography>
+            <Typography variant="body2">
+              El calendario ya ha sido generado. No puedes modificar las preferencias hasta que se inicie un nuevo periodo académico.
+            </Typography>
+          </Alert>
+        )}
+
         {/* Semestres como Accordions */}
         {semestres.map((semestre, semestreIndex) => (
           <Accordion 
@@ -492,17 +507,18 @@ const Preferencias = () => {
                       // Nivel materia (aplica a todos los grupos)
                       modalidad={materia.modalidad}
                       academia={materia.academia}
-                      onChange={(field, value) => handleMateriaChange(semestreIndex, materiaIndex, field, value)}
+                      onChange={(field, value) => !calendarioGenerado && handleMateriaChange(semestreIndex, materiaIndex, field, value)}
                       // Grupos
                       grupos={materia.gruposData.map(g => g.codigo)}
                       selectedGrupoIndex={materia.selectedGrupoIndex}
-                      onSelectGrupo={(idx) => handleSelectGrupo(semestreIndex, materiaIndex, idx)}
+                      onSelectGrupo={(idx) => !calendarioGenerado && handleSelectGrupo(semestreIndex, materiaIndex, idx)}
                       // Datos del grupo actual
                       profesor={grupoActual.profesor}
                       aplicador={grupoActual.aplicador}
                       sinodales={grupoActual.sinodales}
-                      onChangeGrupo={(field, value) => handleMateriaGroupChange(semestreIndex, materiaIndex, materia.selectedGrupoIndex, field, value)}
-                      disabledProfesor={isJefe}
+                      onChangeGrupo={(field, value) => !calendarioGenerado && handleMateriaGroupChange(semestreIndex, materiaIndex, materia.selectedGrupoIndex, field, value)}
+                      disabledProfesor={isJefe || calendarioGenerado}
+                      disabled={calendarioGenerado}
                     />
                   );
                 })}
@@ -514,12 +530,13 @@ const Preferencias = () => {
                   variant="contained"
                   startIcon={<MdSave />}
                   onClick={() => handleSaveSemester(semestreIndex)}
+                  disabled={calendarioGenerado}
                   sx={{
-                    bgcolor: theme.palette.success.main,
-                    color: theme.palette.mode === 'dark' ? '#fff' : theme.palette.success.contrastText,
+                    bgcolor: calendarioGenerado ? 'action.disabledBackground' : theme.palette.success.main,
+                    color: calendarioGenerado ? 'action.disabled' : (theme.palette.mode === 'dark' ? '#fff' : theme.palette.success.contrastText),
                     transition: 'all 0.2s ease',
                     '&:hover': {
-                      bgcolor: theme.palette.success.dark,
+                      bgcolor: calendarioGenerado ? 'action.disabledBackground' : theme.palette.success.dark,
                     },
                   }}
                 >

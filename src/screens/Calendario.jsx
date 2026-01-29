@@ -17,7 +17,8 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  Alert
 } from '@mui/material';
 import { 
   MdExpandMore, 
@@ -41,6 +42,14 @@ const Calendario = () => {
   const theme = useTheme();
   const currentUser = getCurrentUser();
   const isSecretaria = currentUser?.role === 'escolares';
+  
+  // Verificar si el calendario ya fue enviado a revisión
+  const [calendarioEnviado, setCalendarioEnviado] = useState(false);
+  
+  useEffect(() => {
+    const enviado = localStorage.getItem('calendarioEnviado') === 'true';
+    setCalendarioEnviado(enviado);
+  }, []);
 
   // Licenciaturas disponibles (solo para secretaria)
   const carreras = [
@@ -497,6 +506,21 @@ const Calendario = () => {
           </Stack>
         </Box>
 
+        {/* Alerta de calendario enviado a revisión */}
+        {calendarioEnviado && !isSecretaria && (
+          <Alert 
+            severity="info" 
+            sx={{ mb: 3, borderRadius: 2 }}
+          >
+            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
+              Calendario Enviado a Revisión
+            </Typography>
+            <Typography variant="body2">
+              El calendario ha sido enviado a revisión. No puedes realizar cambios hasta que sea aprobado o rechazado.
+            </Typography>
+          </Alert>
+        )}
+
         {/* Selector de carrera (solo para secretaria) */}
         {isSecretaria && (
           <Paper 
@@ -702,7 +726,7 @@ const Calendario = () => {
                 onEventsChange={(newEvents) => handleEventsChange(semestre.numero, newEvents)}
                 onSave={() => handleSaveSemestre(semestre.numero)}
                 showHeader={false}
-                readOnly={isSecretaria}
+                readOnly={isSecretaria || calendarioEnviado}
                 coloresGrupos={coloresGrupos}
                 fechaInicio={new Date(2026, 0, 26)} // 26 enero 2026
               />

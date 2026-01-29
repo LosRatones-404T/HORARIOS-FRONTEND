@@ -22,10 +22,12 @@ import {
 } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { periodosApi } from '../../services';
+import { getCurrentUser } from '../../store/authStore';
 
 const SecretariaHome = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const currentUser = getCurrentUser();
 
   // TODO: Obtener datos reales del backend
   const pendientesRevision = 3;
@@ -57,7 +59,7 @@ const SecretariaHome = () => {
       {/* Encabezado */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 1 }}>
-          Bienvenido, Servicios Escolares
+          Bienvenido, {currentUser?.name || currentUser?.username || 'Servicios Escolares'}
         </Typography>
         <Typography variant="body1" sx={{ color: theme.palette.text.secondary }}>
           Panel de control - Revisión de horarios de exámenes

@@ -27,9 +27,11 @@ import {
   MdMail
 } from 'react-icons/md';
 import { useState, useEffect } from 'react';
+import { getCurrentUser } from '../../store/authStore';
 
 const AdminHome = () => {
   const theme = useTheme();
+  const currentUser = getCurrentUser();
   const [usuarios, setUsuarios] = useState([
     {
       id: 1,
@@ -78,7 +80,7 @@ const AdminHome = () => {
       {/* Encabezado */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 1 }}>
-          Bienvenido, Administrador
+          Bienvenido, {currentUser?.name || currentUser?.username || 'Administrador'}
         </Typography>
         <Typography variant="body1" sx={{ color: theme.palette.text.secondary }}>
           Panel de control - Gestión de usuarios del sistema

@@ -11,6 +11,8 @@ function Home() {
     return <Navigate to="/login" replace />;
   }
 
+  const userName = user.name;
+
   // Renderizar según el rol
   const renderContent = () => {
     switch (user?.role) {

@@ -20,7 +20,8 @@ const MateriaCard = ({
   onChange,
   onSelectGrupo,
   onChangeGrupo,
-  disabledProfesor = false
+  disabledProfesor = false,
+  disabled = false
 }) => {
   const theme = useTheme();
 
@@ -152,6 +153,7 @@ const MateriaCard = ({
                 checked={modalidad === 'Digital'}
                 onChange={(e) => handleFieldChange('modalidad', e.target.checked ? 'Digital' : 'Tradicional')}
                 color="primary"
+                disabled={disabled}
               />
             }
             label="Digital"
@@ -165,6 +167,7 @@ const MateriaCard = ({
                 checked={academia}
                 onChange={(e) => handleFieldChange('academia', e.target.checked)}
                 color="primary"
+                disabled={disabled}
               />
             }
             label="Academia"
@@ -187,19 +190,19 @@ const MateriaCard = ({
         >
           Titular
         </Typography>
-        <FormControl fullWidth size="small" disabled={disabledProfesor}>
+        <FormControl fullWidth size="small" disabled={disabledProfesor || disabled}>
           <Select
             value={profesor}
             onChange={(e) => handleGroupFieldChange('profesor', e.target.value)}
             displayEmpty
-            disabled={disabledProfesor}
+            disabled={disabledProfesor || disabled}
             sx={{
-              bgcolor: disabledProfesor ? theme.palette.action.disabledBackground : theme.palette.background.default,
+              bgcolor: (disabledProfesor || disabled) ? theme.palette.action.disabledBackground : theme.palette.background.default,
               '& .MuiOutlinedInput-notchedOutline': {
                 borderColor: theme.palette.divider,
               },
               '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: disabledProfesor ? theme.palette.divider : theme.palette.primary.main,
+                borderColor: (disabledProfesor || disabled) ? theme.palette.divider : theme.palette.primary.main,
               },
             }}
           >
@@ -233,6 +236,7 @@ const MateriaCard = ({
             value={aplicador}
             onChange={(e) => handleGroupFieldChange('aplicador', e.target.value)}
             displayEmpty
+            disabled={disabled}
             sx={{
               bgcolor: theme.palette.mode === 'light' 
                 ? theme.palette.background.default 
@@ -274,6 +278,7 @@ const MateriaCard = ({
             <IconButton 
               size="small" 
               onClick={handleAddSinodal}
+              disabled={disabled}
               sx={{ 
                 color: theme.palette.primary.main,
                 bgcolor: theme.palette.mode === 'light' 
@@ -313,6 +318,7 @@ const MateriaCard = ({
                     value={sinodal}
                     onChange={(e) => handleSinodalChange(index, e.target.value)}
                     displayEmpty
+                    disabled={disabled}
                     sx={{
                       bgcolor: theme.palette.mode === 'light' 
                         ? theme.palette.background.default 
@@ -338,6 +344,7 @@ const MateriaCard = ({
                 <IconButton 
                   size="small" 
                   onClick={() => handleRemoveSinodal(index)}
+                  disabled={disabled}
                   sx={{ 
                     color: theme.palette.error.main,
                     '&:hover': {
@@ -373,6 +380,8 @@ MateriaCard.propTypes = {
   onChange: PropTypes.func,
   onSelectGrupo: PropTypes.func,
   onChangeGrupo: PropTypes.func,
+  disabledProfesor: PropTypes.bool,
+  disabled: PropTypes.bool,
 };
 
 export default MateriaCard;

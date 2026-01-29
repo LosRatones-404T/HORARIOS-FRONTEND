@@ -15,6 +15,7 @@ import {
   StepLabel,
   Paper,
   Alert,
+  AlertTitle,
   TextField,
   useTheme,
   Divider,
@@ -75,6 +76,7 @@ function Generar() {
   const [estadoActual, setEstadoActual] = useState(null);
   const [openDialogGenerar, setOpenDialogGenerar] = useState(false);
   const [openDialogEnviar, setOpenDialogEnviar] = useState(false);
+  const [openDialogVerificarPreferencias, setOpenDialogVerificarPreferencias] = useState(false);
   const [generando, setGenerando] = useState(false);
   const [enviando, setEnviando] = useState(false);
   const [notification, setNotification] = useState({ 
@@ -86,9 +88,36 @@ function Generar() {
   // Estado del período académico
   const [periodoActivo, setPeriodoActivo] = useState(null);
   const [loadingPeriodo, setLoadingPeriodo] = useState(true);
+  
+  // Estados para control de flujo de trabajo
+  const [preferenciasConfiguradas, setPreferenciasConfiguradas] = useState(false);
+  const [calendarioGenerado, setCalendarioGenerado] = useState(false);
+  const [calendarioEnviado, setCalendarioEnviado] = useState(false);
 
   useEffect(() => {
     validarPeriodoActivo();
+    // Cargar estado de localStorage
+    const enviado = localStorage.getItem('calendarioEnviado') === 'true';
+    const generado = localStorage.getItem('calendarioGenerado') === 'true';
+    const horarioGuardado = localStorage.getItem('horarioGenerado');
+    const estadoGuardado = localStorage.getItem('estadoActual');
+    
+    if (enviado) {
+      setCalendarioEnviado(true);
+    }
+    if (generado) {
+      setCalendarioGenerado(true);
+    }
+    if (horarioGuardado) {
+      try {
+        setHorarioGenerado(JSON.parse(horarioGuardado));
+      } catch (error) {
+        console.error('Error al cargar horario:', error);
+      }
+    }
+    if (estadoGuardado) {
+      setEstadoActual(estadoGuardado);
+    }
   }, []);
 
   const validarPeriodoActivo = async () => {
@@ -114,6 +143,11 @@ function Generar() {
 
   // Determinar si se puede generar exámenes
   const puedeGenerarExamenes = periodoActivo && periodoActivo.estado === 'activo';
+
+  useEffect(() => {
+    // Simular que las preferencias ya están configuradas (esto vendría del backend)
+    setPreferenciasConfiguradas(true);
+  }, []);
 
   // Log de cambios (mock data - vendrá del backend)
   const [logCambios] = useState([
@@ -158,15 +192,25 @@ function Generar() {
     
     // Simular llamada al backend
     setTimeout(() => {
-      setHorarioGenerado({
+      const nuevoHorario = {
         id: 1,
         periodo: periodoActivo.descripcion || `Período ${periodoActivo.tipo} - 2026`,
         fecha_generacion: new Date().toISOString(),
         total_examenes: 25,
         periodo_id: periodoActivo.id,
-      });
+      };
+      setHorarioGenerado(nuevoHorario);
       setEstadoActual(ESTADOS.BORRADOR);
+      setCalendarioGenerado(true);
+      setCalendarioEnviado(false);
+      // Guardar en localStorage para persistir entre navegaciones
+      localStorage.setItem('calendarioGenerado', 'true');
+      localStorage.setItem('horarioGenerado', JSON.stringify(nuevoHorario));
+      localStorage.setItem('estadoActual', ESTADOS.BORRADOR);
+      // Limpiar el estado de enviado cuando se genera un nuevo calendario
+      localStorage.removeItem('calendarioEnviado');
       setOpenDialogGenerar(false);
+      setOpenDialogVerificarPreferencias(false);
       setGenerando(false);
       setNotification({
         open: true,
@@ -176,12 +220,29 @@ function Generar() {
     }, 2500);
   };
 
+  // Abrir diálogo para verificar preferencias antes de generar
+  const handleClickGenerar = () => {
+    if (!preferenciasConfiguradas) {
+      setNotification({
+        open: true,
+        message: 'Por favor, configura tus preferencias antes de generar',
+        severity: 'warning'
+      });
+      return;
+    }
+    setOpenDialogVerificarPreferencias(true);
+  };
+
   // Enviar a revisión
   const handleEnviarRevision = () => {
     setEnviando(true);
     
     setTimeout(() => {
       setEstadoActual(ESTADOS.ENVIADO);
+      setCalendarioEnviado(true);
+      // Guardar en localStorage para que Calendario.jsx pueda acceder
+      localStorage.setItem('calendarioEnviado', 'true');
+      localStorage.setItem('estadoActual', ESTADOS.ENVIADO);
       setOpenDialogEnviar(false);
       setEnviando(false);
       setNotification({
@@ -272,25 +333,30 @@ function Generar() {
         <Card elevation={0} sx={{ mb: 4, border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
           <CardContent>
             <Stepper 
-              activeStep={1}
+              activeStep={calendarioGenerado ? (calendarioEnviado ? 2 : 1) : 0}
               alternativeLabel
               sx={{ 
                 '& .MuiStep-root': {
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
                   p: 1.5,
                   borderRadius: 2,
-                  '&:hover': {
-                    bgcolor: 'action.hover',
-                    transform: 'translateY(-2px)',
-                  }
                 },
                 '& .MuiStepLabel-root': {
                   cursor: 'pointer'
                 }
               }}
             >
-              <Step onClick={() => navigate('/preferencias')} sx={{ cursor: 'pointer' }}>
+              {/* Paso 1: Preferencias */}
+              <Step 
+                onClick={() => !calendarioGenerado && navigate('/preferencias')}
+                sx={{ 
+                  cursor: !calendarioGenerado ? 'pointer' : 'not-allowed',
+                  transition: 'all 0.2s',
+                  '&:hover': !calendarioGenerado ? {
+                    bgcolor: 'action.hover',
+                    transform: 'translateY(-2px)',
+                  } : {}
+                }}
+              >
                 <StepLabel 
                   StepIconComponent={() => (
                     <Box sx={{ 
@@ -300,55 +366,41 @@ function Generar() {
                       width: 48,
                       height: 48,
                       borderRadius: '50%',
-                      bgcolor: window.location.pathname === '/preferencias' ? 'primary.main' : 'grey.300',
+                      bgcolor: preferenciasConfiguradas && !calendarioGenerado ? 'primary.main' : calendarioGenerado ? 'grey.400' : 'grey.300',
                       color: 'white',
                       transition: 'all 0.2s',
-                      boxShadow: window.location.pathname === '/preferencias' ? 2 : 0,
-                      '&:hover': {
+                      boxShadow: preferenciasConfiguradas && !calendarioGenerado ? 2 : 0,
+                      opacity: calendarioGenerado ? 0.5 : 1,
+                      '&:hover': !calendarioGenerado ? {
                         boxShadow: 3,
                         transform: 'scale(1.1)',
-                      }
+                      } : {}
                     }}>
                       <MdSettings size={26} />
                     </Box>
                   )}
                 >
-                  <Typography sx={{ fontWeight: window.location.pathname === '/preferencias' ? 700 : 500, mt: 1 }}>
+                  <Typography sx={{ 
+                    fontWeight: preferenciasConfiguradas && !calendarioGenerado ? 700 : 500, 
+                    mt: 1,
+                    opacity: calendarioGenerado ? 0.5 : 1
+                  }}>
                     Configurar Preferencias
                   </Typography>
                 </StepLabel>
               </Step>
-              <Step onClick={() => setOpenDialogGenerar(true)} sx={{ cursor: 'pointer' }}>
-                <StepLabel
-                  StepIconComponent={() => (
-                    <Box sx={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'center',
-                      width: 48,
-                      height: 48,
-                      borderRadius: '50%',
-                      bgcolor: window.location.pathname === '/generar' ? 'primary.main' : 'grey.300',
-                      color: 'white',
-                      transition: 'all 0.2s',
-                      boxShadow: window.location.pathname === '/generar' ? 2 : 0,
-                      '&:hover': {
-                        boxShadow: 3,
-                        transform: 'scale(1.1)',
-                      }
-                    }}>
-                      <MdAutorenew size={26} />
-                    </Box>
-                  )}
-                >
-                  <Typography sx={{ fontWeight: window.location.pathname === '/generar' ? 700 : 500, mt: 1 }}>
-                    Generar Calendarios
-                  </Typography>
-                </StepLabel>
-              </Step>
+
+              {/* Paso 2: Generar */}
               <Step 
-                onClick={() => horarioGenerado && navigate('/calendario')} 
-                sx={{ cursor: horarioGenerado ? 'pointer' : 'not-allowed' }}
+                onClick={() => !calendarioGenerado && handleClickGenerar()}
+                sx={{ 
+                  cursor: !calendarioGenerado && preferenciasConfiguradas ? 'pointer' : 'not-allowed',
+                  transition: 'all 0.2s',
+                  '&:hover': !calendarioGenerado && preferenciasConfiguradas ? {
+                    bgcolor: 'action.hover',
+                    transform: 'translateY(-2px)',
+                  } : {}
+                }}
               >
                 <StepLabel
                   StepIconComponent={() => (
@@ -359,12 +411,55 @@ function Generar() {
                       width: 48,
                       height: 48,
                       borderRadius: '50%',
-                      bgcolor: window.location.pathname === '/calendario' ? 'primary.main' : 'grey.300',
+                      bgcolor: calendarioGenerado ? 'primary.main' : 'grey.300',
                       color: 'white',
-                      opacity: horarioGenerado ? 1 : 0.5,
                       transition: 'all 0.2s',
-                      boxShadow: window.location.pathname === '/calendario' ? 2 : 0,
-                      '&:hover': horarioGenerado ? {
+                      boxShadow: calendarioGenerado ? 2 : 0,
+                      '&:hover': !calendarioGenerado && preferenciasConfiguradas ? {
+                        boxShadow: 3,
+                        transform: 'scale(1.1)',
+                      } : {}
+                    }}>
+                      <MdAutorenew size={26} />
+                    </Box>
+                  )}
+                >
+                  <Typography sx={{ 
+                    fontWeight: calendarioGenerado ? 700 : 500, 
+                    mt: 1
+                  }}>
+                    Generar Calendarios
+                  </Typography>
+                </StepLabel>
+              </Step>
+
+              {/* Paso 3: Ver Calendarios */}
+              <Step 
+                onClick={() => calendarioGenerado && navigate('/calendario')}
+                sx={{ 
+                  cursor: calendarioGenerado ? 'pointer' : 'not-allowed',
+                  transition: 'all 0.2s',
+                  '&:hover': calendarioGenerado ? {
+                    bgcolor: 'action.hover',
+                    transform: 'translateY(-2px)',
+                  } : {}
+                }}
+              >
+                <StepLabel
+                  StepIconComponent={() => (
+                    <Box sx={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      width: 48,
+                      height: 48,
+                      borderRadius: '50%',
+                      bgcolor: calendarioEnviado ? 'success.main' : calendarioGenerado ? 'warning.main' : 'grey.300',
+                      color: 'white',
+                      opacity: calendarioGenerado ? 1 : 0.5,
+                      transition: 'all 0.2s',
+                      boxShadow: calendarioGenerado ? 2 : 0,
+                      '&:hover': calendarioGenerado ? {
                         boxShadow: 3,
                         transform: 'scale(1.1)',
                       } : {}
@@ -374,9 +469,9 @@ function Generar() {
                   )}
                 >
                   <Typography sx={{ 
-                    fontWeight: window.location.pathname === '/calendario' ? 700 : 500, 
+                    fontWeight: calendarioGenerado ? 700 : 500, 
                     mt: 1,
-                    opacity: horarioGenerado ? 1 : 0.5
+                    opacity: calendarioGenerado ? 1 : 0.5
                   }}>
                     Ver Calendarios
                   </Typography>
@@ -571,6 +666,76 @@ function Generar() {
               startIcon={generando ? <MdAutorenew className="spin" /> : <MdCheckCircle />}
             >
               {generando ? 'Generando...' : 'Sí, Generar'}
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Dialog: Verificar Preferencias antes de Generar */}
+        <Dialog 
+          open={openDialogVerificarPreferencias} 
+          onClose={() => !generando && setOpenDialogVerificarPreferencias(false)}
+          maxWidth="sm"
+          fullWidth
+          PaperProps={{
+            sx: { borderRadius: 3 }
+          }}
+        >
+          <DialogTitle>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <MdWarning size={24} color={theme.palette.warning.main} />
+              Verificar Preferencias
+            </Box>
+          </DialogTitle>
+          <DialogContent>
+            <Alert severity="warning" sx={{ mb: 2, borderRadius: 2 }}>
+              <AlertTitle sx={{ fontWeight: 600 }}>¡Importante!</AlertTitle>
+              Antes de generar el calendario, asegúrate de que tus preferencias estén correctamente configuradas.
+            </Alert>
+            <Typography variant="body2" paragraph>
+              Una vez que generes el calendario:
+            </Typography>
+            <Box component="ul" sx={{ pl: 2, mb: 2 }}>
+              <li>
+                <Typography variant="body2">
+                  No podrás modificar las preferencias hasta que se complete el proceso
+                </Typography>
+              </li>
+              <li>
+                <Typography variant="body2">
+                  El calendario se generará automáticamente para todos los semestres
+                </Typography>
+              </li>
+              <li>
+                <Typography variant="body2">
+                  Podrás revisar y enviar el calendario a revisión
+                </Typography>
+              </li>
+            </Box>
+            <Typography variant="body2" fontWeight={600}>
+              ¿Tus preferencias están correctamente configuradas?
+            </Typography>
+          </DialogContent>
+          <DialogActions sx={{ px: 3, pb: 2.5 }}>
+            <Button 
+              onClick={() => {
+                setOpenDialogVerificarPreferencias(false);
+                navigate('/preferencias');
+              }} 
+              disabled={generando}
+              variant="outlined"
+            >
+              Revisar Preferencias
+            </Button>
+            <Button 
+              onClick={() => {
+                setOpenDialogVerificarPreferencias(false);
+                setOpenDialogGenerar(true);
+              }} 
+              variant="contained"
+              disabled={generando}
+              startIcon={<MdCheckCircle />}
+            >
+              Sí, Continuar
             </Button>
           </DialogActions>
         </Dialog>

@@ -31,7 +31,8 @@ import {
   MdClose,
   MdSearch,
   MdInfo,
-  MdSettings
+  MdSettings,
+  MdBlock
 } from 'react-icons/md';
 import { useState, useEffect } from 'react';
 import { authApi, usersApi } from '../../services';
@@ -486,16 +487,17 @@ const UsuariosAdmin = () => {
                       borderColor: 'divider',
                       borderRadius: 3,
                       transition: 'all 0.3s',
-                      cursor: 'pointer',
+                      cursor: usuario.rol === 'admin' ? 'not-allowed' : 'pointer',
                       position: 'relative',
                       overflow: 'visible',
-                      '&:hover': {
+                      opacity: usuario.rol === 'admin' ? 0.7 : 1,
+                      '&:hover': usuario.rol === 'admin' ? {} : {
                         borderColor: 'primary.main',
                         boxShadow: 4,
                         transform: 'translateY(-4px)'
                       }
                     }}
-                    onClick={() => handleEditUser(usuario)}
+                    onClick={() => usuario.rol !== 'admin' && handleEditUser(usuario)}
                   >
                     <CardContent sx={{ p: 2.5 }}>
                       {/* Avatar y Info Principal */}
@@ -567,14 +569,15 @@ const UsuariosAdmin = () => {
                       <Button
                         fullWidth
                         variant="outlined"
-                        startIcon={<MdEdit />}
+                        startIcon={usuario.rol === 'admin' ? <MdBlock /> : <MdEdit />}
+                        disabled={usuario.rol === 'admin'}
                         sx={{ 
                           mt: 2,
                           textTransform: 'none',
                           fontWeight: 600
                         }}
                       >
-                        Editar Usuario
+                        {usuario.rol === 'admin' ? 'No Editable' : 'Editar Usuario'}
                       </Button>
                     </CardContent>
                   </Card>
