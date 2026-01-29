@@ -411,10 +411,12 @@ function Generar() {
                       width: 48,
                       height: 48,
                       borderRadius: '50%',
-                      bgcolor: calendarioGenerado ? 'primary.main' : 'grey.300',
+                      bgcolor: calendarioGenerado 
+                        ? 'primary.main' 
+                        : (preferenciasConfiguradas ? 'warning.main' : 'grey.300'),
                       color: 'white',
                       transition: 'all 0.2s',
-                      boxShadow: calendarioGenerado ? 2 : 0,
+                      boxShadow: calendarioGenerado ? 2 : (preferenciasConfiguradas ? 2 : 0),
                       '&:hover': !calendarioGenerado && preferenciasConfiguradas ? {
                         boxShadow: 3,
                         transform: 'scale(1.1)',
@@ -425,7 +427,7 @@ function Generar() {
                   )}
                 >
                   <Typography sx={{ 
-                    fontWeight: calendarioGenerado ? 700 : 500, 
+                    fontWeight: calendarioGenerado ? 700 : (preferenciasConfiguradas ? 600 : 500), 
                     mt: 1
                   }}>
                     Generar Calendarios

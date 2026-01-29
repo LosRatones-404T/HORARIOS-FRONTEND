@@ -97,10 +97,26 @@ function PeriodoAcademico() {
 
   // Formulario de nuevo período
   const [formData, setFormData] = useState({
-    tipo: TIPOS_PERIODO.ORDINARIO,
-    fecha_inicio: '',
-    fecha_fin: '',
-    descripcion: '',
+    clave: '2026A',
+    fInicio: '2025-10-01',
+    fFin: '2026-02-09',
+    // Fechas de parciales - sugerencias automáticas
+    primer_parcial_inicio: '2025-10-15',
+    primer_parcial_fin: '2025-10-25',
+    segundo_parcial_inicio: '2025-11-10',
+    segundo_parcial_fin: '2025-11-20',
+    tercer_parcial_inicio: '2025-12-05',
+    tercer_parcial_fin: '2025-12-15',
+    // Fechas de ordinarios y extraordinarios
+    ordinario_inicio: '2026-01-15',
+    ordinario_fin: '2026-01-25',
+    extra1_inicio: '2026-02-01',
+    extra1_fin: '2026-02-05',
+    extra2_inicio: '2026-02-06',
+    extra2_fin: '2026-02-09',
+    // Fecha de especial
+    especial_inicio: '',
+    especial_fin: '',
   });
 
   // Formulario de modificación
@@ -150,10 +166,23 @@ function PeriodoAcademico() {
       
       setOpenDialogNuevo(false);
       setFormData({
-        tipo: TIPOS_PERIODO.ORDINARIO,
-        fecha_inicio: '',
-        fecha_fin: '',
-        descripcion: '',
+        clave: '2026A',
+        fInicio: '2025-10-01',
+        fFin: '2026-02-09',
+        primer_parcial_inicio: '2025-10-15',
+        primer_parcial_fin: '2025-10-25',
+        segundo_parcial_inicio: '2025-11-10',
+        segundo_parcial_fin: '2025-11-20',
+        tercer_parcial_inicio: '2025-12-05',
+        tercer_parcial_fin: '2025-12-15',
+        ordinario_inicio: '2026-01-15',
+        ordinario_fin: '2026-01-25',
+        extra1_inicio: '2026-02-01',
+        extra1_fin: '2026-02-05',
+        extra2_inicio: '2026-02-06',
+        extra2_fin: '2026-02-09',
+        especial_inicio: '',
+        especial_fin: '',
       });
       
       await cargarPeriodoActual();
@@ -172,6 +201,49 @@ function PeriodoAcademico() {
   const handleActivarPeriodo = async () => {
     try {
       setLoading(true);
+      
+      // Validar que todas las fechas de tipos de examen estén dentro del rango del período
+      const fInicio = new Date(periodoActual.fInicio);
+      const fFin = new Date(periodoActual.fFin);
+      
+      const fechasExamen = [
+        { tipo: 'Primer Parcial', inicio: periodoActual.primer_parcial_inicio, fin: periodoActual.primer_parcial_fin },
+        { tipo: 'Segundo Parcial', inicio: periodoActual.segundo_parcial_inicio, fin: periodoActual.segundo_parcial_fin },
+        { tipo: 'Tercer Parcial', inicio: periodoActual.tercer_parcial_inicio, fin: periodoActual.tercer_parcial_fin },
+        { tipo: 'Ordinario', inicio: periodoActual.ordinario_inicio, fin: periodoActual.ordinario_fin },
+        { tipo: 'Extraordinario 1', inicio: periodoActual.extra1_inicio, fin: periodoActual.extra1_fin },
+        { tipo: 'Extraordinario 2', inicio: periodoActual.extra2_inicio, fin: periodoActual.extra2_fin },
+        { tipo: 'Especial', inicio: periodoActual.especial_inicio, fin: periodoActual.especial_fin },
+      ];
+      
+      for (const fecha of fechasExamen) {
+        // Solo validar si las fechas están configuradas
+        if (fecha.inicio && fecha.fin) {
+          const inicio = new Date(fecha.inicio);
+          const fin = new Date(fecha.fin);
+          
+          if (inicio < fInicio || inicio > fFin) {
+            setNotification({
+              open: true,
+              message: `La fecha de inicio de ${fecha.tipo} (${fecha.inicio}) está fuera del rango del período (${periodoActual.fInicio} - ${periodoActual.fFin})`,
+              severity: 'error',
+            });
+            setLoading(false);
+            return;
+          }
+          
+          if (fin < fInicio || fin > fFin) {
+            setNotification({
+              open: true,
+              message: `La fecha de fin de ${fecha.tipo} (${fecha.fin}) está fuera del rango del período (${periodoActual.fInicio} - ${periodoActual.fFin})`,
+              severity: 'error',
+            });
+            setLoading(false);
+            return;
+          }
+        }
+      }
+      
       await periodosApi.activarPeriodo(periodoActual.id);
       
       setNotification({
@@ -297,7 +369,7 @@ function PeriodoAcademico() {
                     size="small"
                   />
                   <Chip 
-                    label={TIPOS_LABELS[periodoActual.tipo]} 
+                    label={periodoActual.clave} 
                     variant="outlined"
                     size="small"
                   />
@@ -351,7 +423,7 @@ function PeriodoAcademico() {
                       FECHA DE INICIO
                     </Typography>
                     <Typography variant="h6">
-                      {new Date(periodoActual.fecha_inicio).toLocaleDateString('es-MX', {
+                      {new Date(periodoActual.fInicio).toLocaleDateString('es-MX', {
                         weekday: 'long',
                         year: 'numeric',
                         month: 'long',
@@ -365,7 +437,7 @@ function PeriodoAcademico() {
                       FECHA DE FIN
                     </Typography>
                     <Typography variant="h6">
-                      {new Date(periodoActual.fecha_fin).toLocaleDateString('es-MX', {
+                      {new Date(periodoActual.fFin).toLocaleDateString('es-MX', {
                         weekday: 'long',
                         year: 'numeric',
                         month: 'long',
@@ -380,10 +452,10 @@ function PeriodoAcademico() {
                 <Stack spacing={2}>
                   <Box>
                     <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
-                      DESCRIPCIÓN
+                      CLAVE
                     </Typography>
                     <Typography variant="body1">
-                      {periodoActual.descripcion || 'Sin descripción'}
+                      {periodoActual.clave}
                     </Typography>
                   </Box>
 
@@ -463,18 +535,14 @@ function PeriodoAcademico() {
                         size="small"
                       />
                       <Chip 
-                        label={TIPOS_LABELS[periodo.tipo]} 
+                        label={periodo.clave} 
                         variant="outlined"
                         size="small"
                       />
                     </Stack>
 
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                      {new Date(periodo.fecha_inicio).toLocaleDateString('es-MX')} - {new Date(periodo.fecha_fin).toLocaleDateString('es-MX')}
-                    </Typography>
-                    
-                    <Typography variant="body2" sx={{ mb: 1 }}>
-                      {periodo.descripcion}
+                      {new Date(periodo.fInicio).toLocaleDateString('es-MX')} - {new Date(periodo.fFin).toLocaleDateString('es-MX')}
                     </Typography>
 
                     {periodo.examenes_generados > 0 && (
@@ -510,50 +578,205 @@ function PeriodoAcademico() {
           </DialogTitle>
           <DialogContent>
             <Stack spacing={3} sx={{ mt: 2 }}>
-              <FormControl fullWidth>
-                <InputLabel>Tipo de Período</InputLabel>
-                <Select
-                  value={formData.tipo}
-                  onChange={(e) => setFormData({ ...formData, tipo: e.target.value })}
-                  label="Tipo de Período"
-                >
-                  {Object.entries(TIPOS_LABELS).map(([key, label]) => (
-                    <MenuItem key={key} value={key}>
-                      {label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <TextField
+                label="Clave del Período"
+                value={formData.clave}
+                onChange={(e) => setFormData({ ...formData, clave: e.target.value })}
+                placeholder="Ej: 2026A, 2026B, 2025C"
+                fullWidth
+                required
+                disabled
+                helperText="Identificador único del período (generado automáticamente)"
+              />
 
               <TextField
                 label="Fecha de Inicio"
                 type="date"
-                value={formData.fecha_inicio}
-                onChange={(e) => setFormData({ ...formData, fecha_inicio: e.target.value })}
+                value={formData.fInicio}
+                onChange={(e) => setFormData({ ...formData, fInicio: e.target.value })}
                 InputLabelProps={{ shrink: true }}
                 fullWidth
                 required
+                disabled
+                helperText="Fecha proporcionada por el sistema"
               />
 
               <TextField
                 label="Fecha de Fin"
                 type="date"
-                value={formData.fecha_fin}
-                onChange={(e) => setFormData({ ...formData, fecha_fin: e.target.value })}
+                value={formData.fFin}
+                onChange={(e) => setFormData({ ...formData, fFin: e.target.value })}
                 InputLabelProps={{ shrink: true }}
                 fullWidth
                 required
+                disabled
+                helperText="Fecha proporcionada por el sistema"
               />
 
-              <TextField
-                label="Descripción"
-                multiline
-                rows={3}
-                value={formData.descripcion}
-                onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
-                placeholder="Ej: Período ordinario de exámenes finales enero-junio 2026"
-                fullWidth
-              />
+              <Divider sx={{ my: 2 }}>
+                <Chip label="Fechas de Tipos de Examen" size="small" />
+              </Divider>
+
+              {/* Primer Parcial */}
+              <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                Primer Parcial
+              </Typography>
+              <Stack direction="row" spacing={2}>
+                <TextField
+                  label="Inicio"
+                  type="date"
+                  value={formData.primer_parcial_inicio}
+                  onChange={(e) => setFormData({ ...formData, primer_parcial_inicio: e.target.value })}
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+                <TextField
+                  label="Fin"
+                  type="date"
+                  value={formData.primer_parcial_fin}
+                  onChange={(e) => setFormData({ ...formData, primer_parcial_fin: e.target.value })}
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+              </Stack>
+
+              {/* Segundo Parcial */}
+              <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                Segundo Parcial
+              </Typography>
+              <Stack direction="row" spacing={2}>
+                <TextField
+                  label="Inicio"
+                  type="date"
+                  value={formData.segundo_parcial_inicio}
+                  onChange={(e) => setFormData({ ...formData, segundo_parcial_inicio: e.target.value })}
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+                <TextField
+                  label="Fin"
+                  type="date"
+                  value={formData.segundo_parcial_fin}
+                  onChange={(e) => setFormData({ ...formData, segundo_parcial_fin: e.target.value })}
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+              </Stack>
+
+              {/* Tercer Parcial */}
+              <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                Tercer Parcial
+              </Typography>
+              <Stack direction="row" spacing={2}>
+                <TextField
+                  label="Inicio"
+                  type="date"
+                  value={formData.tercer_parcial_inicio}
+                  onChange={(e) => setFormData({ ...formData, tercer_parcial_inicio: e.target.value })}
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+                <TextField
+                  label="Fin"
+                  type="date"
+                  value={formData.tercer_parcial_fin}
+                  onChange={(e) => setFormData({ ...formData, tercer_parcial_fin: e.target.value })}
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+              </Stack>
+
+              {/* Ordinario */}
+              <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                Ordinario
+              </Typography>
+              <Stack direction="row" spacing={2}>
+                <TextField
+                  label="Inicio"
+                  type="date"
+                  value={formData.ordinario_inicio}
+                  onChange={(e) => setFormData({ ...formData, ordinario_inicio: e.target.value })}
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+                <TextField
+                  label="Fin"
+                  type="date"
+                  value={formData.ordinario_fin}
+                  onChange={(e) => setFormData({ ...formData, ordinario_fin: e.target.value })}
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+              </Stack>
+
+              {/* Extraordinario 1 */}
+              <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                Extraordinario 1
+              </Typography>
+              <Stack direction="row" spacing={2}>
+                <TextField
+                  label="Inicio"
+                  type="date"
+                  value={formData.extra1_inicio}
+                  onChange={(e) => setFormData({ ...formData, extra1_inicio: e.target.value })}
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+                <TextField
+                  label="Fin"
+                  type="date"
+                  value={formData.extra1_fin}
+                  onChange={(e) => setFormData({ ...formData, extra1_fin: e.target.value })}
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+              </Stack>
+
+              {/* Extraordinario 2 */}
+              <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                Extraordinario 2
+              </Typography>
+              <Stack direction="row" spacing={2}>
+                <TextField
+                  label="Inicio"
+                  type="date"
+                  value={formData.extra2_inicio}
+                  onChange={(e) => setFormData({ ...formData, extra2_inicio: e.target.value })}
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+                <TextField
+                  label="Fin"
+                  type="date"
+                  value={formData.extra2_fin}
+                  onChange={(e) => setFormData({ ...formData, extra2_fin: e.target.value })}
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+              </Stack>
+
+              {/* Especial */}
+              <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                Especial
+              </Typography>
+              <Stack direction="row" spacing={2}>
+                <TextField
+                  label="Inicio"
+                  type="date"
+                  value={formData.especial_inicio}
+                  onChange={(e) => setFormData({ ...formData, especial_inicio: e.target.value })}
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+                <TextField
+                  label="Fin"
+                  type="date"
+                  value={formData.especial_fin}
+                  onChange={(e) => setFormData({ ...formData, especial_fin: e.target.value })}
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+              </Stack>
 
               <Alert severity="info" sx={{ borderRadius: 2 }}>
                 El período se creará en estado <strong>Planificado</strong>. Deberás iniciarlo manualmente para que los jefes de carrera puedan generar exámenes.
@@ -567,7 +790,7 @@ function PeriodoAcademico() {
             <Button 
               variant="contained" 
               onClick={handleCrearPeriodo}
-              disabled={loading || !formData.fecha_inicio || !formData.fecha_fin}
+              disabled={loading || !formData.clave || !formData.fInicio || !formData.fFin}
               startIcon={<MdSave />}
             >
               {loading ? 'Creando...' : 'Crear Período'}
@@ -604,13 +827,13 @@ function PeriodoAcademico() {
             {periodoActual && (
               <Box sx={{ p: 2, bgcolor: 'action.hover', borderRadius: 2 }}>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                  <strong>Tipo:</strong> {TIPOS_LABELS[periodoActual.tipo]}
+                  <strong>Clave:</strong> {periodoActual.clave}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                  <strong>Inicio:</strong> {new Date(periodoActual.fecha_inicio).toLocaleDateString('es-MX')}
+                  <strong>Inicio:</strong> {new Date(periodoActual.fInicio).toLocaleDateString('es-MX')}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  <strong>Fin:</strong> {new Date(periodoActual.fecha_fin).toLocaleDateString('es-MX')}
+                  <strong>Fin:</strong> {new Date(periodoActual.fFin).toLocaleDateString('es-MX')}
                 </Typography>
               </Box>
             )}

@@ -64,22 +64,105 @@ const Calendario = () => {
     { id: 'odontologia', label: 'Odontología' },
   ];
 
-  // Tipos de examen disponibles
-  const tiposExamen = [
-    { id: 'parcial1', label: 'Parcial 1' },
-    { id: 'parcial2', label: 'Parcial 2' },
-    { id: 'parcial3', label: 'Parcial 3' },
-    { id: 'ordinario', label: 'Ordinario' },
-    { id: 'extraordinario1', label: 'Extraordinario 1' },
-    { id: 'extraordinario2', label: 'Extraordinario 2' },
-    { id: 'especial', label: 'Especial' },
-  ];
-
-  // Estado del tipo de examen seleccionado (por defecto Parcial 1)
-  const [tipoExamenActual, setTipoExamenActual] = useState('parcial1');
-  
   // Estado de carrera seleccionada (solo para secretaria)
   const [carreraSeleccionada, setCarreraSeleccionada] = useState('informatica');
+  
+  // Estado del período actual con fechas de tipos de examen
+  const [periodoActual, setPeriodoActual] = useState(null);
+  
+  // Cargar período actual al montar componente
+  useEffect(() => {
+    const cargarPeriodo = async () => {
+      try {
+        // TODO: Esto vendrá del backend
+        // const periodo = await periodosApi.obtenerPeriodoActivo();
+        // setPeriodoActual(periodo);
+        
+        // Mock data del período actual
+        setPeriodoActual({
+          id: 3,
+          clave: '2026A',
+          estado: 'activo',
+          fInicio: '2025-10-01',
+          fFin: '2026-02-09',
+          primer_parcial_inicio: '2025-10-15',
+          primer_parcial_fin: '2025-10-25',
+          segundo_parcial_inicio: '2025-11-10',
+          segundo_parcial_fin: '2025-11-20',
+          tercer_parcial_inicio: '2025-12-05',
+          tercer_parcial_fin: '2025-12-15',
+          ordinario_inicio: '2026-01-15',
+          ordinario_fin: '2026-01-25',
+          extra1_inicio: '2026-02-01',
+          extra1_fin: '2026-02-05',
+          extra2_inicio: '2026-02-06',
+          extra2_fin: '2026-02-09',
+          especial_inicio: '',
+          especial_fin: '',
+        });
+      } catch (error) {
+        console.error('Error cargando período:', error);
+      }
+    };
+    
+    cargarPeriodo();
+  }, []);
+
+  // Tipos de examen disponibles - con fechas del período
+  const tiposExamen = useMemo(() => {
+    if (!periodoActual) return [];
+    
+    const tipos = [
+      { 
+        id: 'parcial1', 
+        label: 'Parcial 1',
+        fechaInicio: periodoActual.primer_parcial_inicio,
+        fechaFin: periodoActual.primer_parcial_fin,
+      },
+      { 
+        id: 'parcial2', 
+        label: 'Parcial 2',
+        fechaInicio: periodoActual.segundo_parcial_inicio,
+        fechaFin: periodoActual.segundo_parcial_fin,
+      },
+      { 
+        id: 'parcial3', 
+        label: 'Parcial 3',
+        fechaInicio: periodoActual.tercer_parcial_inicio,
+        fechaFin: periodoActual.tercer_parcial_fin,
+      },
+      { 
+        id: 'ordinario', 
+        label: 'Ordinario',
+        fechaInicio: periodoActual.ordinario_inicio,
+        fechaFin: periodoActual.ordinario_fin,
+      },
+      { 
+        id: 'extraordinario1', 
+        label: 'Extraordinario 1',
+        fechaInicio: periodoActual.extra1_inicio,
+        fechaFin: periodoActual.extra1_fin,
+      },
+      { 
+        id: 'extraordinario2', 
+        label: 'Extraordinario 2',
+        fechaInicio: periodoActual.extra2_inicio,
+        fechaFin: periodoActual.extra2_fin,
+      },
+      { 
+        id: 'especial', 
+        label: 'Especial',
+        fechaInicio: periodoActual.especial_inicio,
+        fechaFin: periodoActual.especial_fin,
+      },
+    ];
+    
+    // Filtrar solo los que tienen fechas configuradas
+    return tipos.filter(tipo => tipo.fechaInicio && tipo.fechaFin);
+  }, [periodoActual]);
+  
+  // Estado del tipo de examen seleccionado (por defecto el primero disponible)
+  const [tipoExamenActual, setTipoExamenActual] = useState('parcial1');
 
   // Estado de notificación
   const [notification, setNotification] = useState({
@@ -152,10 +235,12 @@ const Calendario = () => {
       ],
       eventos: [
         { diaId: 0, horaInicio: '08:00', materia: 'Paradigmas de Programación II', grupo: '506-A', aplicador: '', aula: 'Lab-307', duracion: '2 horas', conflicto: false },
+        { diaId: 0, horaInicio: '08:00', materia: 'Paradigmas de Programación II', grupo: '506-B', aplicador: '', aula: 'Lab-308', duracion: '2 horas', conflicto: false },
+        { diaId: 0, horaInicio: '08:00', materia: 'Paradigmas de Programación II', grupo: '506-C', aplicador: '', aula: 'Lab-309', duracion: '2 horas', conflicto: false },
         { diaId: 0, horaInicio: '13:00', materia: 'Redes I', grupo: '506-A', aplicador: '', aula: 'Lab-404', duracion: '2 horas', conflicto: false },
-        { diaId: 1, horaInicio: '09:00', materia: 'Bases de Datos II', grupo: '506-A', aplicador: '', aula: 'Lab-308', duracion: '2 horas', conflicto: false },
-        { diaId: 2, horaInicio: '11:00', materia: 'Fundamentos de Sistemas Operativos', grupo: '506-A', aplicador: '', aula: 'Lab-309', duracion: '2 horas', conflicto: false },
-        { diaId: 3, horaInicio: '15:00', materia: 'Diseño Web', grupo: '506-A', aplicador: '', aula: 'Lab-310', duracion: '2 horas', conflicto: false },
+        { diaId: 1, horaInicio: '09:00', materia: 'Bases de Datos II', grupo: '506-A', aplicador: '', aula: 'Lab-310', duracion: '2 horas', conflicto: false },
+        { diaId: 2, horaInicio: '11:00', materia: 'Fundamentos de Sistemas Operativos', grupo: '506-A', aplicador: '', aula: 'Lab-311', duracion: '2 horas', conflicto: false },
+        { diaId: 3, horaInicio: '15:00', materia: 'Diseño Web', grupo: '506-A', aplicador: '', aula: 'Lab-312', duracion: '2 horas', conflicto: false },
       ]
     },
     {
@@ -169,11 +254,13 @@ const Calendario = () => {
         'Derecho y Legislación en Informática'
       ],
       eventos: [
-        { diaId: 0, horaInicio: '10:00', materia: 'Tecnologías Web II', grupo: 'Único', aplicador: '', aula: 'Lab-314', duracion: '2 horas', conflicto: false },
-        { diaId: 0, horaInicio: '15:00', materia: 'Bases de Datos Avanzadas', grupo: 'Único', aplicador: '', aula: 'Lab-315', duracion: '2 horas', conflicto: false },
-        { diaId: 1, horaInicio: '11:00', materia: 'Ingeniería de Software II', grupo: 'Único', aplicador: '', aula: 'Aula-209', duracion: '2 horas', conflicto: false },
-        { diaId: 2, horaInicio: '09:00', materia: 'Probabilidad y Estadística', grupo: 'Único', aplicador: '', aula: 'Aula-306', duracion: '2 horas', conflicto: false },
-        { diaId: 3, horaInicio: '13:00', materia: 'Derecho y Legislación en Informática', grupo: 'Único', aplicador: '', aula: 'Aula-105', duracion: '1.5 horas', conflicto: false },
+        { diaId: 0, horaInicio: '10:00', materia: 'Tecnologías Web II', grupo: '706-A', aplicador: '', aula: 'Lab-314', duracion: '2 horas', conflicto: false },
+        { diaId: 0, horaInicio: '10:00', materia: 'Tecnologías Web II', grupo: '706-B', aplicador: '', aula: 'Lab-315', duracion: '2 horas', conflicto: false },
+        { diaId: 0, horaInicio: '10:00', materia: 'Tecnologías Web II', grupo: '706-C', aplicador: '', aula: 'Lab-316', duracion: '2 horas', conflicto: false },
+        { diaId: 0, horaInicio: '15:00', materia: 'Bases de Datos Avanzadas', grupo: '706-A', aplicador: '', aula: 'Lab-317', duracion: '2 horas', conflicto: false },
+        { diaId: 1, horaInicio: '11:00', materia: 'Ingeniería de Software II', grupo: '706-A', aplicador: '', aula: 'Aula-209', duracion: '2 horas', conflicto: false },
+        { diaId: 2, horaInicio: '09:00', materia: 'Probabilidad y Estadística', grupo: '706-A', aplicador: '', aula: 'Aula-306', duracion: '2 horas', conflicto: false },
+        { diaId: 3, horaInicio: '13:00', materia: 'Derecho y Legislación en Informática', grupo: '706-A', aplicador: '', aula: 'Aula-105', duracion: '1.5 horas', conflicto: false },
       ]
     },
     {
@@ -187,11 +274,13 @@ const Calendario = () => {
         'Investigación de Operaciones'
       ],
       eventos: [
-        { diaId: 0, horaInicio: '11:00', materia: 'Sistemas Distribuidos', grupo: 'Único', aplicador: '', aula: 'Lab-316', duracion: '2 horas', conflicto: false },
-        { diaId: 0, horaInicio: '16:00', materia: 'Calidad de Software', grupo: 'Único', aplicador: '', aula: 'Aula-210', duracion: '2 horas', conflicto: false },
-        { diaId: 1, horaInicio: '08:00', materia: 'Interacción Humano-Computadora', grupo: 'Único', aplicador: '', aula: 'Lab-317', duracion: '2 horas', conflicto: false },
-        { diaId: 2, horaInicio: '10:00', materia: 'Inteligencia de Negocios', grupo: 'Único', aplicador: '', aula: 'Lab-318', duracion: '2 horas', conflicto: false },
-        { diaId: 3, horaInicio: '14:00', materia: 'Investigación de Operaciones', grupo: 'Único', aplicador: '', aula: 'Aula-106', duracion: '2 horas', conflicto: false },
+        { diaId: 0, horaInicio: '11:00', materia: 'Sistemas Distribuidos', grupo: '906-A', aplicador: '', aula: 'Lab-318', duracion: '2 horas', conflicto: false },
+        { diaId: 0, horaInicio: '11:00', materia: 'Sistemas Distribuidos', grupo: '906-B', aplicador: '', aula: 'Lab-319', duracion: '2 horas', conflicto: false },
+        { diaId: 0, horaInicio: '11:00', materia: 'Sistemas Distribuidos', grupo: '906-C', aplicador: '', aula: 'Lab-320', duracion: '2 horas', conflicto: false },
+        { diaId: 0, horaInicio: '16:00', materia: 'Calidad de Software', grupo: '906-A', aplicador: '', aula: 'Aula-210', duracion: '2 horas', conflicto: false },
+        { diaId: 1, horaInicio: '08:00', materia: 'Interacción Humano-Computadora', grupo: '906-A', aplicador: '', aula: 'Lab-321', duracion: '2 horas', conflicto: false },
+        { diaId: 2, horaInicio: '10:00', materia: 'Inteligencia de Negocios', grupo: '906-A', aplicador: '', aula: 'Lab-322', duracion: '2 horas', conflicto: false },
+        { diaId: 3, horaInicio: '14:00', materia: 'Investigación de Operaciones', grupo: '906-A', aplicador: '', aula: 'Aula-106', duracion: '2 horas', conflicto: false },
       ]
     }
   ], []);
@@ -620,7 +709,18 @@ const Calendario = () => {
             {tiposExamen.map((tipo) => (
               <Tab 
                 key={tipo.id} 
-                label={tipo.label} 
+                label={
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Typography variant="body2" sx={{ fontWeight: 'inherit' }}>
+                      {tipo.label}
+                    </Typography>
+                    {tipo.fechaInicio && tipo.fechaFin && (
+                      <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem', mt: 0.5 }}>
+                        {new Date(tipo.fechaInicio).toLocaleDateString('es-MX', { day: '2-digit', month: 'short' })} - {new Date(tipo.fechaFin).toLocaleDateString('es-MX', { day: '2-digit', month: 'short' })}
+                      </Typography>
+                    )}
+                  </Box>
+                }
                 value={tipo.id}
               />
             ))}
@@ -633,7 +733,14 @@ const Calendario = () => {
             Mostrando horarios de:
           </Typography>
           <Chip 
-            label={tiposExamen.find(t => t.id === tipoExamenActual)?.label} 
+            label={
+              (() => {
+                const tipoActual = tiposExamen.find(t => t.id === tipoExamenActual);
+                return tipoActual 
+                  ? `${tipoActual.label} (${new Date(tipoActual.fechaInicio).toLocaleDateString('es-MX', { day: '2-digit', month: 'short' })} - ${new Date(tipoActual.fechaFin).toLocaleDateString('es-MX', { day: '2-digit', month: 'short' })})` 
+                  : 'Cargando...';
+              })()
+            }
             color="primary"
             variant="outlined"
             size="small"

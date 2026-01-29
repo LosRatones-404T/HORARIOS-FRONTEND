@@ -17,29 +17,55 @@ const mockPeriodosStorage = {
   historico: [
     {
       id: 1,
-      tipo: 'ordinario',
+      clave: '2025B',
       estado: 'finalizado',
-      fecha_inicio: '2025-08-01',
-      fecha_fin: '2025-09-15',
+      fInicio: '2025-08-01',
+      fFin: '2025-09-15',
       fecha_creacion: '2025-07-15T10:00:00Z',
       fecha_finalizacion: '2025-09-15T18:00:00Z',
-      descripcion: 'Período ordinario agosto-septiembre 2025',
       usuario_creador: 'admin@escuela.edu',
       examenes_generados: 15,
-      modificaciones: []
+      modificaciones: [],
+      primer_parcial_inicio: '2025-08-05',
+      primer_parcial_fin: '2025-08-10',
+      segundo_parcial_inicio: '2025-08-19',
+      segundo_parcial_fin: '2025-08-24',
+      tercer_parcial_inicio: '2025-09-02',
+      tercer_parcial_fin: '2025-09-07',
+      ordinario_inicio: '2025-09-09',
+      ordinario_fin: '2025-09-14',
+      extra1_inicio: '',
+      extra1_fin: '',
+      extra2_inicio: '',
+      extra2_fin: '',
+      especial_inicio: '',
+      especial_fin: '',
     },
     {
       id: 2,
-      tipo: 'extraordinario',
+      clave: '2025C',
       estado: 'finalizado',
-      fecha_inicio: '2025-10-01',
-      fecha_fin: '2025-10-20',
+      fInicio: '2025-10-01',
+      fFin: '2025-10-20',
       fecha_creacion: '2025-09-20T10:00:00Z',
       fecha_finalizacion: '2025-10-20T18:00:00Z',
-      descripcion: 'Período extraordinario octubre 2025',
       usuario_creador: 'admin@escuela.edu',
       examenes_generados: 8,
-      modificaciones: []
+      modificaciones: [],
+      primer_parcial_inicio: '',
+      primer_parcial_fin: '',
+      segundo_parcial_inicio: '',
+      segundo_parcial_fin: '',
+      tercer_parcial_inicio: '',
+      tercer_parcial_fin: '',
+      ordinario_inicio: '',
+      ordinario_fin: '',
+      extra1_inicio: '2025-10-05',
+      extra1_fin: '2025-10-10',
+      extra2_inicio: '2025-10-15',
+      extra2_fin: '2025-10-19',
+      especial_inicio: '',
+      especial_fin: '',
     }
   ],
   proximoId: 3
@@ -141,24 +167,38 @@ export const periodosService = {
             return;
           }
 
-          if (new Date(datos.fecha_inicio) >= new Date(datos.fecha_fin)) {
+          if (new Date(datos.fInicio) >= new Date(datos.fFin)) {
             reject(new Error('La fecha de inicio debe ser anterior a la fecha de fin'));
             return;
           }
 
           const nuevoPeriodo = {
             id: mockPeriodosStorage.proximoId++,
-            tipo: datos.tipo,
+            clave: datos.clave,
             estado: 'planificado',
-            fecha_inicio: datos.fecha_inicio,
-            fecha_fin: datos.fecha_fin,
+            fInicio: datos.fInicio,
+            fFin: datos.fFin,
             fecha_creacion: new Date().toISOString(),
             fecha_activacion: null,
             fecha_finalizacion: null,
-            descripcion: datos.descripcion,
             usuario_creador: 'secretaria@escuela.edu',
             examenes_generados: 0,
-            modificaciones: []
+            modificaciones: [],
+            // Fechas de tipos de examen
+            primer_parcial_inicio: datos.primer_parcial_inicio || '',
+            primer_parcial_fin: datos.primer_parcial_fin || '',
+            segundo_parcial_inicio: datos.segundo_parcial_inicio || '',
+            segundo_parcial_fin: datos.segundo_parcial_fin || '',
+            tercer_parcial_inicio: datos.tercer_parcial_inicio || '',
+            tercer_parcial_fin: datos.tercer_parcial_fin || '',
+            ordinario_inicio: datos.ordinario_inicio || '',
+            ordinario_fin: datos.ordinario_fin || '',
+            extra1_inicio: datos.extra1_inicio || '',
+            extra1_fin: datos.extra1_fin || '',
+            extra2_inicio: datos.extra2_inicio || '',
+            extra2_fin: datos.extra2_fin || '',
+            especial_inicio: datos.especial_inicio || '',
+            especial_fin: datos.especial_fin || '',
           };
 
           mockPeriodosStorage.periodoActivo = nuevoPeriodo;
