@@ -1,36 +1,47 @@
 # --- Dependencias ---
-# CRÍTICO: Nunca copiar node_modules. Se deben instalar limpio dentro del contenedor.
-node_modules
-npm-debug.log
-yarn-error.log
-pnpm-lock.yaml
+# Nunca copiar dependencias locales; se instalan en el build de Docker
+node_modules/
+.npm/
+.pnpm-store/
+# package-lock.json
 yarn.lock
+pnpm-lock.yaml
 
-# --- Builds anteriores ---
-# Ignoramos carpetas generadas para que no ensucien el build nuevo
-dist
-build
-.next
-out
-coverage
+# --- Builds y Cache ---
+# Evitamos que basura de builds locales interfiera con el build limpio de Docker
+dist/
+build/
+.cache/
+.vite/
+.eslintcache
 
 # --- Variables de Entorno ---
-# IMPORTANTE: Ignoramos los .env locales para no sobrescribir 
-# la configuración que pasamos desde el docker-compose.
+# Ignoramos archivos .env locales para usar solo los definidos en docker-compose
 .env
-.env.local
-.env.development
-.env.test
-.env.production
+.env.*
+!.env.example
 
-# --- IDE y Git ---
-.git
+# --- Logs y Debugging ---
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# --- IDE, Git y Herramientas ---
+.git/
 .gitignore
-.vscode
-.idea
+.vscode/
+.idea/
+.editorconfig
 *.swp
 *.swo
 
 # --- Sistema Operativo ---
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# --- Docker Específico ---
+Dockerfile
+.dockerignore
