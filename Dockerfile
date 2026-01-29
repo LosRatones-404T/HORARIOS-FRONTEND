@@ -29,13 +29,14 @@ RUN npm install -g serve
 # Copiar solo los archivos compilados del paso anterior
 COPY --from=builder /app/dist ./dist
 
-# Variables de entorno para el runtime
-ENV FRONTEND_PORT=8100
+# --- AJUSTE DE PUERTO ESPEJO ---
+# Cambiamos 8100 por 3000 para consistencia total con el Docker Compose
+ENV FRONTEND_PORT=3000
 
 # Exponer el puerto
-EXPOSE ${FRONTEND_PORT}
+EXPOSE 3000
 
 # Comando de inicio
 # -s: Single Page App (redirige todo a index.html)
 # -l: Puerto de escucha
-CMD ["sh", "-c", "serve -s dist -l ${FRONTEND_PORT}"]
+CMD ["sh", "-c", "serve -s dist -l 3000"]
